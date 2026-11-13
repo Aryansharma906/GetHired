@@ -34,7 +34,7 @@ otherwise.
 
 ## Commits
 
-- Primary author: Aryan Sharma (`Aryansharma906 <aryanaryan.9956@gmail.com>`). Verify with
+- Primary author: Aryan Sharma (`Aryansharma906 <aryanaryan.9956@icloud.com>`). Verify with
   `git log -1 --format='%an <%ae>'` before pushing.
 - Verify locally before push: build never breaks, no broken refs in
   `SKILL.md`, library smoke import passes.

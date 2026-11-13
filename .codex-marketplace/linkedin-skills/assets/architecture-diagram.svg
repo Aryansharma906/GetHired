@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 480" width="100%" height="100%">
+  <defs>
+    <!-- Background & Glass -->
+    <linearGradient id="diagBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f17"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0b0e14"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+
+    <linearGradient id="cardBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Animated Pulse on Lines -->
+    <linearGradient id="wirePulse" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.1"/>
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .node-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif; font-weight: 700; fill: #ffffff; }
+    .node-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif; font-weight: 400; fill: #94a3b8; }
+    .node-code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; fill: #38bdf8; }
+    .accent-pill { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 11px; font-weight: 600; }
+  </style>
+
+  <!-- Deep Canvas -->
+  <rect width="1100" height="480" rx="16" fill="url(#diagBg)"/>
+
+  <!-- Flow Lines with Animated Dash -->
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <!-- Center to Left (Gemini to PWA) -->
+    <path d="M 550,150 L 320,150" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" values="24;0" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <!-- Center to Right (Gemini to Slack) -->
+    <path d="M 550,150 L 780,150" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" values="0;24" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <!-- PWA down to Cloud Storage -->
+    <path d="M 200,240 L 200,320 L 400,320" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" values="24;0" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Center down to Multi-Cloud Sync -->
+    <path d="M 550,220 L 550,300" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" values="24;0" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <!-- Slack down to Direct REST -->
+    <path d="M 900,240 L 900,320 L 700,320" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" values="0;24" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- Animated Data Packets (Pulsing Orbs) -->
+  <circle cx="435" cy="150" r="4" fill="#38bdf8">
+    <animate attributeName="cx" values="550;320" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="665" cy="150" r="4" fill="#10b981">
+    <animate attributeName="cx" values="550;780" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="550" cy="260" r="4" fill="#a855f7">
+    <animate attributeName="cy" values="220;300" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- NODE 1: CENTRAL BRAIN (Google Gemini 2.5 Flash) -->
+  <g transform="translate(425, 70)">
+    <rect width="250" height="150" rx="16" fill="url(#cardGrad)" stroke="url(#cardBorder)" stroke-width="2"/>
+    <circle cx="36" cy="38" r="16" fill="#4f46e5" opacity="0.3"/>
+    <text x="28" y="44" font-size="16">🧠</text>
+    <text x="65" y="34" class="node-title" font-size="15">Gemini 2.5 Engine</text>
+    <text x="65" y="52" class="node-sub" font-size="12">AI Reasoning &amp; Scoring</text>
+
+    <!-- Details Inside -->
+    <rect x="20" y="74" width="210" height="26" rx="6" fill="#1e2438"/>
+    <text x="30" y="91" class="node-code">role_eval_scoring(JD, profile)</text>
+
+    <rect x="20" y="106" width="210" height="26" rx="6" fill="#1e2438"/>
+    <text x="30" y="123" class="node-code">founder_post_generation()</text>
+  </g>
+
+  <!-- NODE 2: LEFT NODE (getHired 2.0 PWA & Command Palette) -->
+  <g transform="translate(70, 70)">
+    <rect width="250" height="150" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="36" cy="38" r="16" fill="#0ea5e9" opacity="0.3"/>
+    <text x="28" y="44" font-size="16">⚡</text>
+    <text x="65" y="34" class="node-title" font-size="15">getHired 2.0 Studio</text>
+    <text x="65" y="52" class="node-sub" font-size="12">Warm Ivory &amp; Offline PWA</text>
+
+    <!-- Capabilities -->
+    <g transform="translate(20, 75)">
+      <rect width="98" height="24" rx="6" fill="#182233"/>
+      <text x="12" y="16" class="accent-pill" fill="#7dd3fc">Cmd+K Modal</text>
+    </g>
+    <g transform="translate(126, 75)">
+      <rect width="104" height="24" rx="6" fill="#182233"/>
+      <text x="12" y="16" class="accent-pill" fill="#7dd3fc">Kanban Board</text>
+    </g>
+    <g transform="translate(20, 108)">
+      <rect width="104" height="24" rx="6" fill="#182233"/>
+      <text x="12" y="16" class="accent-pill" fill="#7dd3fc">ATS Resumes</text>
+    </g>
+    <g transform="translate(132, 108)">
+      <rect width="98" height="24" rx="6" fill="#182233"/>
+      <text x="12" y="16" class="accent-pill" fill="#7dd3fc">Creator Hub</text>
+    </g>
+  </g>
+
+  <!-- NODE 3: RIGHT NODE (Slack Interactive Approver) -->
+  <g transform="translate(780, 70)">
+    <rect width="250" height="150" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="36" cy="38" r="16" fill="#10b981" opacity="0.3"/>
+    <text x="28" y="44" font-size="16">💬</text>
+    <text x="65" y="34" class="node-title" font-size="15">Slack Approval Hub</text>
+    <text x="65" y="52" class="node-sub" font-size="12">Block Kit Interactive Cards</text>
+
+    <!-- Capabilities -->
+    <g transform="translate(20, 75)">
+      <rect width="100" height="24" rx="6" fill="#132a22"/>
+      <text x="12" y="16" class="accent-pill" fill="#6ee7b7">1-Tap Approve</text>
+    </g>
+    <g transform="translate(128, 75)">
+      <rect width="102" height="24" rx="6" fill="#132a22"/>
+      <text x="12" y="16" class="accent-pill" fill="#6ee7b7">Instant Reject</text>
+    </g>
+    <g transform="translate(20, 108)">
+      <rect width="210" height="24" rx="6" fill="#132a22"/>
+      <text x="18" y="16" class="accent-pill" fill="#6ee7b7">Executive Radar Daily Digests</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM NODE: MULTI-CLOUD DATA & SECURITY PLATFORM -->
+  <g transform="translate(150, 300)">
+    <rect width="800" height="135" rx="16" fill="url(#cardGrad)" stroke="#263147" stroke-width="1.5"/>
+    
+    <text x="40" y="38" class="node-title" font-size="16">Integrated Cloud &amp; Security Layer</text>
+    <text x="40" y="56" class="node-sub" font-size="12">Synchronized persistence, zero-leak verification, and direct publishing pipeline</text>
+
+    <!-- Platform Badges -->
+    <g transform="translate(40, 75)">
+      <rect width="120" height="38" rx="8" fill="#171d2b" stroke="#2a354d" stroke-width="1"/>
+      <text x="14" y="24" class="node-title" font-size="12">📊 Google Sheets</text>
+    </g>
+    <g transform="translate(175, 75)">
+      <rect width="115" height="38" rx="8" fill="#171d2b" stroke="#2a354d" stroke-width="1"/>
+      <text x="14" y="24" class="node-title" font-size="12">☁️ Google Drive</text>
+    </g>
+    <g transform="translate(305, 75)">
+      <rect width="105" height="38" rx="8" fill="#171d2b" stroke="#2a354d" stroke-width="1"/>
+      <text x="14" y="24" class="node-title" font-size="12">📝 Notion DB</text>
+    </g>
+    <g transform="translate(425, 75)">
+      <rect width="145" height="38" rx="8" fill="#171d2b" stroke="#2a354d" stroke-width="1"/>
+      <text x="14" y="24" class="node-title" font-size="12">🔗 LinkedIn REST API</text>
+    </g>
+    <g transform="translate(585, 75)">
+      <rect width="175" height="38" rx="8" fill="#102a20" stroke="#10b981" stroke-width="1"/>
+      <text x="14" y="24" class="node-title" font-size="12" fill="#34d399">🔒 Zero-Leak Guard</text>
+    </g>
+  </g>
+
+</svg>

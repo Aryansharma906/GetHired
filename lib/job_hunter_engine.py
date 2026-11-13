@@ -176,7 +176,7 @@ Candidate details:
             f"I would welcome the opportunity to discuss how my systems and AI evaluation background can support {org}'s upcoming milestones.\n\n"
             f"Best regards,\n"
             f"Aryan Sharma\n"
-            f"aryanaryan.9956@gmail.com | linkedin.com/in/aryan-sharma-engineer"
+            f"aryanaryan.9956@icloud.com | linkedin.com/in/aryan-sharma-engineer"
         )
         return self._call_gemini_text(prompt, fallback)
 

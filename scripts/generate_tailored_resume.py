@@ -17,7 +17,7 @@ BASE_PROFILE = {
     "name": "Aryan Sharma",
     "headline": "AI/ML & Data | AI Evaluation | Software Engineering",
     "contact": {
-        "email": "aryanaryan.9956@gmail.com",
+        "email": "aryanaryan.9956@icloud.com",
         "linkedin": "https://www.linkedin.com/in/aryan-sharma-engineer",
         "github": "https://github.com/Aryansharma906",
         "location": "India"
