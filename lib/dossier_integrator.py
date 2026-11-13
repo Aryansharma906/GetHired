@@ -95,7 +95,8 @@ class DossierIntegrator:
         
         # Notion Integration
         self.notion_api_key = os.getenv("NOTION_API_KEY")
-        self.notion_database_id = os.getenv("NOTION_DATABASE_ID")
+        self.notion_database_id = os.getenv("NOTION_DATABASE_ID") or "4ec8b8ee58fb4056b7269f4b526224f1"
+        self.notion_database_url = "https://app.notion.com/p/4ec8b8ee58fb4056b7269f4b526224f1"
 
         # Local Paths
         self.opps_path = ROOT / "testing" / "opportunities_tracker.json"
