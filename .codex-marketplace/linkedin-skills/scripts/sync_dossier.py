@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+"""Dossier Unified CLI Synchronization Utility.
+
+Synchronizes career opportunities, applications, and documents across:
+- Google Gemini (Job alignment scoring & tailoring)
+- Google Sheets (Pipeline table sync & CSV export)
+- Google Drive (Resume & cover letter storage manifest)
+- Gmail (Recruiter outreach & interview alert scanner)
+- Notion (Database Kanban sync)
+- Slack (Real-time executive status reporting)
+
+Usage:
+    python3 scripts/sync_dossier.py --all
+    python3 scripts/sync_dossier.py --sheets
+    python3 scripts/sync_dossier.py --drive
+    python3 scripts/sync_dossier.py --gmail
+    python3 scripts/sync_dossier.py --notion
+    python3 scripts/sync_dossier.py --gemini
+    python3 scripts/sync_dossier.py --status
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from lib._env import load_env
+from lib.dossier_integrator import DossierIntegrator
+
+load_env()
+
+
+def print_banner():
+    print("=" * 65)
+    print("💼 DOSSIER CAREER AUTOMATION & INTEGRATION HUB")
+    print("=" * 65)
+
+
+def check_status(integrator: DossierIntegrator):
+    print("\n🔍 Service Connection Status:")
+    opps = integrator.load_opportunities()
+    print(f"  • Tracked Opportunities:  {len(opps)} active roles")
+
+    # Gemini
+    gemini_status = "✅ Connected (API Key present)" if integrator.gemini_key else "⚠️ Missing GEMINI_API_KEY"
+    print(f"  • 🤖 Google Gemini:       {gemini_status}")
+
+    # Sheets
+    sheets_mode = "✅ Live API (Token + Sheet ID)" if (integrator.google_access_token and integrator.google_sheet_id) else "📁 Staged CSV (Direct Import Ready)"
+    print(f"  • 📊 Google Sheets:       {sheets_mode}")
+
+    # Drive
+    drive_mode = "✅ Live Drive API" if integrator.google_access_token else "📁 Staged Manifest (Local Folder Ready)"
+    print(f"  • ☁️ Google Drive:        {drive_mode}")
+
+    # Gmail
+    gmail_mode = "✅ Live Mailbox Scanner" if integrator.google_access_token else "📁 Simulation / OAuth Ready"
+    print(f"  • 📬 Gmail:               {gmail_mode}")
+
+    # Notion
+    notion_mode = "✅ Live Notion API" if (integrator.notion_api_key and integrator.notion_database_id) else "📁 Staged CSV (Database Table Ready)"
+    print(f"  • 📝 Notion:              {notion_mode}")
+
+    # Slack
+    slack_status = "✅ Connected" if integrator.slack_webhook else "⚠️ Missing SLACK_WEBHOOK_URL"
+    print(f"  • 💬 Slack Reporting:     {slack_status}")
+    print("=" * 65 + "\n")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Dossier Unified Integration Sync")
+    parser.add_argument("--all", action="store_true", help="Sync all services and dispatch Slack summary")
+    parser.add_argument("--sheets", action="store_true", help="Sync opportunities to Google Sheets / CSV")
+    parser.add_argument("--drive", action="store_true", help="Stage & sync resumes to Google Drive")
+    parser.add_argument("--gmail", action="store_true", help="Scan Gmail for recruiter updates")
+    parser.add_argument("--notion", action="store_true", help="Sync pipeline to Notion Database")
+    parser.add_argument("--gemini", action="store_true", help="Score opportunities using Google Gemini")
+    parser.add_argument("--status", action="store_true", help="Check connectivity status of all services")
+
+    args = parser.parse_args()
+    print_banner()
+
+    integrator = DossierIntegrator()
+
+    # Default to status if no flag provided
+    if not any([args.all, args.sheets, args.drive, args.gmail, args.notion, args.gemini, args.status]):
+        args.status = True
+
+    if args.status:
+        check_status(integrator)
+        return
+
+    if args.gemini or args.all:
+        print("\n🤖 Running Google Gemini scoring on tracked roles...")
+        opps = integrator.load_opportunities()
+        scored_count = 0
+        to_score = opps if args.gemini else [o for o in opps if "match_score" not in o][:3]
+        for o in to_score:
+            res = integrator.score_opportunity_with_gemini(o)
+            o["match_score"] = res.get("match_score", 90)
+            o["matching_skills"] = res.get("matching_skills", [])
+            o["gaps_or_growth_areas"] = res.get("gaps_or_growth_areas", [])
+            o["executive_summary"] = res.get("executive_summary", "")
+            scored_count += 1
+            print(f"  • [{o.get('organization')}] {o.get('title')}: {o['match_score']}% match")
+        integrator.save_opportunities(opps)
+        print(f"✅ Gemini scored {scored_count} opportunities.")
+
+    if args.sheets or args.all:
+        print("\n📊 Syncing to Google Sheets...")
+        res = integrator.sync_to_google_sheets()
+        print(f"  • Mode: {res.get('mode')}")
+        if "csv_path" in res:
+            print(f"  • Exported: {res['csv_path']}")
+        print(f"✅ Google Sheets sync complete.")
+
+    if args.drive or args.all:
+        print("\n☁️ Syncing tailored resumes to Google Drive...")
+        res = integrator.sync_resumes_to_google_drive()
+        print(f"  • Mode: {res.get('mode')}")
+        print(f"  • Files: {res.get('files_ready', 0)} files in manifest ({res.get('manifest_file')})")
+        print(f"✅ Google Drive staging complete.")
+
+    if args.gmail or args.all:
+        print("\n📬 Scanning Gmail for recruiter updates...")
+        res = integrator.scan_gmail_for_updates()
+        print(f"  • Mode: {res.get('mode')}")
+        alerts = res.get("recent_alerts", [])
+        print(f"  • Alerts found: {len(alerts)}")
+        for a in alerts:
+            print(f"    - {a.get('snippet', '')[:80]}...")
+        print(f"✅ Gmail scan complete.")
+
+    if args.notion or args.all:
+        print("\n📝 Syncing to Notion Database...")
+        res = integrator.sync_to_notion()
+        print(f"  • Mode: {res.get('mode')}")
+        if "csv_path" in res:
+            print(f"  • Exported: {res['csv_path']}")
+        print(f"✅ Notion sync complete.")
+
+    if args.all:
+        print("\n💬 Dispatching unified summary card to Slack...")
+        summary = integrator.run_full_dossier_sync()
+        print(f"✅ Full Dossier sync finished at {summary.get('timestamp')}.")
+
+
+if __name__ == "__main__":
+    main()

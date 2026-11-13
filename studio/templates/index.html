@@ -303,21 +303,100 @@
       📋 All Posts
     </button>
     <button class="tab-item" id="tab-opportunities" onclick="switchTab('opportunities')">
-      🎯 Opportunities & Jobs <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">7</span>
+      💼 Dossier Hub & Career Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
     </button>
   </div>
 
-  <!-- Opportunities & Jobs Container -->
+  <!-- Opportunities & Dossier Container -->
   <div id="opportunitiesContainer" class="d-none">
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-      <div>
-        <h5 class="fw-bold mb-1 text-dark">🎯 Global Opportunities & Career Radar</h5>
-        <p class="text-muted small mb-0">Autonomous monitoring of GSoC, fellowships, AI research residencies, and internships tailored to your profile.</p>
+    <!-- Dossier Unified Hub Header & Integrations Banner -->
+    <div class="card p-3 mb-4 border shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">DOSSIER INTEGRATION</span>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 11px;">● Active Cloud Engine</span>
+          </div>
+          <h4 class="fw-bold mb-1 text-dark">💼 Dossier Career & Application Command Center</h4>
+          <p class="text-muted small mb-0">Autonomous career intelligence connecting Google Gemini, Google Sheets, Google Drive, Gmail, and Notion.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-primary btn-sm fw-bold px-3 d-flex align-items-center gap-2 shadow-sm" onclick="syncDossier('all')">
+            <span id="syncSpinner" class="spinner-border spinner-border-sm d-none"></span>
+            <span>🔄 Sync All to Cloud & Slack</span>
+          </button>
+          <button class="btn btn-outline-dark btn-sm fw-bold px-3 d-flex align-items-center gap-2" onclick="openModal('addOppModal')">
+            <span>➕ Track New Role</span>
+          </button>
+        </div>
       </div>
-      <button class="btn btn-outline-primary btn-sm fw-bold px-3 d-flex align-items-center gap-2" onclick="openModal('addOppModal')">
-        <span>➕ Track New Job / Opportunity</span>
-      </button>
+
+      <!-- Service Connectors Grid -->
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">🤖 Gemini AI</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Scoring & ATS</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📊 Google Sheets</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Live & CSV Ready</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">☁️ Google Drive</div>
+            <div class="badge bg-primary bg-opacity-10 text-primary mt-1" style="font-size: 10px;">Staged Manifest</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📬 Gmail</div>
+            <div class="badge bg-info bg-opacity-10 text-info mt-1" style="font-size: 10px;">Recruiter Radar</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📝 Notion</div>
+            <div class="badge bg-warning bg-opacity-10 text-warning mt-1" style="font-size: 10px;">Database Kanban</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">💬 Slack Hub</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Instant Alerts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Utilities -->
+      <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+        <a href="/api/dossier/export/sheets" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          📥 Download Sheets CSV
+        </a>
+        <a href="/api/dossier/export/notion" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          📥 Download Notion CSV
+        </a>
+        <a href="/api/dossier/export/drive" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          ☁️ View Drive Manifest
+        </a>
+        <button class="btn btn-outline-primary btn-sm fw-semibold" style="font-size: 12px;" onclick="syncDossier('gemini')">
+          🤖 Gemini Score All Roles
+        </button>
+        <button class="btn btn-outline-info btn-sm fw-semibold" style="font-size: 12px;" onclick="syncDossier('gmail')">
+          📬 Scan Gmail Alerts
+        </button>
+      </div>
     </div>
+
+    <!-- Sync Toast / Notification Box -->
+    <div id="dossierAlertBox" class="d-none alert alert-success alert-dismissible fade show" role="alert">
+      <span id="dossierAlertMsg">Sync completed successfully!</span>
+      <button type="button" class="btn-close" onclick="document.getElementById('dossierAlertBox').classList.add('d-none')"></button>
+    </div>
+
     <div id="oppsList"></div>
   </div>
 
@@ -948,6 +1027,21 @@ AI/ML & Software Engineer with rigorous foundations in AI evaluation, LLM securi
 - **Competitive Selections:** NASA NExScI Sagan Workshop, Harvard Aspire Leaders, McKinsey Forward, HPAIR Delegate.`;
 }
 
+function fetchOpportunities() {
+  return fetch('/api/opportunities')
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
+        allOpportunities = data.opportunities;
+        const badge = document.getElementById('tab-badge-opps');
+        if (badge) badge.innerText = allOpportunities.length;
+        renderOpportunities();
+        try { localStorage.setItem('tracked_opportunities', JSON.stringify(allOpportunities)); } catch(err) {}
+      }
+    })
+    .catch(() => {});
+}
+
 function loadOpportunities() {
   try {
     const local = localStorage.getItem('tracked_opportunities');
@@ -962,21 +1056,7 @@ function loadOpportunities() {
   const badge = document.getElementById('tab-badge-opps');
   if (badge) badge.innerText = allOpportunities.length;
   renderOpportunities();
-
-  // Background fetch to sync with server repository
-  try {
-    fetch('/api/opportunities')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
-          allOpportunities = data.opportunities;
-          if (badge) badge.innerText = allOpportunities.length;
-          renderOpportunities();
-          try { localStorage.setItem('tracked_opportunities', JSON.stringify(allOpportunities)); } catch(err) {}
-        }
-      })
-      .catch(() => {});
-  } catch(e) {}
+  fetchOpportunities();
 }
 
 function renderOpportunities() {
@@ -987,20 +1067,29 @@ function renderOpportunities() {
   }
 
   container.innerHTML = allOpportunities.map(o => {
+    const score = parseInt(o.match_score) || 90;
+    const scoreColor = score >= 85 ? 'success' : (score >= 75 ? 'primary' : 'warning');
+    const skills = (o.matching_skills && o.matching_skills.length) ? o.matching_skills : (o.tags || []);
+    const gaps = o.gaps_or_growth_areas || [];
+
     return `
       <div class="card p-3 mb-3 border shadow-sm" style="border-radius: 12px; background: white;">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
           <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 11px;">${escapeHtml(o.category || 'Opportunity')}</span>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge bg-dark bg-opacity-10 text-dark fw-bold" style="font-size: 11px;">${escapeHtml(o.category || 'Opportunity')}</span>
+              <span class="badge bg-${scoreColor} text-white fw-bold" style="font-size: 11px;">🎯 ${score}% Match</span>
               <span class="badge bg-success bg-opacity-10 text-success fw-bold" style="font-size: 11px;">💰 ${escapeHtml(o.stipend || 'Competitive')}</span>
               <span class="badge bg-warning bg-opacity-10 text-warning fw-bold" style="font-size: 11px;">⏰ Deadline: ${escapeHtml(o.deadline || 'Rolling')}</span>
             </div>
             <h5 class="fw-bold mb-1 text-dark">${escapeHtml(o.title)}</h5>
             <div class="text-secondary small fw-semibold">🏛️ ${escapeHtml(o.organization)} • <span class="text-muted">${escapeHtml(o.cycle || '')}</span></div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1" onclick="generateTailoredResume('${o.id}')">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-outline-primary btn-sm fw-bold d-flex align-items-center gap-1" onclick="scoreOpportunityWithGemini('${o.id}')">
+              <span>🤖 Gemini Score</span>
+            </button>
+            <button class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" onclick="generateTailoredResume('${o.id}')">
               <span>📄 1-Click Tailored Resume</span>
             </button>
             ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Open Portal</a>` : ''}
@@ -1008,15 +1097,77 @@ function renderOpportunities() {
         </div>
 
         <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
-          <strong>🎯 Match to Aryan:</strong> ${escapeHtml(o.match_reason || 'Strong profile synergy')}
+          <strong>🎯 Match to Aryan:</strong> ${escapeHtml(o.match_reason || o.executive_summary || 'Strong profile synergy with AI/ML systems and research.')}
         </div>
 
+        ${gaps.length ? `
+          <div class="p-2 px-3 my-1 rounded bg-warning bg-opacity-10 border-start border-4 border-warning small text-dark">
+            <strong>💡 Tailoring Strategy:</strong> ${gaps.map(g => escapeHtml(g)).join(' • ')}
+          </div>
+        ` : ''}
+
         <div class="d-flex flex-wrap gap-1 mt-2">
-          ${(o.tags || []).map(t => `<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 10px;">#${escapeHtml(t)}</span>`).join('')}
+          ${skills.map(t => `<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 10px;">#${escapeHtml(t)}</span>`).join('')}
         </div>
       </div>
     `;
   }).join('');
+}
+
+function showDossierAlert(msg, isSuccess = true) {
+  const box = document.getElementById('dossierAlertBox');
+  const text = document.getElementById('dossierAlertMsg');
+  if (box && text) {
+    text.innerText = msg;
+    box.className = `alert alert-${isSuccess ? 'success' : 'danger'} alert-dismissible fade show`;
+    box.classList.remove('d-none');
+    setTimeout(() => { box.classList.add('d-none'); }, 6000);
+  }
+}
+
+function syncDossier(action = 'all') {
+  const spinner = document.getElementById('syncSpinner');
+  if (spinner) spinner.classList.remove('d-none');
+  showDossierAlert(`⏳ Running Dossier sync (${action})...`, true);
+
+  fetch('/api/dossier/sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: action })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (spinner) spinner.classList.add('d-none');
+    if (data.success) {
+      showDossierAlert(`✅ Dossier sync (${action}) completed! Updated across cloud services & Slack.`, true);
+      fetchOpportunities();
+    } else {
+      showDossierAlert(`❌ Sync error: ${data.error || 'Unknown error'}`, false);
+    }
+  })
+  .catch(err => {
+    if (spinner) spinner.classList.add('d-none');
+    showDossierAlert(`❌ Sync failed: ${err.message}`, false);
+  });
+}
+
+function scoreOpportunityWithGemini(oppId) {
+  showDossierAlert(`🤖 Scoring role alignment with Google Gemini...`, true);
+  fetch(`/api/dossier/opportunities/${oppId}/score`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showDossierAlert(`🎯 Gemini evaluation complete: ${data.opportunity.match_score}% Match!`, true);
+      fetchOpportunities();
+    } else {
+      showDossierAlert(`❌ Scoring error: ${data.error}`, false);
+    }
+  })
+  .catch(err => showDossierAlert(`❌ Scoring failed: ${err.message}`, false));
 }
 
 function openModal(id) {

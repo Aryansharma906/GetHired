@@ -1,0 +1,39 @@
+name: Dossier Daily Cloud Synchronization
+
+on:
+  schedule:
+    # 11:30 AM IST is 06:00 AM UTC (runs every day)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  sync_dossier_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Unified Dossier Sync (Gemini, Sheets, Drive, Gmail, Notion, Slack)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GOOGLE_ACCESS_TOKEN: ${{ secrets.GOOGLE_ACCESS_TOKEN }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+          python3 scripts/sync_dossier.py --all
