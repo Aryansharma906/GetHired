@@ -80,6 +80,8 @@ def main():
     parser.add_argument("--gmail", action="store_true", help="Scan Gmail for recruiter updates")
     parser.add_argument("--notion", action="store_true", help="Sync pipeline to Notion Database")
     parser.add_argument("--gemini", action="store_true", help="Score opportunities using Google Gemini")
+    parser.add_argument("--dispatch-jobs", action="store_true", help="Send top job approval cards to Slack")
+    parser.add_argument("--digest", action="store_true", help="Send Career Radar digest to Slack")
     parser.add_argument("--status", action="store_true", help="Check connectivity status of all services")
 
     args = parser.parse_args()
@@ -88,7 +90,7 @@ def main():
     integrator = DossierIntegrator()
 
     # Default to status if no flag provided
-    if not any([args.all, args.sheets, args.drive, args.gmail, args.notion, args.gemini, args.status]):
+    if not any([args.all, args.sheets, args.drive, args.gmail, args.notion, args.gemini, args.dispatch_jobs, args.digest, args.status]):
         args.status = True
 
     if args.status:
@@ -148,6 +150,33 @@ def main():
         print("\n💬 Dispatching unified summary card to Slack...")
         summary = integrator.run_full_dossier_sync()
         print(f"✅ Full Dossier sync finished at {summary.get('timestamp')}.")
+
+    from lib.slack_approver import send_job_approval_to_slack, send_job_radar_digest_to_slack
+
+    if args.digest or args.all:
+        print("\n📡 Dispatching Career Radar digest to Slack...")
+        opps = integrator.load_opportunities()
+        digest_res = send_job_radar_digest_to_slack(opps)
+        if digest_res.get("success"):
+            print("✅ Career Radar digest sent to Slack.")
+        else:
+            print(f"⚠️ Digest not sent: {digest_res.get('error')}")
+
+    if args.dispatch_jobs or args.all:
+        print("\n🎯 Dispatching top priority job approval card to Slack...")
+        opps = integrator.load_opportunities()
+        # Find highest fit opportunity not yet approved
+        pending = [o for o in opps if "Approved" not in o.get("status", "") and "Archived" not in o.get("status", "")]
+        if pending:
+            pending.sort(key=lambda x: int(x.get("match_score", 90)), reverse=True)
+            top_opp = pending[0]
+            card_res = send_job_approval_to_slack(top_opp)
+            if card_res.get("success"):
+                print(f"✅ Dispatched approval card for: [{top_opp.get('organization')}] {top_opp.get('title')}")
+            else:
+                print(f"⚠️ Approval card not sent: {card_res.get('error')}")
+        else:
+            print("ℹ️ All tracked opportunities have already been approved or archived.")
 
 
 if __name__ == "__main__":
