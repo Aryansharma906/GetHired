@@ -42,8 +42,8 @@ An end-to-end multi-agent AI system combining **getHired 2.0** (autonomous high-
 ## Quick Install & Setup
 
 ```bash
-git clone https://github.com/Aryansharma906/linkedin-automation.git
-cd linkedin-automation
+git clone https://github.com/Aryansharma906/GetHired.git
+cd GetHired
 pip install -r requirements.txt
 ./scripts/start_studio.sh
 ```
@@ -51,14 +51,14 @@ pip install -r requirements.txt
 ### Codex CLI
 
 ```bash
-codex plugin marketplace add Aryansharma906/linkedin-automation
+codex plugin marketplace add Aryansharma906/GetHired
 codex plugin add linkedin-skills@linkedin-skills
 ```
 
 To test a local clone:
 
 ```bash
-git clone https://github.com/Aryansharma906/linkedin-automation.git
+git clone https://github.com/Aryansharma906/GetHired.git
 cd linkedin-skills
 codex plugin marketplace add .
 codex plugin add linkedin-skills@linkedin-skills

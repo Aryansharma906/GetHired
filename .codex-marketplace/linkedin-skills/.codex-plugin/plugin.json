@@ -7,8 +7,8 @@
     "url": "https://github.com/Aryansharma906"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Aryansharma906/linkedin-automation",
-  "repository": "https://github.com/Aryansharma906/linkedin-automation",
+  "homepage": "https://github.com/Aryansharma906/GetHired",
+  "repository": "https://github.com/Aryansharma906/GetHired",
   "keywords": [
     "linkedin",
     "marketing",
@@ -31,7 +31,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/Aryansharma906/linkedin-automation",
+    "websiteURL": "https://github.com/Aryansharma906/GetHired",
     "defaultPrompt": [
       "Draft a LinkedIn post from my notes.",
       "Improve this LinkedIn comment.",
