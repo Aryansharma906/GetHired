@@ -140,5 +140,22 @@ To maximize velocity and eliminate cognitive load:
   - Direct LinkedIn REST API is primary for immediate, latency-free publishing without third-party queue limits.
   - Publora remains the multi-platform scheduling fallback.
 
+---
+
+## 8. Frontend & PWA Integrity Guardrails
+
+### Service Worker Caching Policy
+- **Network-First for HTML**: Navigational requests (`/`, `/dossier`, `*.html`) must always fetch from the network first to guarantee instant deployment visibility, falling back to cache only when offline.
+- **Cache-First for Static Assets**: Only immutable vendor libraries (Bootstrap, JSZip) and static icon fonts may use Cache-First resolution.
+- **Version Bumping**: Any structural JavaScript or HTML change must increment the Service Worker cache identifier (`CACHE_NAME = 'studio-cache-v...'`) to invalidate stale clients.
+
+### Bootstrap 5 Modal Conventions
+- Never add inline `style="display: none;"` to `<div class="modal fade">`. Inline CSS overrides Bootstrap's `.modal.show` class and locks the viewport.
+- Always cleanly clean up `.modal-backdrop` and remove `modal-open` from `document.body` on modal dismissal.
+
+### Link Verification Standards
+- Maintain verified canonical URLs for all career opportunities and external portals. Test URLs with standard User-Agent headers to avoid bot false-positives.
+
+
 
 
