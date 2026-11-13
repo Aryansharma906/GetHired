@@ -418,6 +418,124 @@ def generate_opportunity_resume(opp_id: str):
     })
 
 
+# =========================================================================
+# Dossier Career Hub & Multi-Platform Integration API
+# =========================================================================
+
+@app.route("/api/dossier/status", methods=["GET"])
+def dossier_status_api():
+    """Return status of all 5 connected services and opportunity pipeline."""
+    from lib.dossier_integrator import DossierIntegrator
+    integrator = DossierIntegrator()
+    opps = integrator.load_opportunities()
+    
+    return jsonify({
+        "success": True,
+        "opportunities_count": len(opps),
+        "gemini": bool(integrator.gemini_key),
+        "google_sheets": "live_api" if (integrator.google_access_token and integrator.google_sheet_id) else "staged_csv",
+        "google_drive": "live_api" if integrator.google_access_token else "staged_manifest",
+        "gmail": "live_mailbox" if integrator.google_access_token else "oauth_ready",
+        "notion": "live_api" if (integrator.notion_api_key and integrator.notion_database_id) else "staged_csv",
+        "slack": bool(integrator.slack_webhook),
+        "staged_files": {
+            "sheets_csv": (ROOT / "testing" / "dossier_exports" / "google_sheets_pipeline.csv").exists(),
+            "drive_manifest": (ROOT / "testing" / "dossier_exports" / "google_drive_manifest.json").exists(),
+            "notion_csv": (ROOT / "testing" / "dossier_exports" / "notion_database_pipeline.csv").exists(),
+        }
+    })
+
+
+@app.route("/api/dossier/sync", methods=["POST"])
+def dossier_sync_api():
+    """Execute on-demand sync for all or specific services."""
+    from lib.dossier_integrator import DossierIntegrator
+    integrator = DossierIntegrator()
+    data = request.get_json() or {}
+    action = data.get("action", "all")
+
+    if action == "all":
+        result = integrator.run_full_dossier_sync()
+        return jsonify({"success": True, "action": "all", "result": result})
+    elif action == "sheets":
+        result = integrator.sync_to_google_sheets()
+        return jsonify({"success": True, "action": "sheets", "result": result})
+    elif action == "drive":
+        result = integrator.sync_resumes_to_google_drive()
+        return jsonify({"success": True, "action": "drive", "result": result})
+    elif action == "gmail":
+        result = integrator.scan_gmail_for_updates()
+        return jsonify({"success": True, "action": "gmail", "result": result})
+    elif action == "notion":
+        result = integrator.sync_to_notion()
+        return jsonify({"success": True, "action": "notion", "result": result})
+    elif action == "gemini":
+        opps = integrator.load_opportunities()
+        scored = 0
+        for o in opps:
+            res = integrator.score_opportunity_with_gemini(o)
+            o["match_score"] = res.get("match_score", 90)
+            o["matching_skills"] = res.get("matching_skills", [])
+            o["gaps_or_growth_areas"] = res.get("gaps_or_growth_areas", [])
+            o["executive_summary"] = res.get("executive_summary", "")
+            scored += 1
+        integrator.save_opportunities(opps)
+        return jsonify({"success": True, "action": "gemini", "scored_count": scored})
+    else:
+        return jsonify({"success": False, "error": f"Unknown action: {action}"}), 400
+
+
+@app.route("/api/dossier/opportunities/<opp_id>/score", methods=["POST"])
+def score_single_opportunity_api(opp_id: str):
+    """Score a specific opportunity against Aryan's profile with Google Gemini."""
+    from lib.dossier_integrator import DossierIntegrator
+    integrator = DossierIntegrator()
+    opps = integrator.load_opportunities()
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return jsonify({"success": False, "error": "Opportunity not found"}), 404
+
+    data = request.get_json() or {}
+    job_desc = data.get("job_description")
+
+    res = integrator.score_opportunity_with_gemini(target, job_description=job_desc)
+    target["match_score"] = res.get("match_score", 90)
+    target["matching_skills"] = res.get("matching_skills", [])
+    target["gaps_or_growth_areas"] = res.get("gaps_or_growth_areas", [])
+    target["executive_summary"] = res.get("executive_summary", "")
+    integrator.save_opportunities(opps)
+
+    return jsonify({"success": True, "opportunity": target, "score_data": res})
+
+
+@app.route("/api/dossier/export/<kind>", methods=["GET"])
+def export_dossier_file(kind: str):
+    """Download staged CSV or manifest for Google Sheets, Notion, or Drive."""
+    staging_dir = ROOT / "testing" / "dossier_exports"
+    if kind == "sheets":
+        file_path = staging_dir / "google_sheets_pipeline.csv"
+        mimetype = "text/csv"
+    elif kind == "notion":
+        file_path = staging_dir / "notion_database_pipeline.csv"
+        mimetype = "text/csv"
+    elif kind == "drive":
+        file_path = staging_dir / "google_drive_manifest.json"
+        mimetype = "application/json"
+    else:
+        return jsonify({"error": "Unknown export kind"}), 404
+
+    if not file_path.exists():
+        # Trigger regeneration
+        from lib.dossier_integrator import DossierIntegrator
+        d = DossierIntegrator()
+        d.sync_to_google_sheets()
+        d.sync_resumes_to_google_drive()
+        d.sync_to_notion()
+
+    from flask import send_file
+    return send_file(str(file_path), as_attachment=True, download_name=file_path.name, mimetype=mimetype)
+
+
 @app.route("/action/<action_type>/<draft_id>", methods=["GET"])
 def direct_action_page(action_type: str, draft_id: str):
     """1-Tap instant action URL from mobile Slack without relying on Slack Interactivity limits."""
