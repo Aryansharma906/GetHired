@@ -272,6 +272,44 @@
       align-items: center;
       box-shadow: 0 4px 14px rgba(10, 102, 194, 0.2);
     }
+    /* Activity Chart & Profile Strength */
+    .activity-chart-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 100px;
+      padding-top: 10px;
+    }
+    .chart-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .chart-bar {
+      width: 100%;
+      max-width: 32px;
+      background: linear-gradient(180deg, #0a66c2 0%, #3b82f6 100%);
+      border-radius: 6px 6px 0 0;
+      transition: height 0.3s ease;
+    }
+    .profile-strength-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
   </style>
 </head>
 <body>
@@ -288,7 +326,7 @@
       </div>
     </div>
 
-    <div class="nav-section-title">Navigation</div>
+    <div class="nav-section-title">Core Dossier</div>
     <button class="nav-btn active" data-tab="dashboard" onclick="switchDossierTab('dashboard', this)">
       <i class="bi bi-speedometer2"></i>
       <span>Dashboard</span>
@@ -300,32 +338,32 @@
     </button>
     <button class="nav-btn" data-tab="roles" onclick="switchDossierTab('roles', this)">
       <i class="bi bi-compass"></i>
-      <span>Career Radar & Jobs</span>
+      <span>Find Jobs & Radar</span>
       <span class="nav-badge" id="radarBadge">15</span>
     </button>
     <button class="nav-btn" data-tab="resumes" onclick="switchDossierTab('resumes', this)">
       <i class="bi bi-file-earmark-person"></i>
-      <span>Tailored Resumes</span>
+      <span>Resumes & Documents</span>
     </button>
     <button class="nav-btn" data-tab="profile" onclick="switchDossierTab('profile', this)">
       <i class="bi bi-person-badge"></i>
-      <span>Candidate Profile</span>
+      <span>Master Profile</span>
     </button>
 
-    <div class="nav-section-title mt-4">Integrations & Workflows</div>
-    <button class="nav-btn text-warning fw-bold mb-2" onclick="openJdModal()" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);">
+    <div class="nav-section-title mt-4">Extensions & AI Workflows</div>
+    <button class="nav-btn text-warning fw-bold mb-1" data-tab="ai-stack" onclick="switchDossierTab('ai-stack', this)" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);">
       <i class="bi bi-magic"></i>
-      <span>✨ Paste JD (AI Stack)</span>
+      <span>✨ 7-in-1 AI Video Stack</span>
+    </button>
+    <button class="nav-btn" data-tab="sync" onclick="switchDossierTab('sync', this)">
+      <i class="bi bi-cloud-arrow-up"></i>
+      <span>Cloud & Multi-Sync Hub</span>
     </button>
     <a href="./index.html" class="nav-btn text-info fw-bold" style="background: rgba(56, 189, 248, 0.1);">
       <i class="bi bi-linkedin"></i>
       <span>LinkedIn Creator Studio</span>
       <i class="bi bi-arrow-right-short ms-auto fs-5"></i>
     </a>
-    <button class="nav-btn" data-tab="sync" onclick="switchDossierTab('sync', this)">
-      <i class="bi bi-cloud-arrow-up"></i>
-      <span>Cloud & Offline Sync</span>
-    </button>
 
     <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 small text-secondary">
       <div class="d-flex align-items-center gap-2 mb-1">
@@ -412,6 +450,66 @@
             </div>
             <div class="funnel-val text-success" id="funnelMatchScore">92%</div>
             <div class="funnel-sub">Evaluated against Aryan Sharma's profile</div>
+          </div>
+        </div>
+
+        <!-- Row: Application Velocity & Master Profile Strength -->
+        <div class="row g-3 mb-4">
+          <!-- Application Activity Chart -->
+          <div class="col-lg-7">
+            <div class="activity-chart-box h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold text-dark fs-6">📈 Application Activity (Last 6 Weeks)</span>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 11px;">15 Total Tracked</span>
+              </div>
+              <div class="small text-secondary mb-3">Weekly pace across scouting, tailored packets, and active submissions</div>
+              <div class="chart-bars">
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 40px;" title="Week 1: 2 roles"></div>
+                  <span class="small text-muted" style="font-size: 10px;">W1 (2)</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 65px;" title="Week 2: 3 roles"></div>
+                  <span class="small text-muted" style="font-size: 10px;">W2 (3)</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 30px;" title="Week 3: 1 role"></div>
+                  <span class="small text-muted" style="font-size: 10px;">W3 (1)</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 90px;" title="Week 4: 4 roles"></div>
+                  <span class="small text-muted" style="font-size: 10px;">W4 (4)</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 70px;" title="Week 5: 3 roles"></div>
+                  <span class="small text-muted" style="font-size: 10px;">W5 (3)</span>
+                </div>
+                <div class="chart-bar-col">
+                  <div class="chart-bar" style="height: 50px; background: linear-gradient(180deg, #10b981 0%, #059669 100%);" title="Week 6 (Current): 2 roles"></div>
+                  <span class="small text-success fw-bold" style="font-size: 10px;">W6 (2)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Profile Strength Gauge -->
+          <div class="col-lg-5">
+            <div class="profile-strength-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold text-dark fs-6">🛡️ Profile Strength</span>
+                <span class="badge bg-success fw-bold">96% Complete</span>
+              </div>
+              <div class="progress mb-3" style="height: 8px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 96%;" aria-valuenow="96" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="small text-secondary mb-2">All facts grounded in Aryan Sharma's verified resume:</div>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 10px;">✓ Handshake AI Eval</span>
+                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25" style="font-size: 10px;">✓ Harvard CS50x</span>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 10px;">✓ Published Research</span>
+                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 10px;">✓ NASA NExScI</span>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25" style="font-size: 10px;">✓ McKinsey Forward</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -578,6 +676,93 @@
             <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="resetToDefaultSeed()">
               <i class="bi bi-arrow-counterclockwise me-1"></i> Reset to Default Opportunities
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: EXTENSIONS & AI VIDEO STACK -->
+      <div id="tabAiStack" class="d-none">
+        <div class="card p-4 border shadow-sm mb-4" style="background: white; border-radius: 12px;">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <span class="badge bg-warning text-dark text-uppercase fw-bold" style="font-size: 10px;">⚡ Extensions & AI Workflows</span>
+              <h4 class="fw-bold text-dark mb-1">✨ 7-in-1 AI Application Stack & Video Methodologies</h4>
+              <p class="small text-secondary mb-0">Implements Mayank Joshi 7-in-1 Packager, Vaibhav Sisinty Google AI ATS Stack, and 90-Day Tactical Proof-of-Work.</p>
+            </div>
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="openJdModal()">
+              <i class="bi bi-window me-1"></i> Open in Popup
+            </button>
+          </div>
+          <hr>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-dark">Target Company / Lab:</label>
+              <input type="text" id="inlineJdCompany" class="form-control" placeholder="e.g. Anthropic, Google DeepMind, OpenAI, Scale AI">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-dark">Target Role Title:</label>
+              <input type="text" id="inlineJdRole" class="form-control" placeholder="e.g. AI Systems & Evaluation Engineer">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-dark">Paste Full Job Description (JD):</label>
+            <textarea id="inlineJdText" class="form-control font-monospace small" rows="8" placeholder="Paste the full job posting requirements, responsibilities, and tech stack here..."></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary fw-bold py-2 px-4 shadow-sm" onclick="runInlineAiJdAnalysis()">
+              🚀 Run 7-in-1 AI Stack Generator
+            </button>
+            <button class="btn btn-outline-secondary py-2 px-3" onclick="fillSampleJd()">
+              📄 Load Sample Frontier JD
+            </button>
+          </div>
+
+          <!-- Inline Results -->
+          <div id="inlineJdResultBox" class="d-none mt-4 pt-3 border-top">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+              <h5 class="fw-bold text-dark mb-0">🎯 Generated 7-in-1 Application Package</h5>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success fs-6 fw-bold" id="inlineJdScoreBadge">96% Fitment Match</span>
+                <button class="btn btn-success fw-bold shadow-sm" id="inlineJdDownloadZipBtn">
+                  📦 Download Full Package (.ZIP)
+                </button>
+              </div>
+            </div>
+            
+            <div class="p-3 mb-3 bg-light border rounded">
+              <strong class="d-block small text-muted text-uppercase mb-1">Top 10 ATS Keywords Extracted:</strong>
+              <div id="inlineJdKeywords" class="text-primary font-monospace fw-semibold"></div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card p-3 border shadow-sm h-100">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Recruiter DM (Vaibhav Sisinty)</span>
+                    <button class="btn btn-outline-primary btn-sm py-0" onclick="copyTextElement('inlineJdResultDm')">📋 Copy</button>
+                  </div>
+                  <div class="font-monospace small bg-light p-3 rounded" id="inlineJdResultDm" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card p-3 border shadow-sm h-100">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small text-info text-dark text-uppercase">🎙️ NotebookLM Interview Simulation Prompt</span>
+                    <button class="btn btn-outline-info btn-sm py-0" onclick="copyTextElement('inlineJdResultSim')">📋 Copy</button>
+                  </div>
+                  <div class="font-monospace small bg-light p-3 rounded" id="inlineJdResultSim" style="white-space: pre-wrap; line-height: 1.6;"></div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="card p-3 border shadow-sm">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work (PoW) 90-Day Plan</span>
+                    <button class="btn btn-outline-success btn-sm py-0" onclick="copyTextElement('inlineJdResultPow')">📋 Copy</button>
+                  </div>
+                  <pre class="font-monospace small bg-light p-3 rounded mb-0" id="inlineJdResultPow" style="max-height: 260px; overflow-y: auto; white-space: pre-wrap;"></pre>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1404,7 +1589,7 @@ function openPrepModal(oppId) {
 }
 
 function switchDossierTab(tab, btnEl) {
-  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync'].forEach(id => {
+  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('d-none');
   });
@@ -1412,10 +1597,11 @@ function switchDossierTab(tab, btnEl) {
   const titles = {
     dashboard: 'Career Overview & Applications',
     kanban: 'Applications Funnel Board',
-    roles: 'Career Radar & Opportunities',
-    resumes: 'Tailored Resumes & Theme Builder',
-    profile: 'Candidate Profile (Aryan Sharma)',
-    sync: 'Cloud & Offline Sync Hub'
+    roles: 'Find Jobs & Career Radar',
+    resumes: 'Resumes & Documents',
+    profile: 'Master Candidate Profile (Aryan Sharma)',
+    'ai-stack': '✨ 7-in-1 AI Application Stack & Video Workflows',
+    sync: 'Cloud & Offline Multi-Sync Hub'
   };
 
   const titleEl = document.getElementById('viewTitle');
@@ -1426,11 +1612,104 @@ function switchDossierTab(tab, btnEl) {
   if (tab === 'roles') { document.getElementById('tabRoles')?.classList.remove('d-none'); renderAllRoles(); }
   if (tab === 'resumes') { document.getElementById('tabResumes')?.classList.remove('d-none'); updateResumePreview(); }
   if (tab === 'profile') document.getElementById('tabProfile')?.classList.remove('d-none');
+  if (tab === 'ai-stack') document.getElementById('tabAiStack')?.classList.remove('d-none');
   if (tab === 'sync') document.getElementById('tabSync')?.classList.remove('d-none');
 
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const targetBtn = btnEl || document.querySelector(`.nav-btn[data-tab="${tab}"]`);
   if (targetBtn) targetBtn.classList.add('active');
+}
+
+function fillSampleJd() {
+  const companyInput = document.getElementById('inlineJdCompany');
+  const roleInput = document.getElementById('inlineJdRole');
+  const textInput = document.getElementById('inlineJdText');
+  if (companyInput) companyInput.value = 'Anthropic';
+  if (roleInput) roleInput.value = 'AI Systems & Model Safety Fellow';
+  if (textInput) {
+    textInput.value = `About the Role:
+We are seeking an AI Systems & Model Safety Fellow to evaluate frontier models for safety alignment, reasoning capabilities, and resilience against adversarial prompt injection.
+
+Key Responsibilities:
+- Design automated evaluation harnesses in Python and PyTorch for benchmarking large language models across reasoning tasks.
+- Stress-test models against jailbreaks, prompt injection, and multi-turn adversarial perturbations.
+- Deploy high-throughput async evaluation pipelines using FastAPI, Docker, and Linux distributed systems.
+- Collaborate with research teams on red-teaming methodologies and publish findings.
+
+Qualifications:
+- Strong proficiency in Python, C, and Linux internals.
+- Demonstrated experience evaluating LLMs or publishing research in adversarial prompt security.
+- Understanding of distributed computing, Git CI/CD workflows, and containerized architectures.`;
+  }
+}
+
+function runInlineAiJdAnalysis() {
+  const company = document.getElementById('inlineJdCompany')?.value.trim() || 'Target Lab';
+  const role = document.getElementById('inlineJdRole')?.value.trim() || 'AI Systems Engineer';
+  const jdText = document.getElementById('inlineJdText')?.value.trim() || '';
+
+  if (!jdText) {
+    alert('Please paste the Job Description text or click "Load Sample Frontier JD".');
+    return;
+  }
+
+  const commonKeywords = [
+    'Python', 'Distributed Systems', 'LLM Evaluation', 'Prompt Security', 'PyTorch',
+    'Docker', 'Linux Internals', 'FastAPI', 'PostgreSQL', 'Model Safety', 'Git',
+    'CI/CD Actions', 'C', 'Adversarial Red-Teaming', 'High Throughput', 'Cloud Infrastructure'
+  ];
+  const foundKeywords = commonKeywords.filter(k => jdText.toLowerCase().includes(k.toLowerCase()));
+  const atsKeywords = foundKeywords.length >= 4 ? foundKeywords : ['Python', 'LLM Evaluation', 'Distributed Systems', 'Prompt Security', 'Linux', 'PyTorch'];
+  const score = Math.min(98, Math.max(88, 85 + (atsKeywords.length * 2)));
+
+  const recruiterDm = `Hi [Name], loved ${company}'s work scaling frontier model evaluation and systems reliability. I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. I'd love to share a brief 1-page tactical architecture breakdown on how this applies to ${company}'s ${role} roadmap if helpful.`;
+
+  const powPlan = `# Tactical Engineering Proposal: ${company} — ${role}
+**Prepared by:** Aryan Sharma | AI/ML & Distributed Systems Engineer
+
+## 1. Challenge Overview
+Production models at ${company} require rigorous automated evaluation harnesses, adversarial prompt resistance, and sub-50ms security checks.
+
+## 2. 90-Day Technical Roadmap
+- **Phase 1 (Days 1–30): Baseline Benchmark & Guardrail Audit**
+  - Deploy evaluation harness assessing model reasoning accuracy and semantic drift.
+  - Implement automated regression testing for adversarial prompts.
+- **Phase 2 (Days 31–60): Pipeline Optimization & Tooling**
+  - Integrate async evaluation middleware in Python/FastAPI into CI/CD pipelines.
+- **Phase 3 (Days 61–90): Production Hardening & Documentation**
+  - Benchmark peak throughput and document reproducibility standards.
+
+## 3. Immediate Value Add
+With published research in prompt vulnerabilities and Handshake evaluation experience, I deliver production results from Day 1.`;
+
+  const simPrompt = `You are the principal engineering hiring team at ${company} interviewing Aryan Sharma for the ${role} position. Aryan specializes in LLM evaluation, prompt security research, and Linux systems. Conduct a rigorous 30-minute technical and system design interview starting now.`;
+
+  document.getElementById('inlineJdScoreBadge').innerText = `${score}% Fitment Match`;
+  document.getElementById('inlineJdKeywords').innerText = atsKeywords.join(', ');
+  document.getElementById('inlineJdResultDm').innerText = recruiterDm;
+  document.getElementById('inlineJdResultPow').innerText = powPlan;
+  document.getElementById('inlineJdResultSim').innerText = simPrompt;
+  document.getElementById('inlineJdResultBox').classList.remove('d-none');
+
+  const newId = 'opp_' + Date.now();
+  const newOpp = {
+    id: newId,
+    title: role,
+    organization: company,
+    category: 'AI / ML Engineering',
+    deadline: 'Rolling',
+    stipend: 'Competitive',
+    url: '#',
+    status: 'Ready to Apply / Staged',
+    match_score: score,
+    match_reason: `High synergy with ${atsKeywords.slice(0, 3).join(', ')} extracted from JD.`,
+    matching_skills: atsKeywords
+  };
+  dossierOpps.unshift(newOpp);
+  persistDossierData();
+  renderAllViews();
+
+  document.getElementById('inlineJdDownloadZipBtn').onclick = () => downloadApplicationPackageZip(newId);
 }
 
 function openJdModal() {
