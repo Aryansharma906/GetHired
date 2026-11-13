@@ -541,7 +541,7 @@ def send_job_radar_digest_to_slack(
                 {
                     "type": "button",
                     "text": {"type": "plain_text", "text": "📝 View Notion Database", "emoji": True},
-                    "url": f"{base_url}/api/dossier/export/notion",
+                    "url": "https://app.notion.com/p/4ec8b8ee58fb4056b7269f4b526224f1",
                     "action_id": "view_notion_csv",
                 },
             ],
