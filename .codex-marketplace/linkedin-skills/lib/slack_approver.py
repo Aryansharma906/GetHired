@@ -364,6 +364,13 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
     base_url = get_studio_url()
     score_emoji = "🟢" if score >= 85 else ("🔵" if score >= 75 else "🟡")
 
+    default_dm = (
+        f"Hi [Name], loved {org}'s recent engineering focus. "
+        f"I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. "
+        f"I’d love to share a brief 1-page tactical architecture breakdown on how this applies to {org}'s {title} roadmap if helpful."
+    )
+    recruiter_dm = opp.get("recruiter_dm") or default_dm
+
     if "Approved" in status:
         status_line = "✅ *Approved & Staged for Application*"
     elif "Archived" in status or "Passed" in status:
@@ -405,11 +412,22 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
             },
         },
         {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"💬 *3-Sentence Hiring Manager DM (Vaibhav Sisinty Strategy):*\n"
+                    f"```{recruiter_dm}```\n"
+                    f"_Tip: Tap to copy on mobile and send directly to hiring managers on LinkedIn._"
+                ),
+            },
+        },
+        {
             "type": "context",
             "elements": [
                 {
                     "type": "mrkdwn",
-                    "text": "🛡️ *Dossier Radar:* Synchronized with Google Sheets • Google Drive • Notion • Gmail",
+                    "text": "🛡️ *Complete AI Job Hunt Stack:* Gemini ATS Resume • Value Cover Letter • NotebookLM Prep • Notion Board",
                 }
             ],
         },
@@ -428,9 +446,21 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
             },
             {
                 "type": "button",
-                "text": {"type": "plain_text", "text": "📄 View Resume", "emoji": True},
+                "text": {"type": "plain_text", "text": "📄 Resume", "emoji": True},
                 "url": f"{base_url}/action/view_resume/{opp_id}",
                 "action_id": "view_resume",
+            },
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "📦 Download ZIP Pack", "emoji": True},
+                "url": f"{base_url}/api/opportunities/{opp_id}/bundle",
+                "action_id": "download_bundle",
+            },
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "🎙️ Interview Prep", "emoji": True},
+                "url": f"{base_url}/action/view_interview_prep/{opp_id}",
+                "action_id": "view_interview_prep",
             },
             {
                 "type": "button",

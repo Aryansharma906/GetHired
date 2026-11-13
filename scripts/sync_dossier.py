@@ -82,6 +82,8 @@ def main():
     parser.add_argument("--gemini", action="store_true", help="Score opportunities using Google Gemini")
     parser.add_argument("--dispatch-jobs", action="store_true", help="Send top job approval cards to Slack")
     parser.add_argument("--digest", action="store_true", help="Send Career Radar digest to Slack")
+    parser.add_argument("--package", type=str, metavar="OPP_ID", help="Generate complete application package ZIP for an opportunity")
+    parser.add_argument("--pitch", type=str, metavar="OPP_ID", help="Generate 3-sentence recruiter DM & 1-page PoW plan")
     parser.add_argument("--status", action="store_true", help="Check connectivity status of all services")
 
     args = parser.parse_args()
@@ -90,11 +92,48 @@ def main():
     integrator = DossierIntegrator()
 
     # Default to status if no flag provided
-    if not any([args.all, args.sheets, args.drive, args.gmail, args.notion, args.gemini, args.dispatch_jobs, args.digest, args.status]):
+    if not any([args.all, args.sheets, args.drive, args.gmail, args.notion, args.gemini, args.dispatch_jobs, args.digest, args.package, args.pitch, args.status]):
         args.status = True
 
     if args.status:
         check_status(integrator)
+        return
+
+    if args.package:
+        from lib.job_hunter_engine import JobHunterEngine
+        opps = integrator.load_opportunities()
+        target = next((o for o in opps if o.get("id") == args.package or args.package.lower() in o.get("organization", "").lower()), None)
+        if not target:
+            print(f"❌ Opportunity '{args.package}' not found in tracker.")
+            return
+        print(f"\n📦 Building complete application bundle for: [{target.get('organization')}] {target.get('title')}")
+        engine = JobHunterEngine()
+        bundle_res = engine.create_complete_application_bundle(target)
+        print(f"✅ Application package generated successfully!")
+        print(f"  • ZIP File:     {bundle_res.get('zip_path')}")
+        print(f"  • Files:        {', '.join(bundle_res.get('bundle_files', []))}")
+        print(f"  • ATS Keywords: {', '.join(bundle_res.get('ats_keywords', []))}")
+        return
+
+    if args.pitch:
+        from lib.job_hunter_engine import JobHunterEngine
+        opps = integrator.load_opportunities()
+        target = next((o for o in opps if o.get("id") == args.pitch or args.pitch.lower() in o.get("organization", "").lower()), None)
+        if not target:
+            print(f"❌ Opportunity '{args.pitch}' not found in tracker.")
+            return
+        print(f"\n🎯 Direct Recruiter DM & Tactical PoW Plan for: [{target.get('organization')}] {target.get('title')}")
+        engine = JobHunterEngine()
+        dm_data = engine.generate_recruiter_outreach_dm(target)
+        pow_plan = engine.generate_proof_of_work_plan(target)
+        print("\n" + "=" * 50)
+        print("💬 3-SENTENCE RECRUITER LINKEDIN DM (Vaibhav Sisinty Framework):")
+        print("=" * 50)
+        print(dm_data.get("linkedin_dm_3_sentences"))
+        print("\n" + "=" * 50)
+        print("🏗️ 1-PAGE TACTICAL PROOF-OF-WORK PLAN:")
+        print("=" * 50)
+        print(pow_plan)
         return
 
     if args.gemini or args.all:
