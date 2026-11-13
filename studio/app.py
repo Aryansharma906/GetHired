@@ -43,9 +43,25 @@ def serve_media(filename: str):
 
 
 @app.route("/assets/<path:filename>")
+@app.route("/dossier/assets/<path:filename>")
 def serve_docs_assets(filename: str):
     assets_dir = ROOT / "docs" / "assets"
     return send_from_directory(str(assets_dir), filename)
+
+
+@app.route("/manifest.json")
+@app.route("/dossier/manifest.json")
+def serve_manifest():
+    return send_from_directory(str(ROOT / "docs"), "manifest.json", mimetype="application/manifest+json")
+
+
+@app.route("/sw.js")
+@app.route("/dossier/sw.js")
+def serve_service_worker():
+    response = send_from_directory(str(ROOT / "docs"), "sw.js", mimetype="application/javascript")
+    response.headers["Service-Worker-Allowed"] = "/"
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
 
 
 @app.route("/")

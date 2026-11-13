@@ -8,6 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
   <link rel="stylesheet" href="./assets/bootstrap.min.css">
   <link rel="stylesheet" href="./assets/bootstrap-icons.min.css">
+  <script src="./assets/bootstrap.bundle.min.js"></script>
   <script src="./assets/jszip.min.js"></script>
   <style>
     :root {
@@ -288,25 +289,25 @@
     </div>
 
     <div class="nav-section-title">Navigation</div>
-    <button class="nav-btn active" onclick="switchDossierTab('dashboard')">
+    <button class="nav-btn active" data-tab="dashboard" onclick="switchDossierTab('dashboard', this)">
       <i class="bi bi-speedometer2"></i>
       <span>Dashboard</span>
     </button>
-    <button class="nav-btn" onclick="switchDossierTab('kanban')">
+    <button class="nav-btn" data-tab="kanban" onclick="switchDossierTab('kanban', this)">
       <i class="bi bi-kanban"></i>
       <span>Applications Board</span>
       <span class="nav-badge" id="boardBadge">15</span>
     </button>
-    <button class="nav-btn" onclick="switchDossierTab('roles')">
+    <button class="nav-btn" data-tab="roles" onclick="switchDossierTab('roles', this)">
       <i class="bi bi-compass"></i>
       <span>Career Radar & Jobs</span>
       <span class="nav-badge" id="radarBadge">15</span>
     </button>
-    <button class="nav-btn" onclick="switchDossierTab('resumes')">
+    <button class="nav-btn" data-tab="resumes" onclick="switchDossierTab('resumes', this)">
       <i class="bi bi-file-earmark-person"></i>
       <span>Tailored Resumes</span>
     </button>
-    <button class="nav-btn" onclick="switchDossierTab('profile')">
+    <button class="nav-btn" data-tab="profile" onclick="switchDossierTab('profile', this)">
       <i class="bi bi-person-badge"></i>
       <span>Candidate Profile</span>
     </button>
@@ -321,7 +322,7 @@
       <span>LinkedIn Creator Studio</span>
       <i class="bi bi-arrow-right-short ms-auto fs-5"></i>
     </a>
-    <button class="nav-btn" onclick="switchDossierTab('sync')">
+    <button class="nav-btn" data-tab="sync" onclick="switchDossierTab('sync', this)">
       <i class="bi bi-cloud-arrow-up"></i>
       <span>Cloud & Offline Sync</span>
     </button>
@@ -1099,7 +1100,7 @@ function renderTopPriority() {
           </div>
         </div>
         <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
-          <strong>Tactical Alignment:</strong> ${escapeHtml(o.match_reason || 'Synergy with Aryan Sharma\\'s AI evaluation & systems background.')}
+          <strong>Tactical Alignment:</strong> ${escapeHtml(o.match_reason || "Synergy with Aryan Sharma's AI evaluation & systems background.")}
         </div>
         <div class="d-flex flex-wrap gap-1 mt-2">
           ${skills.map(s => `<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 10px;">#${escapeHtml(s)}</span>`).join('')}
@@ -1402,7 +1403,7 @@ function openPrepModal(oppId) {
   openDossierModal('dossierPrepModal');
 }
 
-function switchDossierTab(tab) {
+function switchDossierTab(tab, btnEl) {
   ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('d-none');
@@ -1428,7 +1429,8 @@ function switchDossierTab(tab) {
   if (tab === 'sync') document.getElementById('tabSync')?.classList.remove('d-none');
 
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-  event?.currentTarget?.classList?.add('active');
+  const targetBtn = btnEl || document.querySelector(`.nav-btn[data-tab="${tab}"]`);
+  if (targetBtn) targetBtn.classList.add('active');
 }
 
 function openJdModal() {
@@ -1576,8 +1578,15 @@ function resetToDefaultSeed() {
 function openDossierModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
+  if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    const modalInst = bootstrap.Modal.getOrCreateInstance(m);
+    modalInst.show();
+    return;
+  }
   m.style.display = 'block';
   m.classList.add('show');
+  m.removeAttribute('aria-hidden');
+  m.setAttribute('aria-modal', 'true');
   let b = document.getElementById('modalBackdrop');
   if (!b) {
     b = document.createElement('div');
@@ -1591,8 +1600,17 @@ function openDossierModal(id) {
 function closeDossierModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
+  if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    const modalInst = bootstrap.Modal.getInstance(m);
+    if (modalInst) {
+      modalInst.hide();
+      return;
+    }
+  }
   m.style.display = 'none';
   m.classList.remove('show');
+  m.setAttribute('aria-hidden', 'true');
+  m.removeAttribute('aria-modal');
   const b = document.getElementById('modalBackdrop');
   if (b) b.remove();
 }
@@ -1633,6 +1651,5 @@ window.addEventListener('offline', () => {
 
 initDossierData();
 </script>
-<script src="./assets/bootstrap.bundle.min.js"></script>
 </body>
 </html>
