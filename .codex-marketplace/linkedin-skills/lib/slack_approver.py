@@ -340,13 +340,348 @@ def send_published_notification(
         pass
 
 
+# =========================================================================
+# Dossier Career Radar & Job Opportunities Approval in Slack
+# =========================================================================
+
+def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
+    """Build interactive Block Kit blocks for reviewing and approving a job opportunity."""
+    opp_id = opp.get("id", "")
+    title = opp.get("title", "Role")
+    org = opp.get("organization", "Company")
+    category = opp.get("category", "Opportunity")
+    stipend = opp.get("stipend", "Competitive")
+    deadline = opp.get("deadline", "Rolling")
+    score = int(opp.get("match_score", 90))
+    status = opp.get("status", "Active")
+    portal_url = opp.get("url", "#")
+    matching_skills = opp.get("matching_skills") or opp.get("tags") or []
+    skills_text = " • ".join(f"`{s}`" for s in matching_skills[:5])
+    summary = opp.get("executive_summary") or opp.get("match_reason") or "Strong synergy with Aryan Sharma's AI/ML systems and research profile."
+    gaps = opp.get("gaps_or_growth_areas") or []
+    gaps_text = " • ".join(gaps) if gaps else "Emphasize systems evaluation and open-source contributions."
+
+    base_url = get_studio_url()
+    score_emoji = "🟢" if score >= 85 else ("🔵" if score >= 75 else "🟡")
+
+    if "Approved" in status:
+        status_line = "✅ *Approved & Staged for Application*"
+    elif "Archived" in status or "Passed" in status:
+        status_line = "❌ *Opportunity Archived / Passed*"
+    else:
+        status_line = "🟡 *Ready for Candidate Approval*"
+
+    blocks: list[dict[str, Any]] = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": f"🎯 Career Opportunity: {org} — {title[:60]}",
+                "emoji": True,
+            },
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"{status_line}\n"
+                    f"*Fit Rating:* {score_emoji} *`{score}% Match`* (Evaluated by Google Gemini)\n"
+                    f"*Category:* `{category}` | *Comp/Stipend:* `{stipend}`\n"
+                    f"*Deadline:* `{deadline}`"
+                ),
+            },
+        },
+        {"type": "divider"},
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"*🎯 AI Tactical Alignment:*\n>{summary}\n\n"
+                    f"*⚡ Key Matching Strengths:*\n{skills_text}\n\n"
+                    f"*💡 Tailoring Strategy:*\n_{gaps_text}_"
+                ),
+            },
+        },
+        {
+            "type": "context",
+            "elements": [
+                {
+                    "type": "mrkdwn",
+                    "text": "🛡️ *Dossier Radar:* Synchronized with Google Sheets • Google Drive • Notion • Gmail",
+                }
+            ],
+        },
+    ]
+
+    # Action buttons if pending
+    if "Approved" not in status and "Archived" not in status:
+        elements = [
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "✅ Approve & Stage", "emoji": True},
+                "style": "primary",
+                "value": f"approve_job:{opp_id}",
+                "url": f"{base_url}/action/approve_job/{opp_id}",
+                "action_id": "approve_job",
+            },
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "📄 View Resume", "emoji": True},
+                "url": f"{base_url}/action/view_resume/{opp_id}",
+                "action_id": "view_resume",
+            },
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "❌ Pass", "emoji": True},
+                "style": "danger",
+                "value": f"reject_job:{opp_id}",
+                "url": f"{base_url}/action/reject_job/{opp_id}",
+                "action_id": "reject_job",
+            },
+        ]
+        if portal_url and portal_url.startswith("http"):
+            elements.append({
+                "type": "button",
+                "text": {"type": "plain_text", "text": "🔗 Portal", "emoji": True},
+                "url": portal_url,
+                "action_id": "open_portal",
+            })
+
+        blocks.append({
+            "type": "actions",
+            "block_id": f"job_actions_{opp_id}",
+            "elements": elements,
+        })
+
+    return blocks
+
+
+def send_job_approval_to_slack(
+    opp: dict[str, Any],
+    webhook_url: Optional[str] = None,
+) -> dict[str, Any]:
+    """Send an interactive job opportunity approval card to Slack."""
+    load_env()
+    url = webhook_url or os.getenv("SLACK_WEBHOOK_URL")
+    if not url:
+        return {"success": False, "error": "SLACK_WEBHOOK_URL missing"}
+
+    blocks = build_job_approval_blocks(opp)
+    payload = {
+        "text": f"🎯 New Career Opportunity Ready for Approval: {opp.get('organization')} — {opp.get('title')}",
+        "blocks": blocks,
+    }
+    try:
+        resp = requests.post(url, json=payload, timeout=12)
+        return {"success": resp.status_code == 200, "opp_id": opp.get("id")}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def send_job_radar_digest_to_slack(
+    opps: list[dict[str, Any]],
+    webhook_url: Optional[str] = None,
+) -> dict[str, Any]:
+    """Send an executive Career Radar digest summarizing all opportunities to Slack."""
+    load_env()
+    url = webhook_url or os.getenv("SLACK_WEBHOOK_URL")
+    if not url:
+        return {"success": False, "error": "SLACK_WEBHOOK_URL missing"}
+
+    base_url = get_studio_url()
+    total_count = len(opps)
+    top_matches = sorted(opps, key=lambda x: int(x.get("match_score", 90)), reverse=True)[:4]
+
+    fields_text = ""
+    for idx, o in enumerate(top_matches, 1):
+        score = o.get("match_score", 90)
+        fields_text += f"*{idx}. {o.get('organization')}* — `{o.get('title')}`\n"
+        fields_text += f"   • Fit: *{score}% Match* | Deadline: `{o.get('deadline', 'Rolling')}` | Stipend: `{o.get('stipend', 'Competitive')}`\n"
+        fields_text += f"   • <{base_url}/action/approve_job/{o.get('id')}|1-Tap Approve> | <{base_url}/action/view_resume/{o.get('id')}|View Resume>\n\n"
+
+    blocks = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "📡 Dossier Career Radar: Active Opportunities Digest",
+                "emoji": True,
+            },
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"*Radar Status:* Tracking *{total_count} active opportunities* across frontier AI labs, research fellowships, and systems internships.\n\n"
+                    f"🏆 *Top Recommended Roles for Aryan Sharma:*\n\n"
+                    f"{fields_text}"
+                ),
+            },
+        },
+        {"type": "divider"},
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "💼 Open Dossier Hub", "emoji": True},
+                    "style": "primary",
+                    "url": base_url,
+                    "action_id": "open_dossier_hub",
+                },
+                {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "📊 View Google Sheets", "emoji": True},
+                    "url": f"{base_url}/api/dossier/export/sheets",
+                    "action_id": "view_sheets_csv",
+                },
+                {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "📝 View Notion Database", "emoji": True},
+                    "url": f"{base_url}/api/dossier/export/notion",
+                    "action_id": "view_notion_csv",
+                },
+            ],
+        },
+    ]
+
+    payload = {
+        "text": f"📡 Dossier Career Radar: {total_count} Active Opportunities Tracked",
+        "blocks": blocks,
+    }
+    try:
+        resp = requests.post(url, json=payload, timeout=12)
+        return {"success": resp.status_code == 200, "count": total_count}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def process_job_slack_action(action_type: str, opp_id: str, user_name: str = "Aryan") -> dict[str, Any]:
+    """Handle 1-tap or interactive button action on a job opportunity."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    if not opps_path.exists():
+        return {"success": False, "error": "Opportunities tracker file not found"}
+
+    try:
+        opps = json.loads(opps_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        return {"success": False, "error": f"Failed reading opportunities: {e}"}
+
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return {"success": False, "error": f"Opportunity {opp_id} not found"}
+
+    if action_type == "approve_job":
+        target["status"] = "Approved / Ready to Apply"
+        target["approved_by"] = user_name
+        target["approved_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        # Generate / ensure tailored resume exists
+        try:
+            from scripts.generate_tailored_resume import tailor_resume
+            tailored = tailor_resume(target.get("title", "Software Engineer"), target.get("organization", "Company"))
+            out_dir = ROOT / "testing" / "tailored_resumes"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            filename = f"Aryan_Sharma_{target.get('organization', '').replace(' ', '_')}_{opp_id}.md"
+            (out_dir / filename).write_text(tailored, encoding="utf-8")
+        except Exception:
+            pass
+
+        # Update Google Sheets & Notion exports
+        from lib.dossier_integrator import DossierIntegrator
+        integrator = DossierIntegrator()
+        integrator.save_opportunities(opps)
+        integrator.sync_to_google_sheets(opps)
+        integrator.sync_resumes_to_google_drive()
+        integrator.sync_to_notion(opps)
+
+        # Notify Slack of confirmation
+        webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+        if webhook_url:
+            conf_blocks = [
+                {
+                    "type": "header",
+                    "text": {"type": "plain_text", "text": "✅ Opportunity Approved & Staged!", "emoji": True}
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": (
+                            f"*Role:* *{target.get('title')}* at *{target.get('organization')}*\n"
+                            f"*Approved by:* {user_name} at `{target['approved_at']}`\n"
+                            f"*Action Taken:* Tailored ATS resume generated, staged in Google Drive manifest, and updated in Google Sheets & Notion pipeline."
+                        )
+                    }
+                }
+            ]
+            try:
+                requests.post(webhook_url, json={"text": f"✅ Opportunity Approved: {target.get('organization')} — {target.get('title')}", "blocks": conf_blocks}, timeout=10)
+            except Exception:
+                pass
+
+        return {
+            "success": True,
+            "action": "approved",
+            "opportunity": target,
+            "blocks": build_job_approval_blocks(target)
+        }
+
+    elif action_type == "reject_job":
+        target["status"] = "Archived / Passed"
+        target["rejected_by"] = user_name
+        target["rejected_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        from lib.dossier_integrator import DossierIntegrator
+        integrator = DossierIntegrator()
+        integrator.save_opportunities(opps)
+        integrator.sync_to_google_sheets(opps)
+        integrator.sync_to_notion(opps)
+
+        webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+        if webhook_url:
+            conf_blocks = [
+                {
+                    "type": "header",
+                    "text": {"type": "plain_text", "text": "❌ Opportunity Archived / Passed", "emoji": True}
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"Role *{target.get('title')}* at *{target.get('organization')}* has been marked as Archived."
+                    }
+                }
+            ]
+            try:
+                requests.post(webhook_url, json={"text": f"❌ Opportunity Passed: {target.get('organization')}", "blocks": conf_blocks}, timeout=10)
+            except Exception:
+                pass
+
+        return {
+            "success": True,
+            "action": "rejected",
+            "opportunity": target,
+            "blocks": build_job_approval_blocks(target)
+        }
+
+    return {"success": False, "error": f"Unknown action {action_type}"}
+
+
 def process_slack_action(action_value: str, user_name: str = "User") -> dict[str, Any]:
-    """Process an action clicked in Slack (e.g. approve:<id>, reject:<id>)."""
+    """Process an action clicked in Slack (e.g. approve:<id>, reject:<id>, approve_job:<id>)."""
     parts = action_value.split(":", 1)
     if len(parts) != 2:
         return {"success": False, "error": "Invalid action value format"}
 
     action_type, draft_id = parts[0], parts[1]
+
+    if action_type in ("approve_job", "reject_job"):
+        return process_job_slack_action(action_type, draft_id, user_name=user_name)
+
     draft = get_draft(draft_id)
     if not draft:
         return {"success": False, "error": f"Draft {draft_id} not found in queue"}

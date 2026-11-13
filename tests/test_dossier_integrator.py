@@ -96,6 +96,38 @@ class TestDossierIntegrator(unittest.TestCase):
         self.assertIn("gmail", summary)
         self.assertIn("gemini", summary)
 
+    def test_build_job_approval_blocks(self):
+        from lib.slack_approver import build_job_approval_blocks
+        blocks = build_job_approval_blocks(self.sample_opps[0])
+        self.assertIsInstance(blocks, list)
+        self.assertGreaterEqual(len(blocks), 4)
+        self.assertEqual(blocks[0]["type"], "header")
+        self.assertIn("OpenAI Residency", blocks[0]["text"]["text"])
+
+    @patch("requests.post")
+    def test_send_job_approval_to_slack(self, mock_post):
+        mock_post.return_value.status_code = 200
+        from lib.slack_approver import send_job_approval_to_slack
+        res = send_job_approval_to_slack(self.sample_opps[0], webhook_url="https://hooks.slack.com/services/mock")
+        self.assertTrue(res.get("success"))
+
+    @patch("requests.post")
+    def test_send_job_radar_digest_to_slack(self, mock_post):
+        mock_post.return_value.status_code = 200
+        from lib.slack_approver import send_job_radar_digest_to_slack
+        res = send_job_radar_digest_to_slack(self.sample_opps, webhook_url="https://hooks.slack.com/services/mock")
+        self.assertTrue(res.get("success"))
+
+    @patch("requests.post")
+    def test_process_job_slack_action(self, mock_post):
+        mock_post.return_value.status_code = 200
+        from lib.slack_approver import process_slack_action
+        
+        # Test approve_job
+        res_approve = process_slack_action("approve_job:gsoc-2026", user_name="Aryan Test")
+        self.assertTrue(res_approve.get("success"))
+        self.assertEqual(res_approve.get("action"), "approved")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -388,6 +388,9 @@
         <button class="btn btn-outline-info btn-sm fw-semibold" style="font-size: 12px;" onclick="syncDossier('gmail')">
           📬 Scan Gmail Alerts
         </button>
+        <button class="btn btn-outline-success btn-sm fw-semibold" style="font-size: 12px;" onclick="sendDossierDigestToSlack()">
+          💬 Send Radar Digest to Slack
+        </button>
       </div>
     </div>
 
@@ -1092,6 +1095,9 @@ function renderOpportunities() {
             <button class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" onclick="generateTailoredResume('${o.id}')">
               <span>📄 1-Click Tailored Resume</span>
             </button>
+            <button class="btn btn-outline-success btn-sm fw-bold d-flex align-items-center gap-1" onclick="sendOpportunityToSlack('${o.id}')">
+              <span>💬 Slack Approval</span>
+            </button>
             ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Open Portal</a>` : ''}
           </div>
         </div>
@@ -1168,6 +1174,34 @@ function scoreOpportunityWithGemini(oppId) {
     }
   })
   .catch(err => showDossierAlert(`❌ Scoring failed: ${err.message}`, false));
+}
+
+function sendOpportunityToSlack(oppId) {
+  showDossierAlert('💬 Dispatching interactive opportunity approval card to Slack...', true);
+  fetch(`/api/opportunities/${oppId}/send_slack`, { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showDossierAlert('✅ Opportunity approval card sent to your Slack channel!', true);
+      } else {
+        showDossierAlert(`❌ Failed sending to Slack: ${data.error || 'Unknown error'}`, false);
+      }
+    })
+    .catch(err => showDossierAlert(`❌ Error: ${err.message}`, false));
+}
+
+function sendDossierDigestToSlack() {
+  showDossierAlert('💬 Dispatching Career Radar digest to Slack...', true);
+  fetch('/api/dossier/send_digest', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showDossierAlert('✅ Career Radar digest dispatched to Slack!', true);
+      } else {
+        showDossierAlert(`❌ Failed sending digest: ${data.error || 'Unknown error'}`, false);
+      }
+    })
+    .catch(err => showDossierAlert(`❌ Error: ${err.message}`, false));
 }
 
 function openModal(id) {

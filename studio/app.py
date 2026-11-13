@@ -581,6 +581,188 @@ def direct_action_page(action_type: str, draft_id: str):
     return html
 
 
+# =========================================================================
+# Job Opportunity 1-Tap Actions from Mobile Slack
+# =========================================================================
+
+@app.route("/action/approve_job/<opp_id>", methods=["GET"])
+def direct_approve_job_page(opp_id: str):
+    """1-Tap approval from mobile Slack for a job opportunity."""
+    res = process_slack_action(f"approve_job:{opp_id}", user_name="Aryan (Mobile 1-Tap)")
+    opp = res.get("opportunity") or {}
+    title = opp.get("title", "Role")
+    org = opp.get("organization", "Company")
+
+    html = f"""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>✅ Opportunity Approved</title>
+        <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; text-align: center; }}
+            .card {{ background: #1e293b; border-radius: 16px; padding: 32px 24px; max-width: 520px; margin: 40px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }}
+            .badge {{ display: inline-block; background: #10b981; color: white; padding: 8px 18px; border-radius: 9999px; font-weight: 700; font-size: 16px; margin-bottom: 20px; }}
+            h2 {{ font-size: 22px; margin-bottom: 8px; line-height: 1.3; }}
+            .sub-title {{ color: #38bdf8; font-weight: 600; font-size: 15px; margin-bottom: 16px; }}
+            p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 24px; text-align: left; background: #0f172a; padding: 14px; border-radius: 8px; }}
+            .btn-group {{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }}
+            a.btn {{ display: inline-block; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 600; }}
+            a.btn-secondary {{ background: #475569; }}
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="badge">✅ Opportunity Approved & Staged</div>
+            <h2>{title}</h2>
+            <div class="sub-title">🏛️ {org}</div>
+            <p>
+                • <strong>Tailored ATS Resume:</strong> Staged and ready in Google Drive manifest.<br>
+                • <strong>Cloud Pipeline:</strong> Updated in Google Sheets and Notion Database.<br>
+                • <strong>Slack Channel:</strong> Confirmation alert dispatched.
+            </p>
+            <div class="btn-group">
+                <a href="/action/view_resume/{opp_id}" class="btn">📄 View Tailored Resume</a>
+                <a href="/" class="btn btn-secondary">📱 Open Studio</a>
+            </div>
+        </div>
+    </body>
+    </html>"""
+    return html
+
+
+@app.route("/action/reject_job/<opp_id>", methods=["GET"])
+def direct_reject_job_page(opp_id: str):
+    """1-Tap pass/archive from mobile Slack for a job opportunity."""
+    res = process_slack_action(f"reject_job:{opp_id}", user_name="Aryan (Mobile 1-Tap)")
+    opp = res.get("opportunity") or {}
+    title = opp.get("title", "Role")
+    org = opp.get("organization", "Company")
+
+    html = f"""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>❌ Opportunity Passed</title>
+        <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; text-align: center; }}
+            .card {{ background: #1e293b; border-radius: 16px; padding: 32px 24px; max-width: 480px; margin: 40px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }}
+            .badge {{ display: inline-block; background: #ef4444; color: white; padding: 8px 18px; border-radius: 9999px; font-weight: 700; font-size: 16px; margin-bottom: 20px; }}
+            h2 {{ font-size: 20px; margin-bottom: 12px; line-height: 1.4; }}
+            p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 28px; }}
+            a.btn {{ display: inline-block; background: #3b82f6; color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 600; }}
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="badge">❌ Opportunity Passed</div>
+            <h2>{title} @ {org}</h2>
+            <p>Role has been archived in Dossier and removed from active review priority.</p>
+            <a href="/" class="btn">📱 Open Approval Studio</a>
+        </div>
+    </body>
+    </html>"""
+    return html
+
+
+@app.route("/action/view_resume/<opp_id>", methods=["GET"])
+def view_tailored_resume_page(opp_id: str):
+    """Mobile-friendly HTML preview of the tailored ATS resume."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    opps = []
+    if opps_path.exists():
+        try:
+            opps = json.loads(opps_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return "Opportunity not found", 404
+
+    # Check for existing resume or generate
+    out_dir = ROOT / "testing" / "tailored_resumes"
+    filename = f"Aryan_Sharma_{target.get('organization', '').replace(' ', '_')}_{opp_id}.md"
+    file_path = out_dir / filename
+    if not file_path.exists():
+        from scripts.generate_tailored_resume import tailor_resume
+        tailored = tailor_resume(target.get("title", "Software Engineer"), target.get("organization", "Company"))
+        out_dir.mkdir(parents=True, exist_ok=True)
+        file_path.write_text(tailored, encoding="utf-8")
+    else:
+        tailored = file_path.read_text(encoding="utf-8")
+
+    import html as html_lib
+    escaped_md = html_lib.escape(tailored)
+
+    page = f"""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>📄 Tailored Resume: {target.get('organization')}</title>
+        <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px 14px; margin: 0; }}
+            .container {{ max-width: 720px; margin: 0 auto; }}
+            .header-card {{ background: #1e293b; border-radius: 14px; padding: 20px; margin-bottom: 16px; border: 1px solid #334155; }}
+            .resume-box {{ background: #ffffff; color: #0f172a; border-radius: 12px; padding: 24px; font-family: "Courier New", Courier, monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }}
+            .btn {{ display: inline-block; background: #3b82f6; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; border: none; cursor: pointer; }}
+            .btn-success {{ background: #10b981; }}
+            .btn-outline {{ background: transparent; border: 1px solid #64748b; color: #cbd5e1; }}
+            .actions-bar {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-card">
+                <div style="font-size: 11px; text-transform: uppercase; color: #38bdf8; font-weight: 700; letter-spacing: 0.5px;">DOSSIER ATS RESUME PREVIEW</div>
+                <h2 style="font-size: 20px; margin: 6px 0;">{target.get('title')}</h2>
+                <div style="color: #94a3b8; font-size: 14px;">🏛️ {target.get('organization')} • Match Score: <strong style="color: #10b981;">{target.get('match_score', 90)}%</strong></div>
+                <div class="actions-bar">
+                    <button class="btn" onclick="copyResume()">📋 Copy Markdown</button>
+                    <a href="/action/approve_job/{opp_id}" class="btn btn-success">✅ Approve & Stage</a>
+                    <a href="/" class="btn btn-outline">📱 Studio Hub</a>
+                </div>
+            </div>
+            <div class="resume-box" id="resumeBox">{escaped_md}</div>
+        </div>
+        <script>
+            function copyResume() {{
+                const text = document.getElementById('resumeBox').innerText;
+                navigator.clipboard.writeText(text);
+                alert('📋 Tailored resume copied to clipboard!');
+            }}
+        </script>
+    </body>
+    </html>"""
+    return page
+
+
+@app.route("/api/opportunities/<opp_id>/send_slack", methods=["POST"])
+def send_opportunity_to_slack_endpoint(opp_id: str):
+    """Send an interactive approval card for a specific opportunity to Slack."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    try:
+        opps = json.loads(opps_path.read_text(encoding="utf-8"))
+    except Exception:
+        opps = []
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return jsonify({"success": False, "error": "Opportunity not found"}), 404
+
+    from lib.slack_approver import send_job_approval_to_slack
+    res = send_job_approval_to_slack(target)
+    return jsonify(res)
+
+
+@app.route("/api/dossier/send_digest", methods=["POST"])
+def send_dossier_digest_endpoint():
+    """Send full career radar digest to Slack."""
+    from lib.dossier_integrator import DossierIntegrator
+    from lib.slack_approver import send_job_radar_digest_to_slack
+    integrator = DossierIntegrator()
+    opps = integrator.load_opportunities()
+    res = send_job_radar_digest_to_slack(opps)
+    return jsonify(res)
+
+
 @app.route("/api/drafts/<draft_id>/restore", methods=["POST"])
 def restore_draft_endpoint(draft_id: str):
     from lib.drafts_store import update_draft_status

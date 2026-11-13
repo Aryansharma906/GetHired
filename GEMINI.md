@@ -42,6 +42,22 @@ To process live button clicks (`Approve & Schedule` / `Reject`) from Slack:
 python3 scripts/slack_listener.py --port 5050
 ```
 
+### Dossier Career Radar & Slack Job Approvals
+To trigger career radar updates, job evaluations, and send interactive approval cards to Slack:
+```bash
+# Check connectivity across Google Gemini, Sheets, Drive, Gmail, Notion, Slack
+python3 scripts/sync_dossier.py --status
+
+# Dispatch top priority job approval card to Slack for 1-tap approval
+python3 scripts/sync_dossier.py --dispatch-jobs
+
+# Send executive Career Radar digest to Slack
+python3 scripts/sync_dossier.py --digest
+
+# Run full unified sync (scoring, sheets, drive, gmail, notion) + Slack cards
+python3 scripts/sync_dossier.py --all
+```
+
 ---
 
 ## 3. Voice & 2026 Feed Standards
