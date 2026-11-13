@@ -1,0 +1,18 @@
+{
+  "name": "LinkedIn Creator & Dossier Studio",
+  "short_name": "Studio Hub",
+  "description": "Autonomous LinkedIn Content Engine, Slack Approval Hub & Dossier Career Radar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0a66c2",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

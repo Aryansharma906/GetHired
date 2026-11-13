@@ -591,14 +591,9 @@ def send_job_radar_digest_to_slack(
 
 def process_job_slack_action(action_type: str, opp_id: str, user_name: str = "Aryan") -> dict[str, Any]:
     """Handle 1-tap or interactive button action on a job opportunity."""
-    opps_path = ROOT / "testing" / "opportunities_tracker.json"
-    if not opps_path.exists():
-        return {"success": False, "error": "Opportunities tracker file not found"}
-
-    try:
-        opps = json.loads(opps_path.read_text(encoding="utf-8"))
-    except Exception as e:
-        return {"success": False, "error": f"Failed reading opportunities: {e}"}
+    from lib.dossier_integrator import DossierIntegrator
+    integrator = DossierIntegrator()
+    opps = integrator.load_opportunities()
 
     target = next((o for o in opps if o.get("id") == opp_id), None)
     if not target:

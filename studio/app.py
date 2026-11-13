@@ -42,9 +42,20 @@ def serve_media(filename: str):
     return send_from_directory(str(media_dir), filename)
 
 
+@app.route("/assets/<path:filename>")
+def serve_docs_assets(filename: str):
+    assets_dir = ROOT / "docs" / "assets"
+    return send_from_directory(str(assets_dir), filename)
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/dossier")
+def dossier_dashboard():
+    return render_template("dossier.html")
 
 
 @app.route("/api/drafts", methods=["GET"])

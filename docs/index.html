@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>LinkedIn Creator & Approval Studio</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="stylesheet" href="./assets/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/bootstrap-icons.min.css">
+  <script src="./assets/jszip.min.js"></script>
+  <style>
+    :root {
+      --primary: #0a66c2;
+      --primary-hover: #004182;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #191919;
+      --text-muted: #5e5e5e;
+      --border: #e2e8f0;
+    }
+    body {
+      background-color: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    .navbar {
+      background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.15s ease;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .post-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 24px;
+      overflow: hidden;
+      transition: box-shadow 0.2s ease;
+    }
+    .post-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .post-header {
+      padding: 18px 22px;
+      background: #fafbfc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .post-body {
+      padding: 24px 22px;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: #222;
+      background: #ffffff;
+      border-bottom: 1px solid #f0f4f8;
+    }
+    .post-meta-bar {
+      padding: 12px 22px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .post-footer {
+      padding: 16px 22px;
+      background: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .badge-pill {
+      font-weight: 600;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-hook { background: #e0f2fe; color: #0284c7; }
+    .badge-angle { background: #f3e8ff; color: #7e22ce; }
+    .badge-safe { background: #dcfce7; color: #15803d; }
+    .badge-chars { background: #f1f5f9; color: #475569; }
+    
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .status-pending { background: #fef3c7; color: #b45309; }
+    .status-scheduled { background: #e0e7ff; color: #4338ca; }
+    .status-published { background: #dcfce7; color: #15803d; }
+    .status-rejected { background: #fee2e2; color: #b91c1c; }
+
+    .nav-tabs-custom {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tab-item {
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px 8px 0 0;
+      border: none;
+      background: none;
+      color: #64748b;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .tab-item:hover { color: var(--primary); }
+    .tab-item.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      background: white;
+    }
+    .btn-action {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 7px 16px;
+      font-size: 13.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-2">
+        <a href="./dossier.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> Dossier Dashboard</a>
+      <span class="fs-4">🚀</span>
+      <div>
+        <span class="navbar-brand mb-0 h1 fs-5 fw-bold">LinkedIn Approval Studio</span>
+        <span class="badge bg-light text-dark ms-2" style="font-size: 11px;">Aryan Sharma</span>
+      </div>
+    </div>
+    <button class="btn btn-light btn-sm fw-bold px-3 btn-action" id="refreshBtn" onclick="manualRefresh()">
+      <span id="refreshSpinner" class="spinner-border spinner-border-sm d-none"></span>
+      <span id="refreshText">🔄 Refresh</span>
+    </button>
+  </div>
+</nav>
+
+<div class="container py-4">
+
+  <!-- KPI Overview Bar -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card" style="cursor: pointer;" onclick="switchTab('pending_approval')">
+        <div class="stat-icon bg-warning bg-opacity-10 text-warning">🟡</div>
+        <div>
+          <div class="fs-4 fw-bold" id="stat-pending">0</div>
+          <div class="text-muted small">Pending Review</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card" style="cursor: pointer;" onclick="switchTab('scheduled')">
+        <div class="stat-icon bg-primary bg-opacity-10 text-primary">⏰</div>
+        <div>
+          <div class="fs-4 fw-bold" id="stat-scheduled">0</div>
+          <div class="text-muted small">Scheduled Posts</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card" style="cursor: pointer;" onclick="switchTab('published')">
+        <div class="stat-icon bg-success bg-opacity-10 text-success">🚀</div>
+        <div>
+          <div class="fs-4 fw-bold" id="stat-published">0</div>
+          <div class="text-muted small">Live Published</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card" style="cursor: pointer;" onclick="switchTab('rejected')">
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger">❌</div>
+        <div>
+          <div class="fs-4 fw-bold" id="stat-rejected">0</div>
+          <div class="text-muted small">Rejected / Archived</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fast Generate Box -->
+  <div class="card p-4 mb-4 shadow-sm border-0" style="border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0 !important;">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <a href="./dossier.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> Dossier Dashboard</a>
+        <span class="fs-5">✨</span>
+        <h6 class="fw-bold mb-0 text-primary fs-5">Gemini Content Studio</h6>
+        <span class="badge bg-primary bg-opacity-10 text-primary">Aryan x Vaibhav Sisinty Mode</span>
+      </div>
+      <span class="badge bg-success bg-opacity-10 text-success fw-semibold">2026 Feed Standards</span>
+    </div>
+    <p class="text-muted small mb-3">Draft viral, long-form LinkedIn posts combining Vaibhav Sisinty growth storytelling with deep systems engineering receipts.</p>
+    
+    <div class="mb-3">
+      <label class="form-label small fw-bold text-secondary mb-1">Topic / Premise / Link:</label>
+      <textarea id="newTopic" rows="2" class="form-control" placeholder="e.g. Privacy rights in the AI digital era, or paste a rough thought / link..." style="border-radius: 8px; font-size: 14px;"></textarea>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label small fw-bold text-secondary mb-1">Writing Style:</label>
+        <select id="postStyle" class="form-select form-select-sm" style="border-radius: 8px;">
+          <option value="Vaibhav Sisinty Growth Storytelling + Senior Engineer Depth" selected>🚀 Aryan x Vaibhav (Growth Story + Systems Depth)</option>
+          <option value="Contrarian Hot Take + Brutal Engineering Truths">🔥 Contrarian Hot Take (Debunking Industry Fluff)</option>
+          <option value="Senior Architect Breakdown with Real Metrics & Tradeoffs">🛠️ Systems Architect Breakdown (Numbers & Receipts)</option>
+          <option value="2026 Paradigm Shift & Macro AI Analysis">🔮 2026 Paradigm Shift (What Everyone Misses)</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="form-label small fw-bold text-secondary mb-1">Length / Depth:</label>
+        <select id="postLength" class="form-select form-select-sm" style="border-radius: 8px;">
+          <option value="long" selected>📜 Long-Form (1,300–1,900 chars)</option>
+          <option value="standard">⚡ Concise (900–1,300 chars)</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="form-label small fw-bold text-secondary mb-1">Hook Preference:</label>
+        <select id="hookPreference" class="form-select form-select-sm" style="border-radius: 8px;">
+          <option value="" selected>Auto-Select Best 2026 Hook</option>
+          <option value="F04 Time-Anchor Confession">F04 Time-Anchor Confession</option>
+          <option value="F02 R.I.P. Category Obituary">F02 Category Obituary</option>
+          <option value="F18 False-Binary Dissolve">F18 False-Binary Dissolve</option>
+          <option value="F17 Controlled A/B Anecdote">F17 Controlled A/B Anecdote</option>
+          <option value="F01 The Uncomfortable Math">F01 The Uncomfortable Math</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label small fw-bold text-secondary mb-1">Extra Context / Specific Points (Optional):</label>
+      <input type="text" id="postInstructions" class="form-control form-control-sm" placeholder="e.g. Focus on vector DB inversion, RAG telemetry leaks, and client-side edge SLMs" style="border-radius: 8px;">
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary px-4 py-2 fw-bold d-inline-flex align-items-center gap-2" id="generateBtn" onclick="generatePost()" style="border-radius: 8px;">
+        <span id="genSpinner" class="spinner-border spinner-border-sm d-none"></span>
+        <span id="genBtnText">✨ Draft with Gemini & Queue</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Tab Bar -->
+  <div class="nav-tabs-custom">
+    <button class="tab-item active" id="tab-pending_approval" onclick="switchTab('pending_approval')">
+      🟡 Pending Review <span class="badge bg-warning text-dark ms-1" id="tab-badge-pending">0</span>
+    </button>
+    <button class="tab-item" id="tab-scheduled" onclick="switchTab('scheduled')">
+      ⏰ Scheduled <span class="badge bg-indigo text-primary ms-1" id="tab-badge-scheduled">0</span>
+    </button>
+    <button class="tab-item" id="tab-published" onclick="switchTab('published')">
+      🚀 Live Published <span class="badge bg-success ms-1" id="tab-badge-published">0</span>
+    </button>
+    <button class="tab-item" id="tab-rejected" onclick="switchTab('rejected')">
+      ❌ Rejected <span class="badge bg-danger ms-1" id="tab-badge-rejected">0</span>
+    </button>
+    <button class="tab-item" id="tab-all" onclick="switchTab('all')">
+      📋 All Posts
+    </button>
+    <button class="tab-item" id="tab-opportunities" onclick="switchTab('opportunities')">
+      💼 Dossier Hub & Career Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
+    </button>
+  </div>
+
+  <!-- Opportunities & Dossier Container -->
+  <div id="opportunitiesContainer" class="d-none">
+    <!-- Dossier Unified Hub Header & Integrations Banner -->
+    <div class="card p-3 mb-4 border shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">DOSSIER INTEGRATION</span>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 11px;">● Active Cloud Engine</span>
+          </div>
+          <h4 class="fw-bold mb-1 text-dark">💼 Dossier Career & Application Command Center</h4>
+          <p class="text-muted small mb-0">Autonomous career intelligence connecting Google Gemini, Google Sheets, Google Drive, Gmail, and Notion.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-primary btn-sm fw-bold px-3 d-flex align-items-center gap-2 shadow-sm" onclick="syncDossier('all')">
+            <span id="syncSpinner" class="spinner-border spinner-border-sm d-none"></span>
+            <span>🔄 Sync All to Cloud & Slack</span>
+          </button>
+          <button class="btn btn-outline-dark btn-sm fw-bold px-3 d-flex align-items-center gap-2" onclick="openModal('addOppModal')">
+            <span>➕ Track New Role</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Service Connectors Grid -->
+      <div class="row g-2 mb-3">
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">🤖 Gemini AI</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Scoring & ATS</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📊 Google Sheets</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Live & CSV Ready</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">☁️ Google Drive</div>
+            <div class="badge bg-primary bg-opacity-10 text-primary mt-1" style="font-size: 10px;">Staged Manifest</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📬 Gmail</div>
+            <div class="badge bg-info bg-opacity-10 text-info mt-1" style="font-size: 10px;">Recruiter Radar</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">📝 Notion</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">● Live Connected</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="p-2 rounded bg-white border text-center">
+            <div class="small fw-bold text-dark">💬 Slack Hub</div>
+            <div class="badge bg-success bg-opacity-10 text-success mt-1" style="font-size: 10px;">Instant Alerts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Utilities -->
+      <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+        <a href="https://app.notion.com/p/4ec8b8ee58fb4056b7269f4b526224f1" target="_blank" class="btn btn-dark btn-sm fw-bold shadow-sm" style="font-size: 12px;">
+          📝 Open Live Notion Board
+        </a>
+        <a href="/api/dossier/export/sheets" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          📥 Download Sheets CSV
+        </a>
+        <a href="/api/dossier/export/notion" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          📥 Download Notion CSV
+        </a>
+        <a href="/api/dossier/export/drive" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold" style="font-size: 12px;">
+          ☁️ View Drive Manifest
+        </a>
+        <button class="btn btn-outline-primary btn-sm fw-semibold" style="font-size: 12px;" onclick="syncDossier('gemini')">
+          🤖 Gemini Score All Roles
+        </button>
+        <button class="btn btn-outline-info btn-sm fw-semibold" style="font-size: 12px;" onclick="syncDossier('gmail')">
+          📬 Scan Gmail Alerts
+        </button>
+        <button class="btn btn-outline-success btn-sm fw-semibold" style="font-size: 12px;" onclick="sendDossierDigestToSlack()">
+          💬 Send Radar Digest to Slack
+        </button>
+      </div>
+    </div>
+
+    <!-- Sync Toast / Notification Box -->
+    <div id="dossierAlertBox" class="d-none alert alert-success alert-dismissible fade show" role="alert">
+      <span id="dossierAlertMsg">Sync completed successfully!</span>
+      <button type="button" class="btn-close" onclick="document.getElementById('dossierAlertBox').classList.add('d-none')"></button>
+    </div>
+
+    <div id="oppsList"></div>
+  </div>
+
+  <!-- Drafts Container -->
+  <div id="draftsContainer">
+    <div class="text-center py-5 text-muted">
+      <div class="spinner-border text-primary spinner-border-sm mb-2"></div>
+      <div>Loading posts...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Resume Preview Modal -->
+<div class="modal fade" id="resumeModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fs-6 fw-bold" id="resumeModalTitle">📄 Tailored Resume Preview</h5>
+        <button type="button" class="btn-close btn-close-white" onclick="closeModal('resumeModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <pre id="resumeContent" class="p-3 bg-white border rounded" style="white-space: pre-wrap; font-family: monospace; font-size: 13px; line-height: 1.6; max-height: 500px;"></pre>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('resumeModal')">Close</button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="copyResumeText()">📋 Copy Resume Text</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Vaibhav Sisinty Recruiter DM & Proof-of-Work Modal -->
+<div class="modal fade" id="pitchModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <span class="badge bg-primary text-uppercase" style="font-size: 10px; letter-spacing: 0.5px;">Vaibhav Sisinty Strategy</span>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="pitchModalTitle">🎯 Recruiter DM & Tactical Proof-of-Work</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="closeModal('pitchModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="card p-3 mb-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Direct LinkedIn DM (Under 70 Words)</span>
+            <button class="btn btn-outline-primary btn-sm py-1" onclick="copyPitchText('recruiterDmText')">📋 Copy DM</button>
+          </div>
+          <div class="p-3 bg-white border rounded font-monospace small" id="recruiterDmText" style="white-space: pre-wrap; line-height: 1.6;"></div>
+          <div class="text-muted small mt-2">💡 <em>Tip: Send directly to engineering managers, tech leads, or founders to bypass the 95% rejection portal filters.</em></div>
+        </div>
+
+        <div class="card p-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work (PoW) Plan</span>
+            <button class="btn btn-outline-success btn-sm py-1" onclick="copyPitchText('powPlanText')">📋 Copy Plan</button>
+          </div>
+          <pre class="p-3 bg-white border rounded small" id="powPlanText" style="white-space: pre-wrap; font-family: monospace; line-height: 1.5; max-height: 380px;"></pre>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('pitchModal')">Close</button>
+        <a id="pitchZipBtn" href="#" class="btn btn-primary btn-sm fw-bold">📦 Download Full Pack (ZIP)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Opportunity Modal -->
+<div class="modal fade" id="addOppModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">➕ Track New Opportunity / Job</h5>
+        <button type="button" class="btn-close" onclick="closeModal('addOppModal')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Role / Program Title:</label>
+          <input type="text" id="oppTitle" class="form-control form-control-sm" placeholder="e.g. AI Research Resident / Software Engineer Intern">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Organization / Company:</label>
+          <input type="text" id="oppOrg" class="form-control form-control-sm" placeholder="e.g. OpenAI / Google / Linux Foundation">
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small fw-bold">Category:</label>
+            <select id="oppCat" class="form-select form-select-sm">
+              <option value="Open Source Fellowship">Open Source Fellowship</option>
+              <option value="Summer SWE Internship">Summer SWE Internship</option>
+              <option value="AI / ML Research">AI / ML Research</option>
+              <option value="Grant / Funding">Grant / Funding</option>
+              <option value="Full-Time Role">Full-Time Role</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-bold">Deadline:</label>
+            <input type="text" id="oppDeadline" class="form-control form-control-sm" placeholder="e.g. March 31, 2026 / Rolling">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Direct Application URL:</label>
+          <input type="text" id="oppUrl" class="form-control form-control-sm" placeholder="https://...">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Stipend / Compensation:</label>
+          <input type="text" id="oppStipend" class="form-control form-control-sm" placeholder="e.g. $5,000 / Competitive">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('addOppModal')">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="submitNewOpp()">Save to Radar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      console.log('[PWA] Service Worker active in Studio:', reg.scope);
+    }).catch(() => {});
+  });
+}
+const SEED_STATIC_DRAFTS = [
+  {
+    "id": "post_20261113_130045_d8032d",
+    "topic": "Systems Architecture: What 'The Evolution of High-Margin Business Models' Teaches Us About Scale",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Drawing parallel between high-margin economic mechanics and low-latency distributed systems architecture",
+    "content": "In 2019, I watched a monolithic SaaS architecture collapse under a 3x traffic spike while maintaining a static 80% gross margin.\n\nWe spent six months optimizing SQL queries.\n\nThe bottleneck was never the database.\n\nIt was the unit economics of our serialization pipeline.\n\nEvery modern software system mirrors the exact economic trajectory of a high-margin enterprise.\n\nWhen you scale without auditing your foundational data structures, you run into three invisible taxes:\n\n1. Memory Bandwidth Saturation\nJust as high-margin businesses bloat overhead, unoptimized application states bloat the KV cache. When your working set exceeds L3 cache, CPU instruction cycles plummet while latency spikes by 400%.\n\n2. Serialization Overhead\nPassing massive JSON payloads across microservices is the operational equivalent of middle management. Moving to binary serialization protocols like Protocol Buffers cuts network payload size by 70% and drops parse times from milliseconds to microseconds.\n\n3. Connection Pooling Failures\nUnbounded async requests exhaust database connection pools faster than poor cash flow drains a bootstrapped startup. Circuit breakers are not optional; they are your financial reserves.\n\nArchitecture is P&L disguised as syntax.\n\nEvery line of code you push either compounds interest or acts as technical debt with a high interest rate.\n\nHow are you measuring the real compute cost of your features before they hit production?",
+    "char_count": 1444,
+    "status": "pending_approval",
+    "created_at": "2026-11-13T13:00:45.007654+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null
+  },
+  {
+    "id": "post_20261113_113309_e58ecf",
+    "topic": "The Margin Reality Behind Modern Brand Distribution (BNPL bolsters holiday budgets)",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Financial mechanics and margin erosion of BNPL in modern brand distribution",
+    "content": "Founders spend months optimizing conversion rates, assuming a completed checkout is a closed transaction.\n\nIt is not.\n\nWhen a cart clears via Buy Now Pay Later during peak volume, the unit economics shift violently before the item even leaves the warehouse.\n\nMost assume the debate is simple: take the 6% merchant fee hit to capture top-line demand, or lose the sale entirely.\n\nThat binary is entirely false.\n\nThe real cost lives downstream in working capital friction, return rates, and cash flow velocity.\n\nHere is what the P&L actually absorbs:\n\n1. The Processing Penalty\nTraditional gateways cost roughly 1.8% to 2.4%. BNPL providers extract 4% to 7% per transaction. On a 60% gross margin product, that fee increase eats nearly 12% of your operating profit before fixed costs enter the equation.\n\n2. The Return Asymmetry\nData across three direct-to-consumer apparel brands shows BNPL orders have a 34% higher return rate than standard credit card checkouts. Customers treat deferred payments as trial periods. Every returned item incurs reverse logistics costs, restocking labor, and non-refundable payment gateway fees.\n\n3. The Liquidity Lag\nCash disbursement cycles for these transactions can stretch from 3 to 5 business days. During high-volume sprints like Black Friday, your accounts receivable float widens just as inventory replenishment requires immediate cash.\n\nGrowth teams treat top-line revenue as a vanity metric while ignoring cash conversion cycles. If your customer acquisition cost calculation excludes payment processing friction, your unit economics are fictional.\n\nWhat is your current strategy for balancing margin protection against high-friction payment methods during peak season?",
+    "char_count": 1710,
+    "status": "published",
+    "created_at": "2026-11-13T11:33:09.855256+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6af6f63888e0caaf8e387b56",
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "{\"status\":403,\"serviceErrorCode\":100,\"code\":\"ACCESS_DENIED\",\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\"}"
+  },
+  {
+    "id": "post_20261109_164930_14f12f",
+    "topic": "[TEST] Why small AI teams beat 50-person agencies",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Reprice the category",
+    "content": "R.I.P. to the 50-person marketing agency retainer.\n\nLast week a founder showed me their agency invoice: $18,500/month.\nDeliverables? 8 blog posts, 12 social graphics, and a monthly status call.\n\nThe team doing the work?\nTwo junior coordinators copying prompts into ChatGPT and an account manager forwarding PDFs.\n\nContrast that with a lean 2-person team using custom agents and programmatic workflows:\n- 4x the output\n- Zero latency between strategy and execution\n- Cost: under $3,000/mo including API credits\n\nClients don't buy hours anymore. They buy speed to qualified pipeline.\nIf your agency's value proposition is billable headcount, you are charging for inefficiency.\n\nThe agencies growing in 2026 look more like software engineering shops than creative studios.\n\nWhat's the single agency service you stopped paying for this year?",
+    "char_count": 837,
+    "status": "approved",
+    "created_at": "2026-11-09T16:49:30.699498+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_2a3fe0",
+    "topic": "CRISPR Epigenetics: Why Medicine is Turning into Software Debugging",
+    "hook_formula": "Biotech Frontier Hook",
+    "angle": "Gene Editing & Cellular Reprogramming",
+    "content": "The first era of CRISPR was like using molecular scissors:\nYou cut the DNA sequence to disable a faulty gene.\nIt was revolutionary, but permanent and carried risks of off-target cuts.\n\nThe new frontier in 2026 is Epigenetic Editing:\n\nInstead of cutting the DNA code, scientists are now turning the volume dial up or down on gene expression:\n\n1. Molecular Switches: Using dead-Cas9 fused with methylation enzymes, doctors can silence disease-causing genes without breaking a single DNA strand.\n2. Reversible Treatments: Because the underlying genetic sequence remains intact, epigenetic modifications can be adjusted over time as a patient's cellular biology adapts.\n3. Chronic Disease Reversal: Early trials are showing promising breakthroughs in targeting cholesterol synthesis, metabolic disorders, and autoimmune inflammation at the root transcription level.\n\nWe are watching medicine transition from invasive physical surgery to precision molecular programming.\n\nWhat frontier biotechnology breakthrough excites you the most right now?\n\n#Biotechnology #CRISPR #Healthcare #GeneticEngineering #ScienceAndTech #Innovation #Longevity",
+    "char_count": 1134,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.282904+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_f6ae9d",
+    "topic": "The 1-Person $100M Enterprise: How 3 Engineers Out-Ship 50-Person Teams",
+    "hook_formula": "Organizational Velocity Hook",
+    "angle": "Software Pod Density & Agent Leverage",
+    "content": "The traditional corporate org chart is dying.\n\nTwo years ago, shipping a complex enterprise software platform required:\n\u2022 15 Backend Engineers\n\u2022 10 Frontend Developers\n\u2022 5 QA Testers\n\u2022 4 Product Managers\n\u2022 3 Scrum Masters\n\nToday, a 3-person engineering pod using autonomous harnesses ships more production code per week than a 50-person agency.\n\nHow hyper-lean teams operate in 2026:\n\n1. Zero Status Meetings: Automated agent digests report progress, pull request diffs, and test coverage straight to team chat in real-time.\n2. Code Generation + Deterministic Evals: Engineers spend 80% of their time writing test harnesses and defining architecture, while agents write the boilerplate implementations.\n3. Instant Deployment Feedback: Automated canary pipelines push features to live users with automated rollbacks on any metric dip.\n\nThe future of software doesn't belong to companies with the largest headcount.\nIt belongs to the teams with the highest density of leverage per engineer.\n\nWould you rather manage a 50-person team or lead an elite 3-person high-velocity pod?\n\n#FutureOfWork #SoftwareEngineering #TechFounders #Productivity #EngineeringLeadership #Startups",
+    "char_count": 1172,
+    "status": "published",
+    "created_at": "2026-10-09T10:22:34.276001+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "urn:li:share:7525604671437123584",
+    "approved_by": "Aryan Sharma",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_d98f8b",
+    "topic": "Why Being 6 Months Early in AI is Equivalent to Being Wrong",
+    "hook_formula": "Product Timing Hook",
+    "angle": "Startup Strategy & Avataar.ai Lessons",
+    "content": "In enterprise software, being first usually creates a moat.\nIn AI, being 6 months too early often bankrupts you.\n\nWhy timing is the single most ruthless factor in AI products:\n\n1. The Foundation Model Steamroller: If your entire product is an interface for something a frontier model will do natively in next month's release, your moat evaporates overnight.\n2. The Latency-Cost Curve: Products that cost  per transaction in early 2024 now cost zsh.02. If you built heavy custom infrastructure to solve high costs too early, your architecture became obsolete before you achieved scale.\n3. Customer Readiness: Enterprise buyers took 2 years to move from 'AI curiosity' to having real compliance, security, and procurement frameworks in place.\n\nThe winners in 2026 aren't the ones who shipped the first prototype.\nThey are the ones who identified deep workflow friction and waited for inference costs to drop below the threshold of profitability.\n\nHow do you validate whether your product is riding the wave or building ahead of reality?\n\n#Startups #ProductStrategy #AI #FounderInsights #BusinessGrowth #TechTrends",
+    "char_count": 1111,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.271266+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_fdd7a7",
+    "topic": "Direct Lithium Extraction: The Hidden Revolution Powering Clean Tech",
+    "hook_formula": "Deep Science Breakdown Hook",
+    "angle": "Chemical Engineering & Material Science Breakthrough",
+    "content": "Traditional lithium production is an environmental nightmare:\nIt takes 18 months of evaporation ponds in deserts and millions of gallons of water to produce battery-grade lithium.\n\nA massive chemical engineering breakthrough is flipping this on its head: Direct Lithium Extraction (DLE).\n\nHere is why DLE is changing global energy economics:\n\n1. Hours Instead of Months: DLE filters lithium directly from geothermal brines in under 60 minutes using advanced resin absorption.\n2. 90% Less Land Footprint: Eliminates thousands of acres of evaporation ponds in favor of compact, closed-loop processing plants.\n3. Unlocking Geothermal Power: DLE facilities extract lithium while simultaneously generating clean geothermal electricity from the same hot subterranean brine.\n\nThe transition to EVs, humanoid robots, and grid-scale energy storage doesn't just require better batteries.\nIt requires sustainable molecular extraction at industrial scale.\n\nScience breakthroughs like this don't make daily headlines, but they build the foundation of the next decade.\n\n#CleanTech #EnergyTransition #MaterialsScience #Sustainability #Innovation #ElectricVehicles",
+    "char_count": 1148,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.266051+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_f132da",
+    "topic": "The Death of Prompts: Why Autonomous Agent Harnesses Won in 2026",
+    "hook_formula": "Tech Evolution Hook",
+    "angle": "Agentic Workflows vs Single Chatbots",
+    "content": "In 2023, people bragged about prompt engineering.\nIn 2026, typing prompts into a single chat window feels like dial-up internet.\n\nThe real engineering revolution is autonomous Agent Harnesses:\n\n1. Deterministic Scaffolding: LLMs are probabilistic, but the systems around them must be deterministic. Modern agent loops use automated taste gates, unit test harnesses, and error recovery protocols.\n2. Multi-Role Delegation: Instead of asking one model to do everything, you orchestrate specialized agents (a Researcher, a Coder, an Auditor, and a Verifier).\n3. Tool Execution with Self-Correction: When an agent encounters an error, it doesn't stop and ask you. It inspects the traceback, patches the code, and re-runs tests until it passes.\n\nWe moved from:\n'Chatting with AI' -> 'Managing autonomous AI pods that deliver completed outcomes.'\n\nAre you still using AI as a chatbot, or have you integrated autonomous agent workflows into your daily pipeline?\n\n#ArtificialIntelligence #SoftwareEngineering #Automation #AgenticAI #FutureOfWork #TechLeadership",
+    "char_count": 1053,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.259321+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_25b911",
+    "topic": "The Science of Memory: Why Your Brain Forgets 90% of What You Read",
+    "hook_formula": "Neuroscience Insight Hook",
+    "angle": "Cognitive Architecture & High-Leverage Thinking",
+    "content": "You read 5 books a month. You listen to 3 podcasts a week.\nYet 30 days later, you barely remember 5% of the concepts.\n\nNeurobiology reveals why this isn't a personal flaw\u2014it is a survival feature:\n\n1. Synaptic Pruning: Your brain is actively designed to delete passive data to conserve glucose and metabolic energy.\n2. The Generation Effect: Information you passively consume fades within 48 hours. Information you actively explain or build with gets hard-wired into neural pathways.\n3. Spaced Retrieval: Recalling a single concept under friction does 10x more for long-term memory than re-reading a chapter 5 times.\n\nHow high-performing leaders weaponize this:\n\u2022 Never highlight without summarizing in your own words immediately.\n\u2022 Teach every critical framework to a colleague within 24 hours.\n\u2022 Build an external digital brain (second brain) for storage, reserving your biological brain strictly for synthesis and creative decisions.\n\nHow do you capture and retain the best insights you consume?\n\n#Neuroscience #Productivity #PersonalGrowth #Learning #Leadership #Mindset #MentalModels",
+    "char_count": 1088,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.252012+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_930172",
+    "topic": "Why 90% of AI Startups Are Failing the Unit Economics Test",
+    "hook_formula": "Financial Reality Hook",
+    "angle": "Token Margins & Latent Cloud Costs",
+    "content": "A startup raises M at a $30M valuation.\nThey hit $100k Monthly Recurring Revenue in 90 days.\nEveryone celebrates.\n\nThen you open their cloud infrastructure invoice:\n\u2022 Monthly Revenue: $100,000\n\u2022 LLM Token Costs: $65,000\n\u2022 Vector DB & Hosting: $15,000\n\u2022 Customer Acquisition Cost: $30,000\n\u2022 Net Profit: -$10,000\n\nThis is the 'Gross Margin Trap' of first-generation AI SaaS.\n\nHow winning teams fix it in 2026:\n1. Model Tiering: Stop routing simple classification queries to expensive frontier models. Route 80% of traffic to fine-tuned 8B local models.\n2. Aggressive Semantic Caching: Cache common query vectors locally to avoid redundant API round-trips.\n3. Own the Pipeline: Move high-throughput inference to dedicated bare-metal silicon.\n\nIf your software gross margins look like a catering business (under 40%), you are not an AI tech company. You are a reseller of cloud tokens.\n\nFounders: What is your current gross margin on AI features?\n\n#Startups #VentureCapital #AI #SaaS #UnitEconomics #CloudComputing #ProductManagement",
+    "char_count": 1029,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.245694+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_de4209",
+    "topic": "Why Big Tech is Buying Nuclear Reactors for AI Data Centers",
+    "hook_formula": "Counterintuitive Resource Hook",
+    "angle": "Energy Grid & Small Modular Reactors (SMRs)",
+    "content": "The biggest constraint on AI in 2026 isn't GPU availability.\n\nIt is electricity.\n\nTraining next-generation frontier models and running real-time multimodal inference consumes gigawatts of power.\nSolar and wind are incredible, but AI training clusters cannot pause when the sun sets or the wind stops blowing.\n\nEnter Small Modular Reactors (SMRs):\n\n1. 24/7 Baseload Clean Energy: SMRs provide uninterrupted, zero-carbon electricity directly adjacent to massive data center campuses.\n2. Factory-Built Modularity: Instead of spending 10 years building a massive conventional nuclear plant, SMRs are prefabricated in factories and deployed in under 24 months.\n3. Off-Grid Independence: Tech giants are bypassing overloaded public power grids entirely, creating self-sustaining compute islands.\n\nThe battle for AI supremacy is no longer just a software race.\nIt is an energy infrastructure race.\n\nWill the future of AI belong to whoever has the best algorithms, or whoever controls the power grid?\n\n#CleanEnergy #NuclearEnergy #ArtificialIntelligence #DataCenters #Sustainability #TechTrends #Infrastructure",
+    "char_count": 1102,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.241117+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_2e4b65",
+    "topic": "The Physical AI Shift: Why Humanoid Robots Are Winning in 2026",
+    "hook_formula": "Paradigm Shift Hook",
+    "angle": "Figure AI & Tesla Optimus Real-World Deployment",
+    "content": "For 50 years, industrial robots were giant metal arms bolted to concrete floors, running hardcoded lines of code.\n\nIf a part moved 2 millimeters to the left, the entire factory line crashed.\n\nPhysical AI just broke that ceiling:\n\n1. Imitation Learning: Robots like Figure 02 and Optimus aren't programmed line-by-line. They watch human demonstrations via VR and learn neural sensorimotor policies.\n2. Tactile Soft-Touch: With GelSight-style soft sensors, robots can now grip fragile glass vials, solder circuit boards, and handle complex assembly without dropping items.\n3. Unstructured Environments: They navigate uneven warehouse floors, climb metal stairs, and adapt to shifting obstacles in real-time.\n\nThe economic consequence:\nAutomation is no longer reserved for M automotive factories.\nIt is becoming a plug-and-play workforce for any mid-sized manufacturing facility.\n\nAre you preparing your operations for physical robotics over the next 3 years?\n\n#Robotics #PhysicalAI #Manufacturing #Automation #TeslaOptimus #FutureOfTech #ArtificialIntelligence",
+    "char_count": 1058,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.236649+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102234_c38703",
+    "topic": "Why the Next Billionaires Are Buying 'Boring' Businesses",
+    "hook_formula": "Contrarian Wealth Hook",
+    "angle": "Raj Shamani x Asish Mohapatra Unit Economics",
+    "content": "Everyone is trying to build a wrapper for ChatGPT.\n\nMeanwhile, the smartest operators in 2026 are quietly buying 'unsexy' businesses:\n\u2022 Commercial HVAC maintenance\n\u2022 Industrial waste recycling\n\u2022 Specialized dental equipment repair\n\u2022 Chemical storage logistics\n\nHere is why 'boring' is generating 10x more real cash flow:\n\n1. Zero Churn: When a hospital HVAC system goes down, they do not negotiate a discount. They pay immediately.\n2. High Pricing Power: AI cannot remotely fix a broken 500-ton chiller pipe. Physical moats are immune to algorithmic disruption.\n3. Compounding EBITDA: While venture-backed startups burn k/month on GPU compute, boring cash cows deliver 30% net profit margins from Day 1.\n\nThe biggest tech opportunity right now isn't replacing these businesses.\nIt is buying them and deploying modern agentic automation to 5x their operational speed.\n\nWould you rather own a high-risk AI SaaS startup or a $5M/year cash-flowing industrial service business?\n\n#BusinessStrategy #Entrepreneurship #Investing #CashFlow #Startups #WealthBuilding #Leadership",
+    "char_count": 1068,
+    "status": "approved",
+    "created_at": "2026-10-09T10:22:34.230239+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_102025_89be30",
+    "topic": "Why Apple is Selling Speed, Not RAM (Accessible Breakdown)",
+    "hook_formula": "Contrarian Insight Hook",
+    "angle": "Accessible Technical Storytelling",
+    "content": "Why Apple isn't really selling RAM anymore. They are selling speed.\n\nMost people look at the upgrade price on a MacBook and call it pure greed.\n\nHere is the simple engineering reality most people miss:\n\nIn a traditional PC laptop, memory sits on separate sticks across the motherboard.\nData has to travel down a slow electronic highway (around 80 GB/s). When you edit 8K video or run heavy AI models, that highway instantly gets jammed.\n\nApple Silicon does something completely different:\n\n1. Unified Silicon: The memory is welded directly onto the processor die right next to the graphics engine.\n2. 10x Bandwidth: Data moves at up to 800+ GB/s. There is no highway bottleneck.\n3. The 2nm Monopoly: Apple already reserved TSMC's next-generation 2nm chip foundries through 2027, locking in a massive hardware lead.\n\nIf you run modern AI models (like Llama or DeepSeek) on your laptop:\nYour CPU speed barely matters if your memory cannot feed tokens fast enough.\n\nThe real hardware race in 2026 isn't raw gigahertz.\nIt is memory throughput.\n\nAre you running AI locally on your laptop yet, or still relying 100% on cloud APIs?\n\n#Apple #MacBookPro #ArtificialIntelligence #TechExplained #Hardware #Innovation #FutureOfTech",
+    "char_count": 1219,
+    "status": "published",
+    "created_at": "2026-10-09T10:20:25.070797+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "urn:li:share:7514268492376776704",
+    "approved_by": "Aryan Sharma (Accessible Post + Chip Graphic)"
+  },
+  {
+    "id": "post_20261009_100341_b652a7",
+    "topic": "The 2nm Apple Silicon & Unified RAM Supply Chain Moat",
+    "hook_formula": "F10 Contrarian + Technical Receipts",
+    "angle": "Hardware Architecture & Silicon Supply Economics",
+    "content": "Apple's 2nm transition is not a CPU race. It is a hostile takeover of local memory bandwidth.\n\nEvery PC manufacturer is still selling laptops like it is 2018: bragging about clock speeds while throttling over DDR5 interconnects.\n\nMeanwhile, Apple just locked down TSMC's entire initial 2nm fab capacity and restructured unified memory architecture from the ground up.\n\nWhen you run local 70B parameter open-weights models or complex vector pipelines, clock speed is practically irrelevant. \n\nThe only metric that dictates real-world execution is memory bandwidth: how many gigabytes per second can move from unified RAM into neural compute cores without thermal throttling.\n\nHere is the architectural math shifting the hardware moat:\n\n1. The 2nm Gate-All-Around (GAA) Advantage:\nDropping from 3nm to 2nm delivers a 15% speed bump at identical power, or a 30% power reduction at matched compute. In a fanless laptop, that is the difference between sustained FP16 throughput and aggressive thermal decay.\n\n2. Packaging Over Clock Cycles:\nBy embedding high-density LPDDR5X dies directly onto the substrate with 800+ GB/s of bandwidth, Apple bypasses the physical PCIe and socket bottlenecks that cripple x86 workstations.\n\n3. The Supply Chain Squeeze:\nSecuring TSMC's sub-2nm nodes 18 months ahead of enterprise competitors leaves Windows AI PCs fighting for leftover wafer allocations.\n\nThe era of evaluating computers by gigahertz is over.\n\nIn the AI era, compute is defined by memory density, bandwidth velocity, and thermal efficiency.\n\nAre you running your local AI workloads on unified Apple Silicon or cloud-hosted instances?",
+    "char_count": 1629,
+    "status": "published",
+    "created_at": "2026-10-09T10:03:41.508170+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "urn:li:share:7514267737729204224",
+    "approved_by": "Aryan Sharma (With Infographic Media)"
+  },
+  {
+    "id": "post_20261009_100004_e6df2f",
+    "topic": "The Quiet Reshoring of Core Infrastructure: Why Decentralization is Winning",
+    "hook_formula": "F08 Contrarian Statistic",
+    "angle": "Systems architecture economics shift from centralized hyperscalers to regional edge clusters.",
+    "content": "82% of enterprise architectures are still built on the assumption that a single US-East region will never experience a rolling power failure.\n\nYet last quarter proved central cloud gravity is breaking under its own latency and egress tax.\n\nWe spent a decade centralizing workloads into three availability zones in Northern Virginia.\n\nThen egress bills started eating 40% of gross margins, and cross-region latency spiked past 140 milliseconds for European end-users running real-time LLM inference.\n\nThe math on hyperscaler dominance no longer clears the ROI hurdle.\n\nHere is what is replacing it:\n\n1. Edge node reshoring: Moving stateless inference models directly onto localized bare-metal providers in Frankfurt and Tokyo. KV cache eviction rates drop because memory proximity beats raw clock speed.\n\n2. Database sharding by geography: Global Postgres tables are being carved into regional SQLite/Litestream clusters. Write operations happen locally; eventual consistency handles the sync asynchronously.\n\n3. Egress arbitrage: Bandwidth pricing at regional carriers is 5x cheaper than legacy hyperscaler egress fees. A single server migration saved one client $42,000 a month in pure transit tax.\n\nCentralization solved the scaling bottlenecks of 2015.\n\nIt is now the primary bottleneck for the cost-per-query economics of 2025.\n\nAre you still paying the regional tax to keep everything under one roof?",
+    "char_count": 1405,
+    "status": "approved",
+    "created_at": "2026-10-09T10:00:04.231358+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261009_095637_c6f081",
+    "topic": "The Margin Reality Behind Modern Brand Distribution (Wholesale, tariff refunds deliver for Le)",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Founder economics and supply chain distribution mechanics under tariff and logistics shifts",
+    "content": "Most direct-to-consumer founders believe the growth debate is a choice between scaling paid acquisition or building wholesale distribution channels.\n\nBoth assumptions miss the balance sheet reality.\n\nWhen you hand 50% of your retail price to a major department store, your unit economics do not just compress\u2014they fracture under the weight of chargebacks, co-op advertising fees, and inventory return liabilities.\n\nLook at the P&L of a brand doing 50 million dollars in gross merchandise value through traditional retail:\n\n1. Gross Margin Erosion:\nInitial wholesale margin hits 50%. Add mandatory vendor compliance chargebacks averaging 4% to 7% for late deliveries or mislabeled cartons, and real margin drops below 40%.\n\n2. The Working Capital Trap:\nRetailers operate on Net 60 or Net 90 payment terms. You manufacture inventory today, ship it in 30 days, get paid in four months, and meanwhile fund your next production run out of pocket.\n\n3. The Tariff & Logistics Variable:\nRecent trade shifts and port fees mean ocean freight unpredictability eats another 2% to 5% of landed cost. If your supply chain is rigid, sudden duty spikes wipe out your operating profit.\n\nThe founders winning right now are not choosing between direct-to-consumer and wholesale.\n\nThey run a hybrid infrastructure model:\n\n- Direct-to-consumer handles brand equity, customer lifetime value data, and high-margin cash flow.\n- Targeted wholesale acts strictly as a low-cost customer acquisition engine, trading near-term margin for massive top-of-funnel reach.\n\nIf your distribution strategy relies on a single channel, you are not building a resilient brand. You are renting space on someone else's balance sheet.\n\nHow are you restructuring your supply chain buffers to survive margin compression this quarter?",
+    "char_count": 1788,
+    "status": "approved",
+    "created_at": "2026-10-09T09:56:37.248033+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20261003_113511_eb7734",
+    "topic": "Why 3-Person Pods Out-Distribute 50-Person Marketing Departments",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Organizational physics and throughput mechanics of lean pods versus bureaucratic marketing teams",
+    "content": "R.I.P. the 50-person marketing department.\n\nWhile your competitors are scheduling sync-ups to approve wireframes, a three-person pod just shipped four distribution loops and captured organic market share.\n\nWe spent two decades building corporate bloat disguised as scale.\n\nWhen you add layers of management, you introduce communication overhead that scales quadratically with headcount.\n\nCommunication channels follow the formula n(n-1)/2.\n\nA team of 50 creates 1,225 potential friction lines.\n\nA pod of 3 creates exactly 3.\n\nHere is how small engineering-driven distribution pods operate instead:\n\n1. Zero handoffs:\nThe person writing the code is writing the copy, tracking the API telemetry, and analyzing the conversion rate.\n\n2. Direct feedback loops:\nIf a growth script fails, the fix hits production in twelve minutes, not two quarters.\n\n3. High-density execution:\nNo status meetings. No slide decks. Just raw output measured in code commits and acquisition metrics.\n\nBig teams optimize for risk mitigation.\n\nLean pods optimize for velocity.\n\nWhen distribution requires technical integration with modern APIs, programmatic SEO pipelines, and real-time data enrichment, marketing generalists become bottlenecks.\n\nYou do not need a content calendar.\n\nYou need systems that distribute content automatically while you sleep.\n\nHow many active decision-makers are currently slowing down your product launches?",
+    "char_count": 1409,
+    "status": "published",
+    "created_at": "2026-10-03T11:35:11.646223+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f5098e647f6b17b1c66d",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260928_110058_8f5984",
+    "topic": "JABSON AI: Why Software Agencies Are Obsolete in 2026",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "A1 Reprice the Category (Founder Launch)",
+    "content": "R.I.P. to the 50-person software agency retainer.\n\nLast week, an enterprise founder showed me an invoice for a routine data extraction pipeline:\n,000 and an 8-week delivery timeline.\n\nDeliverables?\nThree backend engineers writing boilerplate glue-code, an account manager forwarding status PDFs, and a QA coordinator logging manual test cases.\n\nThis is why we built JABSON AI.\n\nSoftware development is undergoing a violent structural repricing.\nClients don't buy billable developer hours anymore.\nThey buy speed to verified, production-grade output.\n\nAt JABSON AI, we run 3-person autonomous engineering pods:\n\u2022 Zero latency between architectural strategy and code execution.\n\u2022 Native telemetry, self-healing test suites, and localized vector pipelines built-in.\n\u2022 Output volume that out-ships traditional 25-person consulting shops at 80% lower cost.\n\nWhen an agency charges you for headcount, they are charging you for human coordination drag.\n\nWe don't sell billable hours. We sell autonomous infrastructure velocity.\n\nThe future of software engineering doesn't look like an open-plan agency.\nIt looks like a precision execution engine.\n\nWelcome to JABSON AI. What enterprise workflow is causing your team the most friction this quarter?",
+    "char_count": 1240,
+    "status": "rejected",
+    "created_at": "2026-09-28T11:00:58.925559+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": "HTTP 403: {'error': 'Post limit reached', 'code': 'POST_LIMIT_REACHED', 'metric': 'posts.platform_monthly', 'message': 'Monthly post limit reached. Your Starter plan allows 15 platform posts per month across the workspace.', 'limit': 15, 'used': 15, 'requested': 1, 'remaining': 0, 'periodStart': '2026-09-01T00:00:00.000Z', 'periodEnd': '2026-10-01T00:00:00.000Z', 'planName': 'Starter', 'limitScope': 'account', 'workspaceScope': True, 'workspaceMemberCount': 1}",
+    "rejected_by": "Aryan (Mobile 1-Tap)"
+  },
+  {
+    "id": "post_20260925_101246_2965bc",
+    "topic": "The College Degree vs Self-Taught False Binary in 2026",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Workforce Evolution & Proof-of-Work Credentialing",
+    "content": "Everyone in tech keeps debating one of two extremes:\n\n\"A 4-year Computer Science degree is the only real foundation.\"\nvs.\n\"Degrees are useless, just watch YouTube tutorials and learn to code.\"\n\nBoth sides are fundamentally wrong.\n\nIn 2026, a university diploma proves you can follow a 4-year syllabus designed in 2018.\nAnd a tutorial badge proves you can copy syntax without understanding runtime edge cases.\n\nNeither tells a hiring manager if you can diagnose a memory leak at 2 AM when production is down.\n\nHere is what the best engineering teams and fast-growing startups actually evaluate today:\n\n1. Verifiable Public Artifacts\nNot code snippets on GitHub, but live deployed endpoints, public pull requests on real open-source libraries, and documented architecture post-mortems.\n\n2. Understanding System Boundaries\nAnyone can prompt an AI to write a React component or an Express route.\nThe engineers getting hired at top tiers understand what happens underneath: database locks, network tail latencies, cache eviction strategies, and data serialization trade-offs.\n\n3. Written Operational Clarity\nCan you explain why you chose SQLite over Postgres in 3 concise paragraphs without hiding behind jargon?\nClear writing is the ultimate proxy for clear architectural thinking.\n\nProof-of-work is the only credential that doesn't depreciate.\n\nStop arguing about credentials on resumes.\nShip real systems, document your receipts in public, and let the work speak for itself.\n\nWhat was the single project that taught you more than any classroom or course?",
+    "char_count": 1552,
+    "status": "published",
+    "created_at": "2026-09-25T10:12:46.931376+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6aba45f6cb7f4d7d45897851",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260925_101246_5d0e14",
+    "topic": "Decision Fatigue: The Real Reason High-Performing Founders Burn Out",
+    "hook_formula": "F09 The Silent Killer",
+    "angle": "Operational Psychology & Executive Stamina",
+    "content": "Most founders don't burn out from working 12-hour days.\nThey burn out from making 70 low-leverage micro-decisions before 1:00 PM.\n\n\"Should we change this button copy?\"\n\"Which tool should we use for customer onboarding?\"\n\"Can you review this slide deck formatting?\"\n\nEvery single decision, no matter how trivial, consumes glucose and drains your executive prefrontal cortex.\n\nBy 3:00 PM, when you actually need to negotiate a key contract or diagnose a system architecture bottleneck, your brain is operating on fumes.\n\nHere is the 3-filter delegation framework top CEOs and operators use to protect their focus:\n\n1. Type 1 vs Type 2 Classifications (The Reversibility Test)\nIf an operational decision can be reversed in 48 hours for under , no executive should ever see it. Let your team make it, ship it, and learn.\n\n2. Document the \"Why\", Never the \"How\"\nWhen delegating a project, define the exact numerical success criteria and the constraints.\nIf you dictate the execution steps, you didn't delegate. You just created a task for yourself to micromanage.\n\n3. The Rule of 3 Deep-Work Windows\nBlock 9:00 AM to 12:30 PM completely off your calendar. Zero Slack, zero email, zero quick syncs.\nUse your highest cognitive stamina for the single highest-leverage problem of the day.\n\nYour job as a founder is not to be the most active person in Slack.\nYour job is to make 2 or 3 high-judgment decisions each day with absolute clarity.\n\nProtect your cognitive bandwidth like you protect your company's cash balance.\n\nWhat low-leverage decision did you stop making yourself this month?",
+    "char_count": 1580,
+    "status": "published",
+    "created_at": "2026-09-25T10:12:46.588906+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6aba45f96164a124cc7e199c",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260925_101246_032f1c",
+    "topic": "What the Red Sea Shipping Surcharge Taught Hardware Founders About Resilience",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Global Supply Chain & Operations Resilience",
+    "content": "In late 2023, container spot freight rates from Asia to Europe tripled from ,400 to ,900 in less than 21 days.\n\nFounders who optimized for \"just-in-time\" lean inventory watched their margins vanish overnight.\nShipments took an extra 14 days circumnavigating Africa.\nLead times blew out from 35 days to 62 days.\n\nThe companies that survived weren't the ones with the cheapest foreign suppliers.\nThey were the ones that designed redundancy into their supply chain before the crisis hit.\n\nHere are the 3 operational rules elite hardware and physical product builders live by:\n\n1. The Dual-Sourcing Mandate\nNever allow a single factory to hold more than 65% of your bill-of-materials volume.\nThe extra 4% unit cost you pay for a local secondary supplier is not an inefficiency. It is catastrophic risk insurance.\n\n2. Inventory as a Strategic Moat\nZero-inventory lean manufacturing works in sterile MBA case studies.\nIn the real world of geopolitical chokepoints, a 90-day buffer of long-lead components turns shipping spikes into a weapon against your competitors who stock out.\n\n3. Nearshore Final Assembly\nKeep the heavy raw fabrication where costs are lowest, but keep sub-assembly and final configuration within 48 hours of your primary buyer market.\n\nConvenience and absolute cost minimization belong in peaceful bull markets.\nOperational redundancy is the only thing that survives real-world distribution shocks.\n\nHow many days of component inventory does your primary product line currently carry?",
+    "char_count": 1500,
+    "status": "published",
+    "created_at": "2026-09-25T10:12:46.238103+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f5788e647f6b17b1cd48",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Post limit reached', 'code': 'POST_LIMIT_REACHED', 'metric': 'posts.platform_monthly', 'message': 'Monthly post limit reached. Your Starter plan allows 15 platform posts per month across the workspace.', 'limit': 15, 'used': 15, 'requested': 1, 'remaining': 0, 'periodStart': '2026-09-01T00:00:00.000Z', 'periodEnd': '2026-10-01T00:00:00.000Z', 'planName': 'Starter', 'limitScope': 'account', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260925_101245_b7d62c",
+    "topic": "Why High Personal Income is the Biggest Trap for Early Founders",
+    "hook_formula": "F10 Contrarian + Historical Receipts",
+    "angle": "Capital Allocation & Founder Wealth Velocity",
+    "content": "The fastest way to kill an early-stage company is drawing a market-rate executive salary in Year 2.\n\nI watch founders celebrate their first profitable quarter by bumping their personal pay to ,000/year.\n\nSix months later, their growth stalls, working capital dries up, and they wonder why competitors with smaller teams are out-shipping them.\n\nHere is the financial reality Raj Shamani talks about in manufacturing that applies to every startup:\n\nYour personal income is an expense on the company\u2019s P&L.\nReinvested cash flow is an asset on your balance sheet that compounds.\n\nWhen you pull ,000 a month out of a business doing ,000 MRR:\n\u2022 You pay 30%+ in personal income taxes immediately.\n\u2022 You starve your inventory or compute budget.\n\u2022 You lose the buffer required to survive a 60-day customer payment delay.\n\nContrast that with reinvesting that exact same capital:\n1. Building automated workflows that eliminate 2 full-time coordination hires.\n2. Securing volume discounts on inventory or GPU reservation instances.\n3. Funding a 90-day cash reserve that lets you negotiate from strength.\n\nHigh personal burn creates high operational anxiety.\nLow personal burn buys infinite strategic patience.\n\nWealth in entrepreneurship is not measured by the paycheck you write yourself this Friday.\nIt is measured by the compounding equity value of a machine that prints cash without you.\n\nStarve the lifestyle in Year 2. Feed the machine.\n\nWhat was the hardest financial trade-off you made in your first 24 months of building?",
+    "char_count": 1518,
+    "status": "published",
+    "created_at": "2026-09-25T10:12:45.209345+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f57c8e647f6b17b1cd96",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Post limit reached', 'code': 'POST_LIMIT_REACHED', 'metric': 'posts.platform_monthly', 'message': 'Monthly post limit reached. Your Starter plan allows 15 platform posts per month across the workspace.', 'limit': 15, 'used': 15, 'requested': 1, 'remaining': 0, 'periodStart': '2026-09-01T00:00:00.000Z', 'periodEnd': '2026-10-01T00:00:00.000Z', 'planName': 'Starter', 'limitScope': 'account', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260923_170432_f84041",
+    "topic": "The HR Interview Trap: Why Resume Bullet Points Lose to Mechanical Storytelling",
+    "hook_formula": "F17 Controlled A/B Anecdote",
+    "angle": "Career Engineering & Operational Interview Strategy",
+    "content": "Candidate A: 8 years at tier-1 tech companies, perfect resume bullet points, zero offers after 6 final rounds.\nCandidate B: 3 years at mid-stage startups, messy career transitions, 3 competing offers in 3 weeks.\n\nSame years of core coding experience. Same system design problems.\nThe only variable was how they answered the first 7 minutes with HR.\n\nCandidate A answered like a resume:\n\"I managed the migration to microservices, improved latency, and collaborated across teams.\"\nHR wrote down: Checked box. No conviction.\n\nCandidate B answered like a systems post-mortem:\n1. The Incident: \"In Q3 our payment processing pipeline started dropping 4% of webhook events at peak load.\"\n2. The Friction: \"The team wanted to rewrite the service in Go. I calculated that an index rebuild and queue batching would buy us 9 months for zsh.\"\n3. The Receipt: \"We shipped the patch on Tuesday at 2 AM. Latency dropped from 420ms to 65ms, and we saved ,000 on cloud compute.\"\n\nNotice the difference?\nCandidate A stated conclusions.\nCandidate B walked HR through the friction, the trade-off, and the mathematical receipt.\n\nHR recruiters aren't grading your syntax. They are listening for one thing:\nCan this engineer explain complex business trade-offs without hiding behind buzzwords?\n\nWhen you tell a mechanical story, you aren't bragging. You are handing them the receipts.\n\nWhat\u2019s your go-to framework when answering \"Tell me about a challenging project\" in interviews?",
+    "char_count": 1458,
+    "status": "published",
+    "created_at": "2026-09-23T17:04:32.215422+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ab4071445d744ef6cced758",
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260923_165824_3ddc1e",
+    "topic": "The HR Interview Trap: Why Resume Bullet Points Lose to Mechanical Storytelling",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Founder Angle",
+    "content": "R.I.P. to the traditional way of handling the hr interview trap: why resume bullet points lose to mechanical storytelling.\n\nOver the last 6 months, we ran an experiment comparing the old manual approach against an automated workflow.\n\nThe old way:\n- High manual friction\n- Slow turnaround times\n- Scaling linearly with hours worked\n\nThe automated way:\n- Human sets the criteria and review threshold\n- Automation drafts, audits, and formats in seconds\n- One-click approval before anything touches production\n\nYou don't need a bigger team. You need tighter feedback loops.\n\nWhat part of your workflow are you automating next?",
+    "char_count": 623,
+    "status": "published",
+    "created_at": "2026-09-23T16:58:24.157869+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ab4054465274a6510ddd538",
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260921_100057_eb49bf",
+    "topic": "The Engineering Discipline Behind 99.9% LLM Reliability",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Exposing the illusion of raw model reliability and detailing the deterministic systems engineering required to bridge the gap from 85% chat demos to 99.9% production uptime.",
+    "content": "Most engineering teams deploy frontier models like stateless microservices. They treat inference as a black box and cross their fingers.\n\nThen traffic spikes, KV caches fragment, and their API error rate breaches the SLA.\n\nGetting an LLM to work in a sandbox is a data science task. Keeping it alive under load requires ruthless systems architecture.\n\nHere is the exact blueprint we used to hit 99.9% uptime:\n\n1. Deterministic Fallbacks\nNever rely on a single provider. We maintain an asynchronous hot-swap layer between vLLM clusters on AWS and managed endpoints. If TTFT exceeds 400ms, traffic reroutes in milliseconds.\n\n2. Strict Output Schemas\nOpen-ended generation is a production liability. We enforce constrained decoding at the logits level using Grammar-based sampling. If the output fails the JSON schema check, it never touches the client application.\n\n3. Memory Budgeting\nContext window expansion destroys memory bandwidth. We implement aggressive sliding-window attention combined with paged KV caching to prevent OOM errors during peak concurrency.\n\nReliability is never an accident of the model weights.\n\nIt is the sum of defensive timeouts, deterministic parsers, and fault-tolerant infrastructure.\n\nWhat is your current fallback strategy when your primary inference provider goes down?",
+    "char_count": 1302,
+    "status": "published",
+    "created_at": "2026-09-21T10:00:57.329381+00:00",
+    "scheduled_time": "2026-09-25T04:00:00Z",
+    "published_at": null,
+    "publora_id": "6ac0f5808e647f6b17b1cdc7",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Scheduled post limit reached', 'code': 'SCHEDULED_POST_LIMIT_REACHED', 'metric': 'posts.scheduled_active', 'message': 'Your Starter plan allows up to 3 active scheduled posts across the workspace.', 'limit': 3, 'used': 3, 'requested': 1, 'remaining': 0, 'periodStart': None, 'periodEnd': None, 'planName': 'Starter', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260921_095116_522022",
+    "topic": "The 3 Non-Negotiable Rules of Production Multi-Agent Systems",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Technical pragmatism over AI hype",
+    "content": "Most engineers treat multi-agent systems like a game of telephone. They chain LLMs together and pray the latency doesn't kill the UX. \n\nIt isn't about how many agents you deploy. It is about how much state you bleed.\n\nHere are the three rules I enforce before pushing agentic workflows to production:\n\n1. Deterministic Orchestration over Autonomous Loops\nAutonomous agents looping until they reach a 'goal' are just infinite cost generators. In production, you need a directed acyclic graph (DAG) structure. If the agent can't solve a task in three steps, it should fail and return control to the system orchestrator. Never let a model decide its own exit condition without a hard token limit or a step-counter check.\n\n2. The KV Cache is Your Bottleneck\nEvery additional agent in your chain adds overhead to your memory bandwidth. If you are passing full conversation histories between agents, you are burning money on redundant token processing. Use a central state store\u2014like Redis or a dedicated vector memory\u2014and only inject the specific context delta required for the next task. Context window bloat is the silent killer of inference speed.\n\n3. Observability is Not Optional\nIf you can\u2019t trace the exact prompt that caused a hallucination in the third agent of your chain, your system is a black box. You need structured logging that captures the input, output, and latency for every single hop. If your telemetry doesn't show the cost per turn, you are flying blind. \n\nBuilding agents is easy. Keeping them from drifting into incoherent, expensive loops is where the engineering happens.\n\nWhich stage of your agentic pipeline currently has the highest failure rate: the orchestration layer, the tool-calling accuracy, or the context retrieval?",
+    "char_count": 1749,
+    "status": "published",
+    "created_at": "2026-09-21T09:51:16.455443+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f584a084c9a8f8c231e6",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Scheduled post limit reached', 'code': 'SCHEDULED_POST_LIMIT_REACHED', 'metric': 'posts.scheduled_active', 'message': 'Your Starter plan allows up to 3 active scheduled posts across the workspace.', 'limit': 3, 'used': 3, 'requested': 1, 'remaining': 0, 'periodStart': None, 'periodEnd': None, 'planName': 'Starter', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260921_094618_890cf3",
+    "topic": "The Engineering Reality of AI Autonomous Agents in 2026",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Exposing the severe architectural bottlenecks of multi-agent loops and shifting the focus from agent autonomy to deterministic state machines.",
+    "content": "Autonomous AI agents are failing in production, and the root cause has nothing to do with model intelligence.\n\nWe spent two years scaling LLM reasoning depth. We added tree-of-thought, self-correction loops, and massive tool-calling schemas.\n\nThen we pushed them into asynchronous enterprise workflows and watched failure rates compound exponentially.\n\nHere is the raw engineering math behind why infinite-loop agents break:\n\n1. Error Amplification in KV Caches\nEvery tool-use iteration appends hundreds of tokens of noisy execution logs back into the context window. By step 14 of an unconstrained loop, attention dilution degrades instruction adherence. The model forgets its original system prompt because it is drowning in its own debugging breadcrumbs.\n\n2. Unbounded Latency Budgets\nDeterministic APIs expect sub-200ms responses. Multi-agent delegation chains easily span 45 to 90 seconds. When a single web-scraping tool times out or a JSON schema validation fails, the cascade forces exponential retries, blowing past upstream gateway timeouts.\n\n3. Non-Deterministic State Mutation\nWriting database transactions via natural language tool calls is a distributed systems nightmare. Agents lack native ACID guarantees. They issue conflicting SQL statements when intermediate reasoning drifts, corrupting state faster than a runaway migration script.\n\nThe industry pivot for 2026 is clear: abandon autonomous agent loops.\n\nReplace them with deterministic state graphs where LLMs act strictly as local inference engines inside hardcoded routing boundaries.\n\nGive the model a narrow vector space, restrict its output to strictly typed JSON, and handle all orchestration through immutable state machines.\n\nStop paying for infinite reasoning loops when your business logic requires deterministic reliability.\n\nHow is your team handling state management inside LLM orchestration layers right now?",
+    "char_count": 1894,
+    "status": "published",
+    "created_at": "2026-09-21T09:46:18.354228+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f5888e647f6b17b1ce5b",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Scheduled post limit reached', 'code': 'SCHEDULED_POST_LIMIT_REACHED', 'metric': 'posts.scheduled_active', 'message': 'Your Starter plan allows up to 3 active scheduled posts across the workspace.', 'limit': 3, 'used': 3, 'requested': 1, 'remaining': 0, 'periodStart': None, 'periodEnd': None, 'planName': 'Starter', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260921_093907_d7746c",
+    "topic": "The Reality of LLM Inference Latency vs Raw Cost",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Exposing the hidden production trade-off between sub-100ms LLM serving costs and the brutal economics of unoptimized KV caches.",
+    "content": "Last Tuesday, our inference bill spiked 340% while user latency barely budged.\n\nWe did not change the model weights. We did not scale traffic by an order of magnitude.\n\nWe just let unoptimized KV cache memory fragment across our GPU clusters.\n\nMost teams building AI products optimize for the wrong metric. They chase lower token costs on paper while bleeding margin on memory bandwidth.\n\nHere is what the cloud providers will not highlight in their marketing brochures:\n\n1. The Memory Wall\nRaw compute flops are cheap. Moving data from system RAM to HBM on an A100 is where systems bottleneck. If your context window sits at 8k tokens, storing the attention keys and values drains memory bandwidth faster than compute units can ingest them.\n\n2. Batching Illusions\nContinuous batching improves throughput on paper. But if your incoming request length distribution has high variance, your tail latency spikes. One outlier prompt requesting a 4k output stalls the entire dynamic batch for every other user.\n\n3. Quantization Penalties\nDropping from FP16 to INT8 or INT4 saves memory footprint. It also introduces decode-phase degradation that silently breaks structured JSON outputs. You save money on VRAM only to pay twice in engineering hours debugging malformed API payloads.\n\nIf your architecture treats LLM calls like stateless HTTP requests, you are paying a permanent stupidity tax.\n\nState management in inference requires explicit prompt caching strategies,PagedAttention primitives, and ruthless token budgeting before requests ever hit the socket.\n\nHow are you currently managing KV cache eviction in production?",
+    "char_count": 1620,
+    "status": "published",
+    "created_at": "2026-09-21T09:39:07.067820+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f58ca084c9a8f8c23271",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Scheduled post limit reached', 'code': 'SCHEDULED_POST_LIMIT_REACHED', 'metric': 'posts.scheduled_active', 'message': 'Your Starter plan allows up to 3 active scheduled posts across the workspace.', 'limit': 3, 'used': 3, 'requested': 1, 'remaining': 0, 'periodStart': None, 'periodEnd': None, 'planName': 'Starter', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260921_091229_66fe2b",
+    "topic": "The Collapse of Manual OSINT: How Multimodal AI Rewrote Cyber Threat Intelligence (Part 1/3)",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Engineering post-mortem on how multimodal AI collapsed traditional Open Source Intelligence workflows",
+    "content": "R.I.P. Manual OSINT.\n\nFor a decade, security teams relied on inverted image searches, metadata scraping, and manual forum cross-referencing to map threat vectors.\n\nThat playbook is dead.\n\nWhen a nation-state actor leaks a photo of an unpatched SCADA dashboard today, they aren't worried about EXIF data.\n\nThey are worried about vision-language models parsing the ambient reflection in a half-empty coffee mug.\n\nHere is what changed in the security stack:\n\n1. Pixel-to-Vector Translation: Modern multimodal models convert raw CCTV stills into spatial embeddings instantly. You no longer need to know the street name; the transformer maps the architectural facade against global satellite vectors in milliseconds.\n\n2. Automated Attribution at Scale: Script kiddies used to spend weeks correlating GitHub handles with forum posts. Autonomous agent swarms now execute social graph analysis across millions of data points before your morning standup ends.\n\n3. The Synthetic Noise Problem: The real breach isn't finding the needle in the haystack. It is filtering out the petabytes of AI-generated decoys adversaries now deploy to poison OSINT ingestion pipelines.\n\nThe pros? Incident response times drop from days to seconds.\n\nThe cons? Attackers use the exact same automated intelligence loops to discover zero-days faster than internal fuzzers can catch them.\n\nIf your security team is still treating threat intelligence as a manual research task, you are defending against 2024 threats with 2014 tooling.\n\nHow is your security architecture handling automated adversarial reconnaissance?",
+    "char_count": 1584,
+    "status": "published",
+    "created_at": "2026-09-21T09:12:29.507781+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f590a084c9a8f8c232c4",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": "HTTP 403: {'error': 'Scheduled post limit reached', 'code': 'SCHEDULED_POST_LIMIT_REACHED', 'metric': 'posts.scheduled_active', 'message': 'Your Starter plan allows up to 3 active scheduled posts across the workspace.', 'limit': 3, 'used': 3, 'requested': 1, 'remaining': 0, 'periodStart': None, 'periodEnd': None, 'planName': 'Starter', 'workspaceScope': True, 'workspaceMemberCount': 1}"
+  },
+  {
+    "id": "post_20260920_072108_46d68a",
+    "topic": "The Outage Pipeline Flywheel",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Outage Flywheel & High-Ticket Trust",
+    "content": "At 3:14 AM last Tuesday, our vector search cluster dropped 40% of queries with 504 gateway timeouts.\n\nInstead of hiding it behind a status page, I published the raw Grafana dashboard and root cause analysis on LinkedIn.\n\nBy noon, two Fortune 500 engineering directors reached out.\n\nNot to complain.\n\nThey wanted to buy our enterprise tier.\n\nHere is why transparent technical incident logs build more trust than any press release:\n\n1. Procurement teams are tired of marketing fluff.\nWhen an enterprise evaluates a $200k AI platform, they assume things will break.\nWhat they want to see is how your team debugs under pressure.\nSharing our memory leak in the embedding pipeline proved we own our code.\n\n2. Real engineering rigor attracts real buyers.\nGeneric case studies list vanity metrics.\nOur post detailed exactly how we misconfigured the Redis connection pool and the exact timeout threshold we implemented to fix it.\nCTOs read that and thought: These people know production realities.\n\n3. Vulnerability is a competitive moat.\nMost founders hide behind polished product launches.\nWhen you openly share a production crash\u2014complete with the traceback and the stupid mistake that caused it\u2014you signal absolute confidence.\n\nIf you want to close enterprise accounts, stop publishing success stories.\n\nStart publishing your worst production post-mortems.\n\nHow does your team handle transparency when production goes dark?",
+    "char_count": 1418,
+    "status": "published",
+    "created_at": "2026-09-20T07:21:08.668570+00:00",
+    "scheduled_time": "2026-09-24T04:00:00.000Z",
+    "published_at": null,
+    "publora_id": "6ac0f5938e647f6b17b1cf4c",
+    "approved_by": "Aryan (Air Now)"
+  },
+  {
+    "id": "post_20260920_072035_cf44c3",
+    "topic": "The Shadow Data Sovereignty War: Why Indian enterprises are banishing US cloud LLMs",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Engineering architectural shifts in enterprise AI due to data sovereignty mandates",
+    "content": "Last Tuesday, a Chief Risk Officer locked me in a glass room and showed me an outbound telemetry packet.\n\nIt contained raw prompts sent to a US-hosted frontier model. It also contained unmasked PII of 45,000 banking customers.\n\nThat was the exact moment their multi-cloud AI strategy died.\n\nIndian enterprises are quietly pulling their workloads off foreign APIs and ripping out cloud-dependent LLMs.\n\nThey are not doing this for compliance theater. They are doing it because vector inversion attacks can reconstruct original training data and proprietary source code from embedding spaces alone.\n\nHere is what is actually happening behind closed boardroom doors:\n\n1. The Latency Wall:\nRouting requests via US data centers adds a baseline 240ms round-trip tax.\nFor real-time financial fraud detection, that budget is non-negotiable.\n\n2. The Data Gravity Trap:\nStreaming enterprise data across borders triggers immediate regulatory crosshairs under regional data protection acts.\nCloud egress fees are cheap; regulatory fines are existential.\n\n3. The Air-Gapped Pivot:\nEngineering teams are deploying Llama-3 and Mistral variants inside local data centers on bare-metal clusters.\nZero external telemetry. Zero third-party API dependencies.\n\nThe 3 technical shifts required for local enterprise deployment:\n\n- Swapping managed vector databases for self-hosted pgvector instances with row-level security.\n- Implementing aggressive client-side regex masking before tokens ever touch local embeddings.\n- Tuning smaller 8B and 70B open weights models locally instead of renting trillion-parameter black boxes.\n\nThe brutal reality of AI engineering is simple.\n\nConvenience belongs in the prototype phase.\n\nSovereignty belongs in production.\n\nAre you building your next AI system for developer speed or data survival?",
+    "char_count": 1809,
+    "status": "published",
+    "created_at": "2026-09-20T07:20:35.448187+00:00",
+    "scheduled_time": "2026-09-25T10:00:36Z",
+    "published_at": null,
+    "publora_id": "6ab645be63895eeae3520030",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260920_072029_752309",
+    "topic": "The Myth of Autonomous Agent Swarms",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Why deterministic DAGs beat free-roaming agents in production",
+    "content": "Most engineering teams building autonomous agent swarms are walking into a production disaster.\n\nThey watch demo videos of multi-agent loops talking to each other and assume they are ready for enterprise workloads.\n\nThen compound error rates hit their API bills and databases.\n\nHere is what actually happened when we deployed a fully autonomous multi-agent swarm for a client pipeline:\n\nAgent A hallucinated a JSON key on iteration 12.\n\nAgent B interpreted that malformed key as a system prompt override.\n\nAgent C spent four hundred dollars in OpenAI API calls trying to parse empty strings before anyone noticed the telemetry leak.\n\nFree-roaming agent swarms sound incredible in slide decks.\n\nIn reality, they are non-deterministic chaos factories with zero traceability.\n\nThe 3 shifts we made to fix this:\n\n1. Ripped out the open-ended chat loops.\n2. Replaced them with a deterministic Directed Acyclic Graph.\n3. Hardcoded state transitions using strict Pydantic schemas at every single node boundary.\n\nThe brutal reality: LLMs are probabilistic text predictors, not reliable state managers.\n\nIf your architecture relies on agents peacefully negotiating tasks without hard programmatic constraints, you do not have an AI system.\n\nYou have an expensive random number generator.\n\nState machines control the flow.\n\nModels only do the thinking inside the nodes.\n\nHow is your team handling state management in complex AI pipelines right now?",
+    "char_count": 1438,
+    "status": "published",
+    "created_at": "2026-09-20T07:20:29.439000+00:00",
+    "scheduled_time": "2026-09-22T04:00:00.000Z",
+    "published_at": null,
+    "publora_id": "6ac0f5978e647f6b17b1cf88",
+    "approved_by": "Aryan (Air Now)"
+  },
+  {
+    "id": "post_20260920_072023_8f262d",
+    "topic": "The Vibe-Coding Hangover: Scaling Cursor Prototypes to 5,000 Users",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Technical reality check on AI-generated code meeting production traffic",
+    "content": "Last week, a prototype built entirely in Cursor via prompt engineering hit 5,000 concurrent users.\n\nIt took 48 hours to build.\n\nIt took 4 hours to completely crash under basic production load.\n\nHere is what actually happened:\n\nVibe-coding gives you working software at lightning speed.\n\nIt does not give you architectural foresight.\n\nWhen the traffic spike hit, the AI-generated Postgres schema immediately choked.\n\nUnindexed foreign keys caused full table scans on every user lookup.\n\nThe connection pool saturated because the ORM was opening a new client per request instead of reusing sockets.\n\nThe 3 technical failures nobody warns you about:\n\n1. Omitted database constraints.\nThe AI built beautiful TypeScript types but left the database layer completely unindexed, leading to runaway CPU spikes during read-heavy operations.\n\n2. Silent N+1 query loops.\nThe generated API routes fetched relational data sequentially rather than joining efficiently in a single query.\n\n3. Blind exception handling.\nErrors were caught and swallowed with generic console logs instead of structured telemetry and circuit breakers.\n\nWe spent three days rewriting database migrations and fixing query plans.\n\nSyntax speed means nothing when MTTR blows up because nobody understands the generated code.\n\nAI is an incredible co-pilot for writing boilerplate.\n\nIt is a terrible architect for distributed systems.\n\nHow are you auditing code velocity versus production stability in your engineering team?",
+    "char_count": 1481,
+    "status": "published",
+    "created_at": "2026-09-20T07:20:23.314526+00:00",
+    "scheduled_time": "2026-09-21T04:00:00.000Z",
+    "published_at": null,
+    "publora_id": "6aaf893b6bf27f35d22d20e1",
+    "approved_by": "Aryan"
+  },
+  {
+    "id": "post_20260920_072016_810260",
+    "topic": "The Token Unit-Economics Trap in AI SaaS",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Exposing the false unit-economics of AI software companies whose gross margins resemble low-margin IT consultancies.",
+    "content": "Most AI SaaS startups are running high-tech sweatshops disguised as software companies.\n\nTheir founders celebrate 80% top-line growth while their gross margins sit below 40%.\n\nHere is the brutal reality:\n\nIf every new user signup linearly spikes your inference bill, you did not build a software company.\n\nYou built a managed services agency with a fancy UI.\n\nSoftware scales at zero marginal cost.\n\nAI inference scales at linear compute cost.\n\nWhen we architected our latest document parsing pipeline at scale, we hit this exact P&L wall.\n\nUnoptimized GPT-4o calls for a 50-page PDF cost $0.64 per run.\n\nAt 100,000 runs a month, that math destroys your runway before payroll even clears.\n\nThe 3 architectural shifts we made to fix our unit-economics:\n\n1. Quantized SLMs over bloated frontier models.\nWe fine-tuned an 8B parameter model locally for structured extraction tasks.\nIt matches frontier model accuracy on narrow domains while cutting per-token costs by 85%.\n\n2. Aggressive context window pruning.\nPassing full conversation histories into every prompt is an expensive lazy tax.\nWe implemented sliding-window memory paired with vector summaries.\n\n3. Client-side deterministic pre-processing.\nRegex and lightweight WASM parsers handle 40% of standard data cleaning before touching an API.\n\nCompute is the new cloud bill.\n\nIf you ignore inference economics at the database layer, your investors are paying your OpenAI tab.\n\nHow are you defending your gross margins against rising token costs?",
+    "char_count": 1499,
+    "status": "published",
+    "created_at": "2026-09-20T07:20:16.758796+00:00",
+    "scheduled_time": "2026-09-20T13:00:00.000Z",
+    "published_at": null,
+    "publora_id": "6aaf89352026782830b1bffe",
+    "approved_by": "Aryan"
+  },
+  {
+    "id": "post_20260919_125855_270a25",
+    "topic": "The 3 Pillars of AI Velocity: Eval Harnesses, Human Taste Gates, and 5x Shipping",
+    "hook_formula": "F18 False-Binary Dissolve",
+    "angle": "Engineering Velocity & Taste Architecture",
+    "content": "Most engineering teams think they have to choose between shipping fast and keeping AI outputs reliable.\n\nThat is a false trade-off.\n\nLast quarter, our team shipped 5x more AI features while cutting failure rates in half.\n\nHere is the exact 3-part blueprint we used to do it:\n\n1. Replace manual busywork with evaluation harnesses\nManual prompt testing and spreadsheet reviews are dead.\nWe replaced eye-balling outputs with automated CI pipelines running golden test sets against every model iteration.\nIf semantic similarity drops below 0.92, assertion checks fail, or latency spikes past 350ms, the build breaks immediately.\nAutomated eval harnesses catch regressions before a single user ever sees them.\n\n2. Keep human taste at the review gate\nAutomation handles the brute-force grading, but humans must own the taste.\nWe built internal approval hubs where product leads review high-context diffs instead of wading through thousands of raw logs.\nModels are great at token probabilities, but terrible at nuance, tone, and brand resonance.\nAutomate the scorecards. Keep human taste at the final gate.\n\n3. Ship 5x faster with zero loss in fidelity\nSpeed without deterministic guardrails isn't velocity\u2014it's just high-speed technical debt.\nWhen your eval harness catches regressions in seconds and your approval hub takes 2 minutes to review, the fear of shipping evaporates.\nYou don't slow down to ensure quality.\nYour systems protect fidelity so you can move 5x faster with absolute conviction.\n\nStop treating AI workflows like an unpredictable casino.\n\nTreat them like rigorous software engineering.\n\nWhere is the biggest bottleneck in your pipeline right now: slow evaluation loops or manual review overhead?",
+    "char_count": 1709,
+    "status": "published",
+    "created_at": "2026-09-19T12:58:55.027645+00:00",
+    "scheduled_time": "2026-09-19T13:01:00Z",
+    "published_at": null,
+    "publora_id": "6aae87856bf27f35d227e80b",
+    "approved_by": "Aryan"
+  },
+  {
+    "id": "post_20260919_125754_3e0447",
+    "topic": "Why synthetic benchmarks are misleading AI engineering teams",
+    "hook_formula": "F11 Contrarian Metric Reveal",
+    "angle": "Engineering post-mortem exposing production vs benchmark metrics",
+    "content": "Your 94% MMLU score is a vanity metric.\n\nLast quarter, we shipped an LLM routing pipeline that beat every standard eval in staging. Clean tests, green dashboards, flawless scores.\n\nThen we pushed it to production.\n\nWithin 48 hours:\n\u2022 P99 latency spiked from 850ms to 4.2 seconds.\n\u2022 Cache hit rates plummeted from 71% to 19%.\n\u2022 Real task completion dropped by 38%.\n\nHere is what actually happened:\n\nSynthetic benchmarks evaluate static prompt-response pairs in sterile test suites. They do not simulate how real human beings batter an inference engine.\n\nThe 3 production traps synthetic evaluations hide from your team:\n\n1. Context Drift vs. Frozen Token Windows\nSynthetic datasets test against fixed context windows.\nIn production, multi-turn conversational state inflates your KV cache past 16k tokens rapidly.\nYour throughput collapses, GPU memory allocations spike, and TTFT (Time to First Token) degrades before the model generates a single word.\n\n2. The Latency Budget Illusion\nEval frameworks calculate accuracy across synchronous batch runs.\nThey completely ignore network tail latency, client retries, and vector database cold starts.\nIf your retrieval layer takes 400ms and your cross-encoder reranker takes 600ms, a model that gains 2% accuracy at the cost of 1.8s generation time will churn your active users.\n\n3. Unstructured Input Entropy\nBenchmarking suites run against grammatically sanitized inputs.\nReal production telemetry shows users paste raw stack traces, broken JSON, and 40-page unstructured documents.\nYour prompt templates fracture under dirty tokens, triggering expensive fallback chains that synthetic tests never hit.\n\nThe brutal reality:\nOffline accuracy without production telemetry is pure guesswork.\n\nStop celebrating static benchmark gains in team meetings.\n\nRun shadow traffic. Measure p95 TTFT, token generation cost, and downstream task retention against baseline cohorts.\n\nWhat does your p99 inference latency look like when context hits 16k tokens?",
+    "char_count": 1987,
+    "status": "published",
+    "created_at": "2026-09-19T12:57:54.168361+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6aaf87312026782830b1b489",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260919_123658_802acc",
+    "topic": "Comment on Vaibhav Sisinty's Viral AI Recap Post",
+    "hook_formula": "Contrarian Game Theory Take (Technical Insight)",
+    "angle": "Dual-Use Asymmetry & Distillation Moats",
+    "content": "The paradox makes total sense when you look at the game theory: safety calls from frontier labs are public theater while the compute race is pure prisoner's dilemma.\n\nThe scariest bulletin on this list isn't the existential risk essays.. it's the 3 million daily synthetic distillation queries and the Yemen guided rocket incident. When frontier models are accessible via API, the barrier to dual-use weaponization drops from state-level R&D budgets to a few thousand dollars in compute tokens.\n\nYou can't pause open weights with a boardroom handshake. Do you think voluntary lab slowdowns stand any chance against open-source distillation?",
+    "char_count": 640,
+    "status": "published",
+    "created_at": "2026-09-19T12:36:58.400244+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "target_url": "https://www.linkedin.com/posts/vaibhavsisinty_the-last-7-days-in-ai-were-unlike-anything-activity-7505196157631909889-7aJS",
+    "post_urn": "urn:li:activity:7505196157631909889",
+    "approved_by": "Aryan",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260919_122836_583a13",
+    "topic": "The Illusion of Privacy in the AI Digital Era",
+    "hook_formula": "F04 Time-Anchor Confession + Contrast",
+    "angle": "Vaibhav Sisinty + Engineer Hybrid",
+    "content": "We spent 15 years obsessing over cookie banners and 16-character passwords.\n\nLast week, an engineer showed me an internal LLM session log.\nIn 4 minutes, I realized that modern privacy is completely dead.\n\nMost people still think privacy in 2026 means:\n- Turning on Incognito mode\n- Using 2-factor authentication\n- Clicking 'Reject all cookies'\n\nThat was Web2 privacy.\nIn the AI era, none of that protects you.\n\nHere is the engineering truth nobody tells you about AI products:\n\n1. Your prompts are vectorized, not just stored.\nWhen you paste a messy problem, your text is converted into 1,536-dimensional math. It doesn't just record your words. It encodes your intent, your cognitive weaknesses, and your unwritten habits.\n\n2. 'Deleting your data' is a mathematical fiction.\nWhen an LLM trains or fine-tunes on your data, your private context becomes part of billions of floating-point weights. There is no 'DELETE FROM table WHERE user_id = me' in deep learning. You cannot surgically unlearn a concept from a neural net.\n\n3. The real currency isn't your email. It's your thought process.\nEvery draft you ask an agent to polish reveals how you reason, how you negotiate, and where your code breaks.\n\nWe aren't paying for AI tools with \\$20 monthly subscriptions.\nWe are paying with our cognitive blueprints.\n\nIf you build software: stop sending raw customer context to third-party endpoints without local anonymization.\nIf you use AI: treat every prompt as if it will be read aloud at your next board meeting.\n\nAre we already too late to reclaim digital privacy, or is local on-device AI our only way out?",
+    "char_count": 1607,
+    "status": "published",
+    "created_at": "2026-09-19T12:28:36.180446+00:00",
+    "scheduled_time": "2026-09-20T07:18:00.000Z",
+    "published_at": null,
+    "publora_id": "6aaf87ff6bf27f35d22d1ca6",
+    "approved_by": "Aryan",
+    "publish_error": "HTTPSConnectionPool(host='api.publora.com', port=443): Max retries exceeded with url: /api/v1/create-post (Caused by NameResolutionError(\"HTTPSConnection(host='api.publora.com', port=443): Failed to resolve 'api.publora.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+  },
+  {
+    "id": "post_20260919_122541_13b411",
+    "topic": "Right to privacy in Digital era",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Founder Angle",
+    "content": "R.I.P. to the old way of right to privacy in digital era.\n\nHere is how high-performing teams are solving this in 2026:\n1. Replace manual busywork with evaluation harnesses\n2. Keep human taste at the review gate\n3. Ship 5x faster with zero loss in fidelity.\n\nWhat's your team's approach this quarter?",
+    "char_count": 299,
+    "status": "rejected",
+    "created_at": "2026-09-19T12:25:41.033486+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "rejected_by": "Aryan"
+  },
+  {
+    "id": "post_20260919_122447_3b8e9e",
+    "topic": "Privacy rights in AI digital era",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Founder Angle",
+    "content": "R.I.P. to the old way of privacy rights in ai digital era.\n\nHere is how high-performing teams are solving this in 2026:\n1. Replace manual busywork with evaluation harnesses\n2. Keep human taste at the review gate\n3. Ship 5x faster with zero loss in fidelity.\n\nWhat's your team's approach this quarter?",
+    "char_count": 300,
+    "status": "rejected",
+    "created_at": "2026-09-19T12:24:47.803012+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "rejected_by": "Aryan"
+  },
+  {
+    "id": "post_20260919_122030_7b88ca",
+    "topic": "Why small AI teams beat 50-person agencies",
+    "hook_formula": "F02 R.I.P. Category Obituary",
+    "angle": "Founder Angle",
+    "content": "R.I.P. to the traditional way of handling why small ai teams beat 50-person agencies.\n\nOver the last 6 months, we ran an experiment comparing the old manual approach against an automated workflow.\n\nThe old way:\n- High manual friction\n- Slow turnaround times\n- Scaling linearly with hours worked\n\nThe automated way:\n- Human sets the criteria and review threshold\n- Automation drafts, audits, and formats in seconds\n- One-click approval before anything touches production\n\nYou don't need a bigger team. You need tighter feedback loops.\n\nWhat part of your workflow are you automating next?",
+    "char_count": 586,
+    "status": "rejected",
+    "created_at": "2026-09-19T12:20:30.320823+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": null,
+    "rejected_by": "Aryan"
+  },
+  {
+    "id": "post_20260919_121718_82f5bf",
+    "topic": "First Follow-up Comment on Your Live LinkedIn Post",
+    "hook_formula": "Strategic First Comment (Sparks Sub-Thread)",
+    "angle": "Engineering Receipt",
+    "content": "The biggest bottleneck we hit in the experiment wasn't prompt accuracy.. it was validation latency.\n\nWhen you replace manual review with automated assertion gates, you catch 90% of model drift before anything touches production. The real competitive moat is how fast you can verify outputs.",
+    "char_count": 290,
+    "status": "published",
+    "created_at": "2026-09-19T12:17:18.473870+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f59ba084c9a8f8c23351",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260919_113511_af6ad3",
+    "topic": "The 10:1 delegation rule for AI agents",
+    "hook_formula": "F17 Controlled A/B Anecdote",
+    "angle": "The limit of delegation",
+    "content": "We gave two engineers the exact same task: automate our customer onboarding audit.\n\nEngineer A spent 3 days writing a 600-line Python scraper with fragile regexes.\nEngineer B spent 3 hours writing an evaluation harness, then let an agent generate the parser.\n\nThe results after 30 days in production:\n\n- Engineer A's script broke on edge cases 14 times. Maintenance time: 22 hours.\n- Engineer B's harness caught 100% of formatting shifts before deployment. Maintenance time: 40 minutes.\n\nThe lesson isn't 'AI writes better code.'\nThe lesson is that leverage has shifted from writing logic to building evaluation gates.\n\nYou don't manage agents by inspecting every line of syntax.\nYou manage them like a senior manager: define the test suite, verify the edge cases, and inspect the diff.\n\nAre you spending more time writing code, or evaluating what code should do?",
+    "char_count": 863,
+    "status": "published",
+    "created_at": "2026-09-19T11:35:11.629497+00:00",
+    "scheduled_time": null,
+    "published_at": null,
+    "publora_id": "6ac0f59fa084c9a8f8c23395",
+    "approved_by": "Aryan (Air Now)",
+    "publish_error": null
+  },
+  {
+    "id": "post_20260925_095730_live",
+    "topic": "The Shadow Data Sovereignty War: Why Indian enterprises are banishing US cloud LLMs",
+    "hook_formula": "F04 Time-Anchor Confession",
+    "angle": "Engineering architectural shifts in enterprise AI due to data sovereignty mandates",
+    "content": "Last Tuesday, a Chief Risk Officer locked me in a glass room and showed me an outbound telemetry packet.\n\nIt contained raw prompts sent to a US-hosted frontier model. It also contained unmasked PII of 45,000 banking customers.\n\nThat was the exact moment their multi-cloud AI strategy died.\n\nIndian enterprises are quietly pulling their workloads off foreign APIs and ripping out cloud-dependent LLMs.\n\nThey are not doing this for compliance theater. They are doing it because vector inversion attacks can reconstruct original training data and proprietary source code from embedding spaces alone.\n\nHere is what is actually happening behind closed boardroom doors:\n\n1. The Latency Wall:\nRouting requests via US data centers adds a baseline 240ms round-trip tax.\nFor real-time financial fraud detection, that budget is non-negotiable.\n\n2. The Data Gravity Trap:\nStreaming enterprise data across borders triggers immediate regulatory crosshairs under regional data protection acts.\nCloud egress fees are cheap; regulatory fines are existential.\n\n3. The Air-Gapped Pivot:\nEngineering teams are deploying Llama-3 and Mistral variants inside local data centers on bare-metal clusters.\nZero external telemetry. Zero third-party API dependencies.\n\nThe 3 technical shifts required for local enterprise deployment:\n\n- Swapping managed vector databases for self-hosted pgvector instances with row-level security.\n- Implementing aggressive client-side regex masking before tokens ever touch local embeddings.\n- Tuning smaller 8B and 70B open weights models locally instead of renting trillion-parameter black boxes.\n\nThe brutal reality of AI engineering is simple.\n\nConvenience belongs in the prototype phase.\n\nSovereignty belongs in production.\n\nAre you building your next AI system for developer speed or data survival?",
+    "char_count": 1809,
+    "status": "published",
+    "created_at": "2026-09-25T09:57:30.213543+00:00",
+    "scheduled_time": "2026-09-25T10:02:30Z",
+    "published_at": null,
+    "publora_id": "6ab6459eff09e5ce9081203c",
+    "approved_by": "Aryan (Mobile 1-Tap)",
+    "publish_error": null
+  }
+];
+</script>
+
+<script>
+let activeTab = 'pending_approval';
+let allDrafts = [];
+
+async function apiFetch(url, options = {}) {
+  options.headers = Object.assign({
+    'ngrok-skip-browser-warning': 'true',
+    'Content-Type': 'application/json'
+  }, options.headers || {});
+  return fetch(url, options);
+}
+
+async function loadData() {
+  try {
+    const res = await apiFetch('/api/drafts');
+    const contentType = (res.headers && res.headers.get('content-type')) || '';
+    if (res.ok && contentType.includes('json')) {
+      allDrafts = await res.json();
+    } else if (typeof SEED_STATIC_DRAFTS !== 'undefined' && Array.isArray(SEED_STATIC_DRAFTS)) {
+      allDrafts = SEED_STATIC_DRAFTS;
+    }
+    updateStats();
+    renderTab();
+  } catch(e) {
+    console.error('Error loading drafts:', e);
+    renderTab();
+  }
+}
+
+function updateStats() {
+  const pending = allDrafts.filter(d => d.status === 'pending_approval').length;
+  const scheduled = allDrafts.filter(d => d.status === 'scheduled' || d.status === 'approved').length;
+  const published = allDrafts.filter(d => d.status === 'published').length;
+  const rejected = allDrafts.filter(d => d.status === 'rejected').length;
+
+  document.getElementById('stat-pending').innerText = pending;
+  document.getElementById('stat-scheduled').innerText = scheduled;
+  document.getElementById('stat-published').innerText = published;
+  document.getElementById('stat-rejected').innerText = rejected;
+
+  document.getElementById('tab-badge-pending').innerText = pending;
+  document.getElementById('tab-badge-scheduled').innerText = scheduled;
+  document.getElementById('tab-badge-published').innerText = published;
+  document.getElementById('tab-badge-rejected').innerText = rejected;
+}
+
+function switchTab(tabName) {
+  activeTab = tabName;
+  document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+  const activeBtn = document.getElementById('tab-' + tabName);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const oppsCont = document.getElementById('opportunitiesContainer');
+  const draftsCont = document.getElementById('draftsContainer');
+
+  if (tabName === 'opportunities') {
+    oppsCont.classList.remove('d-none');
+    draftsCont.classList.add('d-none');
+    renderOpportunities();
+    loadOpportunities();
+  } else {
+    oppsCont.classList.add('d-none');
+    draftsCont.classList.remove('d-none');
+    renderTab();
+  }
+}
+
+function renderTab() {
+  const container = document.getElementById('draftsContainer');
+  let list = allDrafts;
+
+  if (activeTab !== 'all') {
+    if (activeTab === 'scheduled') {
+      list = allDrafts.filter(d => d.status === 'scheduled' || d.status === 'approved');
+    } else {
+      list = allDrafts.filter(d => d.status === activeTab);
+    }
+  }
+
+  if (!list || list.length === 0) {
+    let emptyMsg = 'No posts in this section.';
+    if (activeTab === 'pending_approval') emptyMsg = '🎉 Zero pending drafts! Type a topic above to draft your next post.';
+    if (activeTab === 'scheduled') emptyMsg = 'No posts currently scheduled. Approve a pending draft to schedule it.';
+    if (activeTab === 'rejected') emptyMsg = 'No rejected posts. When you reject a post, it moves here for safe keeping.';
+    container.innerHTML = `<div class="alert alert-light text-center py-5 border shadow-sm my-3">${emptyMsg}</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(d => {
+    const chars = d.char_count || (d.content || '').length;
+    const words = (d.content || '').trim().split(/\s+/).length;
+    const readTimeSec = Math.max(15, Math.round((words / 200) * 60));
+    const isComment = !!d.post_urn;
+
+    let charColor = 'badge-chars';
+    if (chars >= 900 && chars <= 1400) charColor = 'badge-safe';
+    else if (chars > 3000) charColor = 'bg-danger text-white';
+
+    let statusClass = 'status-pending';
+    let statusLabel = 'PENDING APPROVAL';
+    if (d.status === 'scheduled' || d.status === 'approved') { statusClass = 'status-scheduled'; statusLabel = '⏰ SCHEDULED / APPROVED'; }
+    if (d.status === 'published') { statusClass = 'status-published'; statusLabel = '🚀 LIVE ON LINKEDIN'; }
+    if (d.status === 'rejected') { statusClass = 'status-rejected'; statusLabel = '❌ REJECTED'; }
+
+    return `
+      <div class="post-card" id="card-${d.id}">
+        <!-- Card Header -->
+        <div class="post-header">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge ${isComment ? 'bg-info' : 'bg-primary'} text-white" style="font-size:11px;">
+                ${isComment ? '💬 Comment on Creator Post' : '📝 Feed Post'}
+              </span>
+              <span class="status-badge ${statusClass}">${statusLabel}</span>
+            </div>
+            <h5 class="fw-bold mb-0 text-dark">${escapeHtml(d.topic || 'Untitled Post')}</h5>
+          </div>
+          <div class="text-end text-muted small">
+            ID: <code class="text-secondary">${d.id.substring(0, 18)}</code>
+          </div>
+        </div>
+
+        <!-- Meta Bar -->
+        <div class="post-meta-bar">
+          <span class="badge-pill badge-hook">🎯 Hook: ${escapeHtml(d.hook_formula || 'Proven Hook')}</span>
+          ${d.angle ? `<span class="badge-pill badge-angle">💡 Angle: ${escapeHtml(d.angle)}</span>` : ''}
+          <span class="badge-pill ${charColor}">📏 ${chars} chars</span>
+          <span class="badge-pill badge-chars">⏱️ ~${readTimeSec}s read</span>
+          <span class="badge-pill badge-safe">🛡️ 0 AI Buzzwords</span>
+        </div>
+
+        <!-- Post Body -->
+        <div class="post-body" id="text-${d.id}">${escapeHtml(d.content)}</div>
+
+        ${d.publish_error ? `
+          <div class="mx-4 mb-3 p-2 px-3 rounded bg-warning bg-opacity-10 border border-warning text-dark small">
+            <strong>⚠️ Delivery Notice:</strong> ${escapeHtml(d.publish_error.length > 200 ? d.publish_error.substring(0, 200) + '...' : d.publish_error)}
+          </div>
+        ` : ''}
+
+        ${d.media_urls && d.media_urls.length > 0 ? `
+          <div class="px-4 pb-3 bg-white">
+            <img src="${d.media_urls[0]}" class="img-fluid rounded border" style="max-height: 320px;" alt="Post Media">
+          </div>
+        ` : ''}
+
+        <!-- Card Footer Actions -->
+        <div class="post-footer">
+          <div class="text-muted small">
+            ${d.status === 'published' 
+              ? '<span class="text-success fw-bold">✓ Published / Dispatched via Publora</span>'
+              : (d.status === 'scheduled'
+                ? `<span class="text-primary fw-bold">⏰ Scheduled for: ${d.scheduled_time || 'Next 10:00 AM slot'}</span>`
+                : `<span class="text-secondary">Suggested Slot: <strong>Today 10:00 AM</strong></span>`)}
+          </div>
+          <div class="d-flex gap-2">
+            ${d.status === 'pending_approval' ? `
+              <button class="btn btn-success btn-action" onclick="approveDraft('${d.id}')">✅ Approve & Post</button>
+              <button class="btn btn-outline-secondary btn-action" onclick="copyDraft('${d.id}')">📋 Copy</button>
+              <button class="btn btn-outline-danger btn-action" onclick="rejectDraft('${d.id}')">❌ Reject</button>
+            ` : ''}
+
+            ${d.status === 'published' ? `
+              <a href="${d.target_url || 'https://www.linkedin.com/in/aryan-sharma-engineer'}" target="_blank" class="btn btn-outline-primary btn-action">🔗 View on LinkedIn</a>
+              <button class="btn btn-outline-secondary btn-action" onclick="copyDraft('${d.id}')">📋 Copy</button>
+              <button class="btn btn-outline-warning btn-action" onclick="restoreDraft('${d.id}')">🔄 Re-Queue to Pending</button>
+            ` : ''}
+
+            ${(d.status === 'scheduled' || d.status === 'approved') ? `
+              <button class="btn btn-outline-secondary btn-action" onclick="copyDraft('${d.id}')">📋 Copy</button>
+              <button class="btn btn-outline-warning btn-action" onclick="restoreDraft('${d.id}')">🔄 Re-Queue to Pending</button>
+            ` : ''}
+
+            ${d.status === 'rejected' ? `
+              <button class="btn btn-outline-primary btn-action" onclick="restoreDraft('${d.id}')">🔄 Restore to Pending</button>
+              <button class="btn btn-outline-danger btn-action" onclick="deleteDraft('${d.id}')">🗑️ Permanently Delete</button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+async function manualRefresh() {
+  const btn = document.getElementById('refreshBtn');
+  const spinner = document.getElementById('refreshSpinner');
+  const text = document.getElementById('refreshText');
+  
+  spinner.classList.remove('d-none');
+  text.innerText = 'Refreshing...';
+  btn.disabled = true;
+
+  try {
+    await loadData();
+  } finally {
+    setTimeout(() => {
+      spinner.classList.add('d-none');
+      text.innerText = '🔄 Refresh';
+      btn.disabled = false;
+    }, 400);
+  }
+}
+
+async function approveDraft(id) {
+  if (!confirm('Approve and publish this post to your LinkedIn?')) return;
+  try {
+    const res = await apiFetch('/api/drafts/' + id + '/approve', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert('🎉 Post approved and scheduled for LinkedIn!');
+      await loadData();
+    } else {
+      alert('Notice: ' + (data.error || 'Failed to approve'));
+      await loadData();
+    }
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function rejectDraft(id) {
+  if (!confirm('Move this post to the Rejected tab?')) return;
+  await apiFetch('/api/drafts/' + id + '/reject', { method: 'POST' });
+  await loadData();
+}
+
+async function restoreDraft(id) {
+  await apiFetch('/api/drafts/' + id + '/restore', { method: 'POST' });
+  await loadData();
+  switchTab('pending_approval');
+}
+
+async function deleteDraft(id) {
+  if (!confirm('Permanently delete this draft?')) return;
+  await apiFetch('/api/drafts/' + id, { method: 'DELETE' });
+  await loadData();
+}
+
+function copyDraft(id) {
+  const text = document.getElementById('text-' + id).innerText;
+  navigator.clipboard.writeText(text);
+  alert('📋 Post copied to clipboard!');
+}
+
+async function generatePost() {
+  const topicInput = document.getElementById('newTopic');
+  const topic = topicInput.value.trim();
+  if (!topic) { alert('Please enter a topic or concept'); return; }
+
+  const style = document.getElementById('postStyle').value;
+  const length = document.getElementById('postLength').value;
+  const hook_formula = document.getElementById('hookPreference').value || null;
+  const instructions = document.getElementById('postInstructions').value.trim() || null;
+  
+  const btn = document.getElementById('generateBtn');
+  const spinner = document.getElementById('genSpinner');
+  const btnText = document.getElementById('genBtnText');
+
+  btn.disabled = true;
+  spinner.classList.remove('d-none');
+  btnText.innerText = 'Crafting with Gemini...';
+
+  try {
+    const res = await apiFetch('/api/drafts/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        topic,
+        style,
+        length,
+        hook_formula,
+        instructions
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      topicInput.value = '';
+      document.getElementById('postInstructions').value = '';
+      await loadData();
+      switchTab('pending_approval');
+      alert('✨ Post drafted by Gemini and queued for approval in Studio and Slack!');
+    } else {
+      alert('Generation Failed: ' + (data.error || 'Unknown error'));
+    }
+  } catch(e) {
+    alert('Network Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('d-none');
+    btnText.innerText = '✨ Draft with Gemini & Queue';
+  }
+}
+
+// --- Opportunities & Jobs Radar Logic ---
+const SEED_OPPORTUNITIES = [
+  {
+    "id": "gsoc-2026",
+    "title": "Open Source AI & Systems Contributor",
+    "organization": "Google Summer of Code (GSoC)",
+    "category": "Open Source Fellowship",
+    "deadline": "March 31 (Annual contributor proposal window)",
+    "cycle": "Annual Summer Batch",
+    "stipend": "$1,500 – $3,300+ (Stipend)",
+    "status": "Upcoming / Preparing Proposals",
+    "url": "https://summerofcode.withgoogle.com/",
+    "match_reason": "High synergy with Python, systems evaluation, and LLM prompt security research.",
+    "tags": ["AI/ML", "Open Source", "Google", "Systems"]
+  },
+  {
+    "id": "lfx-2026-term3",
+    "title": "Linux Foundation Mentee (Cloud Native & AI Infra)",
+    "organization": "Linux Foundation (LFX)",
+    "category": "Mentorship & Internship",
+    "deadline": "August 18 (Fall) / Jan 2027 (Spring)",
+    "cycle": "Tri-annual Cohorts",
+    "stipend": "$3,000 – $6,600",
+    "status": "Open for Exploration",
+    "url": "https://mentorship.lfx.linuxfoundation.org/",
+    "match_reason": "Direct match for Linux, backend data pipelines, and CNCF ecosystem projects.",
+    "tags": ["Cloud-Native", "Linux", "Kubernetes", "Systems"]
+  },
+  {
+    "id": "mlh-fellowship",
+    "title": "Open Source Software & AI Fellow",
+    "organization": "Major League Hacking (MLH)",
+    "category": "Global Fellowship",
+    "deadline": "August 31 (Fall) / Rolling for Spring",
+    "cycle": "Spring / Summer / Fall",
+    "stipend": "$5,000 Educational Grant",
+    "status": "Active / Rolling Applications",
+    "url": "https://fellowship.mlh.io/",
+    "match_reason": "Perfect match for remote engineering contributions and student developer cohorts.",
+    "tags": ["Software Engineering", "AI", "Open Source"]
+  },
+  {
+    "id": "github-octernships",
+    "title": "Open Source Engineering & Systems Intern",
+    "organization": "GitHub Education & Partner Orgs",
+    "category": "Global Remote Internship",
+    "deadline": "Rolling (Monthly project cycles)",
+    "cycle": "Year-Round Batches",
+    "stipend": "$500 – $2,500/month (Stipend)",
+    "status": "Active / Rolling Applications",
+    "url": "https://github.com/education/octernships",
+    "match_reason": "High synergy with public GitHub repositories, open-source code contribution, and automated pipelines.",
+    "tags": ["GitHub", "Open Source", "Remote", "SWE"]
+  },
+  {
+    "id": "anthropic-safety-fellow",
+    "title": "Model Alignment & Red-Teaming Research Fellow",
+    "organization": "Anthropic",
+    "category": "Frontier AI Safety Fellowship",
+    "deadline": "Rolling Applications",
+    "cycle": "4–6 month Fellowship Cohorts",
+    "stipend": "Top-tier Frontier Lab Pay (~$15,000+/month)",
+    "status": "Active / Rolling Applications",
+    "url": "https://www.anthropic.com/careers",
+    "match_reason": "100% direct match for Aryan's published paper on LLM prompt injection and semantic security.",
+    "tags": ["Anthropic", "AI Safety", "Red Teaming", "Claude"]
+  },
+  {
+    "id": "microsoft-research-intern",
+    "title": "AI & Systems Research Intern",
+    "organization": "Microsoft Research (MSR)",
+    "category": "Tier-1 Industrial AI Lab Internship",
+    "deadline": "Rolling (Opens Fall for Summer)",
+    "cycle": "12-week Summer Batch",
+    "stipend": "$8,000 – $10,500/month + Housing",
+    "status": "Active / Rolling Applications",
+    "url": "https://careers.microsoft.com/v2/global/en/students/research",
+    "match_reason": "Synergistic with LLM prompt vulnerability publication, AI evaluation at Handshake, and safety alignment.",
+    "tags": ["Microsoft", "AI Research", "NLP", "Security"]
+  },
+  {
+    "id": "cern-openlab-2027",
+    "title": "Computing & AI Research Student Intern",
+    "organization": "CERN (Geneva, Switzerland)",
+    "category": "Scientific Computing & AI Residency",
+    "deadline": "January 31 annually",
+    "cycle": "Summer 9-week Residency",
+    "stipend": "~90 CHF/day (~$3,000/mo tax-free) + Travel",
+    "status": "Applications Open Nov – Jan",
+    "url": "https://openlab.cern/education/summer-student-programme",
+    "match_reason": "Aligns directly with NASA Sagan workshop background, computational pipelines, and physics data analysis.",
+    "tags": ["CERN", "High Performance Computing", "AI", "Europe"]
+  },
+  {
+    "id": "google-student-researcher",
+    "title": "Student Researcher (AI / Deep Learning)",
+    "organization": "Google Careers",
+    "category": "Big Tech Research Internship",
+    "deadline": "Rolling (Opens Aug – Oct annually)",
+    "cycle": "Summer Cycle",
+    "stipend": "Top-tier Big Tech SWE Compensation",
+    "status": "Active / Rolling Applications",
+    "url": "https://careers.google.com/students/",
+    "match_reason": "Strong alignment with LLM evaluation, prompt injection publication, and CS50x rigor.",
+    "tags": ["AI Research", "Deep Learning", "Google", "LLMs"]
+  },
+  {
+    "id": "openai-residency",
+    "title": "AI Research & Engineering Resident",
+    "organization": "OpenAI",
+    "category": "Frontier Tech Research Fellowship",
+    "deadline": "Rolling Applications",
+    "cycle": "6-month Full-Time Cohorts",
+    "stipend": "$210,000/year annualized (~$17,500/month)",
+    "status": "Open for Applications",
+    "url": "https://openai.com/careers/",
+    "match_reason": "Designed for software engineers transitioning into frontier model evaluation and semantic safety defense.",
+    "tags": ["OpenAI", "Frontier AI", "LLM Safety", "Silicon Valley"]
+  },
+  {
+    "id": "outreachy-internship",
+    "title": "Distributed Systems & Machine Learning Intern",
+    "organization": "Outreachy / SFC",
+    "category": "Remote Internship",
+    "deadline": "Aug 31 (Dec Cohort) / Feb 13 (May Cohort)",
+    "cycle": "Bi-annual",
+    "stipend": "$7,000 Total Stipend",
+    "status": "Contribution Period Prep",
+    "url": "https://www.outreachy.org/",
+    "match_reason": "Strong alignment with data engineering, Python tools, and open-source tooling.",
+    "tags": ["Python", "Data", "Distributed Systems"]
+  },
+  {
+    "id": "uber-star-swe-intern",
+    "title": "Backend & Data Platform Engineering Intern",
+    "organization": "Uber Technologies",
+    "category": "Big Tech Early Career Internship",
+    "deadline": "Rolling (Fall cycle)",
+    "cycle": "Summer Cycle",
+    "stipend": "$50 – $65/hr (~$9,000/month) + Relocation",
+    "status": "Active / Rolling Applications",
+    "url": "https://www.uber.com/us/en/careers/university/",
+    "match_reason": "Systems architecture, high-throughput backend APIs, and Python/microservice data flows.",
+    "tags": ["Uber", "Big Tech", "Distributed Systems", "SWE"]
+  },
+  {
+    "id": "summer-of-protocols",
+    "title": "Autonomous Systems & Protocol Researcher",
+    "organization": "Summer of Protocols / Ethereum Ecosystem",
+    "category": "Funded Research Grant & Fellowship",
+    "deadline": "April 15 annually",
+    "cycle": "18-week Summer Cohort",
+    "stipend": "$1,000 – $10,000 Research Grant",
+    "status": "Active / Proposal Prep",
+    "url": "https://summerofprotocols.com/",
+    "match_reason": "Ideal for Aryan's JABSON AI autonomous agent orchestration and semantic security research thesis.",
+    "tags": ["Research Grant", "Autonomous Agents", "Protocols"]
+  },
+  {
+    "id": "redhat-swe-intern",
+    "title": "Linux Kernel & Cloud Infrastructure Intern",
+    "organization": "Red Hat / IBM",
+    "category": "Open Source Enterprise SWE",
+    "deadline": "Rolling (Fall & Spring postings)",
+    "cycle": "Summer / Year-Round Co-op",
+    "stipend": "Competitive Global Tech Stipend",
+    "status": "Active / Rolling Postings",
+    "url": "https://www.redhat.com/en/jobs/students-graduates",
+    "match_reason": "Direct fit for Linux internals, container architecture, and Python open-source automation.",
+    "tags": ["Red Hat", "Linux", "Kubernetes", "Cloud"]
+  },
+  {
+    "id": "emergent-ventures",
+    "title": "Moonshot AI & Systems Grantee",
+    "organization": "Mercatus Center (Tyler Cowen)",
+    "category": "Equity-Free Grant",
+    "deadline": "Rolling / Open Year-Round",
+    "cycle": "Continuous",
+    "stipend": "$10,000 – $100,000+ Non-Dilutive Grant",
+    "status": "Open Year-Round",
+    "url": "https://www.mercatus.org/emergent-ventures",
+    "match_reason": "Tailored for autonomous multi-agent systems and JABSON AI founder velocity.",
+    "tags": ["Grants", "AI Founders", "Autonomous Agents"]
+  },
+  {
+    "id": "hpair-fellowship",
+    "title": "International Tech & Governance Delegate",
+    "organization": "Harvard College (HPAIR)",
+    "category": "Global Conference & Fellowship",
+    "deadline": "Annual Selection Cycle",
+    "cycle": "Annual",
+    "stipend": "Executive Leadership & Global Network",
+    "status": "Selected Delegate (Alumnus / Ongoing)",
+    "url": "https://hpair.org/",
+    "match_reason": "Existing verified selection on Aryan's resume.",
+    "tags": ["Leadership", "Harvard", "Global Tech"]
+  }
+];
+
+let allOpportunities = SEED_OPPORTUNITIES;
+let resumeModalInstance = null;
+let addOppModalInstance = null;
+
+function clientBuildResume(opp) {
+  const title = opp && opp.title ? opp.title : 'Software Engineer / AI Fellow';
+  const org = opp && opp.organization ? opp.organization : 'Target Organization';
+  return `# ARYAN SHARMA
+**AI/ML & Data | AI Evaluation | Software Engineering**
+India | aryanaryan.9956@gmail.com | [LinkedIn](https://www.linkedin.com/in/aryan-sharma-engineer) | [GitHub](https://github.com/Aryansharma906)
+
+## PROFESSIONAL SUMMARY
+AI/ML & Software Engineer with rigorous foundations in AI evaluation, LLM security, and data pipelines. Recognized through competitive selection by Harvard Aspire, NASA NExScI/Caltech, McKinsey Forward, and HPAIR. Hands-on experience conducting structured model evaluations at Handshake and architecting autonomous systems at JABSON AI. Targeting high-impact contributions as ${title} at ${org}.
+
+## EDUCATION
+- **IILM University, Greater Noida** — *Bachelor of Technology in Computer Science, Specialization: AI & ML* (Jul 2026 – Jun 2030)
+- **Harvard University** — *CS50x: Introduction to Computer Science* (Jan 2026 – Jun 2026)
+- **Alison** — *Diploma in Applied Generative AI* (2026)
+
+## SELECT EXPERIENCE & FELLOWSHIPS
+### AI Evaluation Specialist (Remote Freelance) — Handshake | San Francisco, CA (Jul 2026 – Present)
+- Produced structured evaluations of AI model outputs for reasoning accuracy, alignment, safety, and semantic quality using defined assessment criteria.
+- Improved consistency of AI-output assessment by systematically evaluating responses across reasoning and safety dimensions.
+
+### Forward Program Participant — McKinsey & Company (Sep 2026 – Present)
+- Selected for structured development in problem-solving, digital toolkits, and executive communication applied to AI/ML systems.
+
+### Harvard Aspire Leaders Program Fellow — Aspire Institute | Cambridge, MA (Jul 2026 – Present)
+- Global leadership-development program focused on leadership, communication, mentorship, and high-impact tech collaboration.
+
+### HPAIR Delegate — Harvard College Project for Asian and International Relations (Sep 2026 – Present)
+- Selected delegate engaging with international leaders on emerging tech, AI governance, and global innovation.
+
+### Sagan Summer Workshop Research Participant — NASA Exoplanet Science Institute (NExScI) at Caltech (Jul 2026)
+- Trained in exoplanet detection, observational astronomy, and computational astrophysical data pipelines.
+
+## KEY PROJECTS
+- **JABSON AI & Autonomous Agent Architecture** (\`Python, Multi-Agent Orchestration, REST APIs, LLM Security\`): Engineered autonomous agentic infrastructure replacing repetitive software agency workflows with deterministic LLM pipelines.
+- **Z-Score Statistical Analysis Tool** (\`Python, NumPy, Pandas, Scipy\`): Python application for hypothesis testing, Z-score computation, outlier detection, and distribution analysis.
+- **Full-Stack Developer Portfolio** (\`TypeScript, React, Responsive Modern Web\`): High-performance portfolio showcasing full-stack systems, dynamic component architecture, and responsive UI.
+- **VectorShift Frontend Architecture** (\`React, JavaScript, State Management\`): Dynamic component architecture demonstrating state flow, third-party API integration, and clean UI rendering.
+
+## TECHNICAL SKILLS
+- **Languages:** Python, JavaScript, TypeScript, Java, SQL, HTML/CSS
+- **AI / ML & Evaluation:** Machine Learning, AI Safety, Prompt Engineering, Deep Learning, NLP, LLM Evaluation
+- **Data & Analysis:** Pandas, NumPy, Matplotlib, Seaborn, Tableau, EDA, Statistical Analysis
+- **Databases & Tools:** PostgreSQL, MySQL, Schema Design, CTEs, Query Optimization, Git, GitHub, Jupyter, REST APIs, Docker, Linux
+
+## PUBLICATIONS & HONORS
+- **Publication:** *The Architecture of Vulnerability: A Contemplative Inquiry into LLM Prompt Injection and the Future of Semantic Security*
+- **Competitive Selections:** NASA NExScI Sagan Workshop, Harvard Aspire Leaders, McKinsey Forward, HPAIR Delegate.`;
+}
+
+function fetchOpportunities() {
+  return fetch('/api/opportunities')
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
+        allOpportunities = data.opportunities;
+        const badge = document.getElementById('tab-badge-opps');
+        if (badge) badge.innerText = allOpportunities.length;
+        renderOpportunities();
+        try { localStorage.setItem('tracked_opportunities', JSON.stringify(allOpportunities)); } catch(err) {}
+      }
+    })
+    .catch(() => {});
+}
+
+function loadOpportunities() {
+  try {
+    const local = localStorage.getItem('tracked_opportunities');
+    if (local) {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) allOpportunities = parsed;
+    }
+  } catch(e) {}
+  if (!allOpportunities || allOpportunities.length === 0) {
+    allOpportunities = SEED_OPPORTUNITIES;
+  }
+  const badge = document.getElementById('tab-badge-opps');
+  if (badge) badge.innerText = allOpportunities.length;
+  renderOpportunities();
+  fetchOpportunities();
+}
+
+function renderOpportunities() {
+  const container = document.getElementById('oppsList');
+  if (!allOpportunities || allOpportunities.length === 0) {
+    container.innerHTML = '<div class="alert alert-light text-center py-5 border shadow-sm my-3">No opportunities tracked yet. Click "+ Track New Job / Opportunity" to add one!</div>';
+    return;
+  }
+
+  container.innerHTML = allOpportunities.map(o => {
+    const score = parseInt(o.match_score) || 90;
+    const scoreColor = score >= 85 ? 'success' : (score >= 75 ? 'primary' : 'warning');
+    const skills = (o.matching_skills && o.matching_skills.length) ? o.matching_skills : (o.tags || []);
+    const gaps = o.gaps_or_growth_areas || [];
+
+    return `
+      <div class="card p-3 mb-3 border shadow-sm" style="border-radius: 12px; background: white;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge bg-dark bg-opacity-10 text-dark fw-bold" style="font-size: 11px;">${escapeHtml(o.category || 'Opportunity')}</span>
+              <span class="badge bg-${scoreColor} text-white fw-bold" style="font-size: 11px;">🎯 ${score}% Match</span>
+              <span class="badge bg-success bg-opacity-10 text-success fw-bold" style="font-size: 11px;">💰 ${escapeHtml(o.stipend || 'Competitive')}</span>
+              <span class="badge bg-warning bg-opacity-10 text-warning fw-bold" style="font-size: 11px;">⏰ Deadline: ${escapeHtml(o.deadline || 'Rolling')}</span>
+            </div>
+            <h5 class="fw-bold mb-1 text-dark">${escapeHtml(o.title)}</h5>
+            <div class="text-secondary small fw-semibold">🏛️ ${escapeHtml(o.organization)} • <span class="text-muted">${escapeHtml(o.cycle || '')}</span></div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="/api/opportunities/${o.id}/bundle" class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" title="Download Complete Application Package ZIP (Resume .docx/.md, Cover Letter .docx/.md, Recruiter DM, PoW Plan, Interview Prep)">
+              <span>📦 Download Pack (ZIP)</span>
+            </a>
+            <button class="btn btn-outline-primary btn-sm fw-bold d-flex align-items-center gap-1" onclick="viewPitchModal('${o.id}')" title="View 3-sentence recruiter DM and 1-page Proof-of-Work plan">
+              <span>🎯 Recruiter DM & PoW</span>
+            </button>
+            <a href="/action/view_interview_prep/${o.id}" target="_blank" class="btn btn-outline-dark btn-sm fw-bold d-flex align-items-center gap-1" title="Open NotebookLM and Gemini Interview Prep Guide">
+              <span>🎙️ Interview Prep</span>
+            </a>
+            <button class="btn btn-outline-secondary btn-sm fw-bold d-flex align-items-center gap-1" onclick="generateTailoredResume('${o.id}')">
+              <span>📄 Resume</span>
+            </button>
+            <button class="btn btn-outline-success btn-sm fw-bold d-flex align-items-center gap-1" onclick="sendOpportunityToSlack('${o.id}')">
+              <span>💬 Slack Approval</span>
+            </button>
+            ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Open Portal</a>` : ''}
+          </div>
+        </div>
+
+        <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
+          <strong>🎯 Match to Aryan:</strong> ${escapeHtml(o.match_reason || o.executive_summary || 'Strong profile synergy with AI/ML systems and research.')}
+        </div>
+
+        ${gaps.length ? `
+          <div class="p-2 px-3 my-1 rounded bg-warning bg-opacity-10 border-start border-4 border-warning small text-dark">
+            <strong>💡 Tailoring Strategy:</strong> ${gaps.map(g => escapeHtml(g)).join(' • ')}
+          </div>
+        ` : ''}
+
+        <div class="d-flex flex-wrap gap-1 mt-2">
+          ${skills.map(t => `<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 10px;">#${escapeHtml(t)}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showDossierAlert(msg, isSuccess = true) {
+  const box = document.getElementById('dossierAlertBox');
+  const text = document.getElementById('dossierAlertMsg');
+  if (box && text) {
+    text.innerText = msg;
+    box.className = `alert alert-${isSuccess ? 'success' : 'danger'} alert-dismissible fade show`;
+    box.classList.remove('d-none');
+    setTimeout(() => { box.classList.add('d-none'); }, 6000);
+  }
+}
+
+function syncDossier(action = 'all') {
+  const spinner = document.getElementById('syncSpinner');
+  if (spinner) spinner.classList.remove('d-none');
+  showDossierAlert(`⏳ Running Dossier sync (${action})...`, true);
+
+  fetch('/api/dossier/sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: action })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (spinner) spinner.classList.add('d-none');
+    if (data.success) {
+      showDossierAlert(`✅ Dossier sync (${action}) completed! Updated across cloud services & Slack.`, true);
+      fetchOpportunities();
+    } else {
+      showDossierAlert(`❌ Sync error: ${data.error || 'Unknown error'}`, false);
+    }
+  })
+  .catch(err => {
+    if (spinner) spinner.classList.add('d-none');
+    showDossierAlert(`❌ Sync failed: ${err.message}`, false);
+  });
+}
+
+function scoreOpportunityWithGemini(oppId) {
+  showDossierAlert(`🤖 Scoring role alignment with Google Gemini...`, true);
+  fetch(`/api/dossier/opportunities/${oppId}/score`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showDossierAlert(`🎯 Gemini evaluation complete: ${data.opportunity.match_score}% Match!`, true);
+      fetchOpportunities();
+    } else {
+      showDossierAlert(`❌ Scoring error: ${data.error}`, false);
+    }
+  })
+  .catch(err => showDossierAlert(`❌ Scoring failed: ${err.message}`, false));
+}
+
+function sendOpportunityToSlack(oppId) {
+  showDossierAlert('💬 Dispatching interactive opportunity approval card to Slack...', true);
+  fetch(`/api/opportunities/${oppId}/send_slack`, { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showDossierAlert('✅ Opportunity approval card sent to your Slack channel!', true);
+      } else {
+        showDossierAlert(`❌ Failed sending to Slack: ${data.error || 'Unknown error'}`, false);
+      }
+    })
+    .catch(err => showDossierAlert(`❌ Error: ${err.message}`, false));
+}
+
+function sendDossierDigestToSlack() {
+  showDossierAlert('💬 Dispatching Career Radar digest to Slack...', true);
+  fetch('/api/dossier/send_digest', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showDossierAlert('✅ Career Radar digest dispatched to Slack!', true);
+      } else {
+        showDossierAlert(`❌ Failed sending digest: ${data.error || 'Unknown error'}`, false);
+      }
+    })
+    .catch(err => showDossierAlert(`❌ Error: ${err.message}`, false));
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'block';
+  el.classList.add('show');
+  document.body.classList.add('modal-open');
+  let backdrop = document.getElementById('modalBackdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'modalBackdrop';
+    backdrop.className = 'modal-backdrop fade show';
+    backdrop.onclick = function() { closeModal(id); };
+    document.body.appendChild(backdrop);
+  }
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'none';
+  el.classList.remove('show');
+  document.body.classList.remove('modal-open');
+  const backdrop = document.getElementById('modalBackdrop');
+  if (backdrop) backdrop.remove();
+}
+
+function submitNewOpp() {
+  const title = document.getElementById('oppTitle').value.trim();
+  const organization = document.getElementById('oppOrg').value.trim();
+  const category = document.getElementById('oppCat').value;
+  const deadline = document.getElementById('oppDeadline').value.trim() || 'Rolling';
+  const url = document.getElementById('oppUrl').value.trim() || '#';
+  const stipend = document.getElementById('oppStipend').value.trim() || 'Competitive';
+
+  if (!title || !organization) { alert('Title and Organization are required'); return; }
+
+  const newOpp = {
+    id: 'opp_' + Date.now(),
+    title,
+    organization,
+    category,
+    deadline,
+    url,
+    stipend,
+    status: 'Active',
+    match_reason: 'Custom tracked role by Aryan Sharma',
+    tags: ['Tracked Opportunity']
+  };
+
+  allOpportunities.unshift(newOpp);
+  try {
+    localStorage.setItem('tracked_opportunities', JSON.stringify(allOpportunities));
+  } catch(e) {}
+
+  closeModal('addOppModal');
+  document.getElementById('oppTitle').value = '';
+  document.getElementById('oppOrg').value = '';
+  document.getElementById('oppUrl').value = '';
+  const badge = document.getElementById('tab-badge-opps');
+  if (badge) badge.innerText = allOpportunities.length;
+  renderOpportunities();
+}
+
+function generateTailoredResume(oppId) {
+  const opp = allOpportunities.find(o => o.id === oppId) || {};
+  document.getElementById('resumeModalTitle').innerText = '📄 Tailored Resume: ' + (opp.title || opp.organization || 'Opportunity');
+  document.getElementById('resumeContent').innerText = clientBuildResume(opp);
+  openModal('resumeModal');
+}
+
+function copyResumeText() {
+  const text = document.getElementById('resumeContent').innerText;
+  navigator.clipboard.writeText(text);
+  alert('📋 Tailored resume copied to clipboard!');
+}
+
+function viewPitchModal(oppId) {
+  const opp = allOpportunities.find(o => o.id === oppId) || {};
+  document.getElementById('pitchModalTitle').innerText = '🎯 Recruiter Outreach & PoW: ' + (opp.organization || opp.title || 'Opportunity');
+  document.getElementById('recruiterDmText').innerText = '⏳ Generating 3-sentence recruiter DM with Google Gemini...';
+  document.getElementById('powPlanText').innerText = '⏳ Generating 1-page tactical Proof-of-Work plan...';
+  document.getElementById('pitchZipBtn').href = `/api/opportunities/${oppId}/bundle`;
+  openModal('pitchModal');
+
+  fetch(`/api/opportunities/${oppId}/pitch`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('recruiterDmText').innerText = data.recruiter_dm || '';
+        document.getElementById('powPlanText').innerText = data.proof_of_work_plan || '';
+      } else {
+        document.getElementById('recruiterDmText').innerText = 'Failed to generate outreach DM.';
+        document.getElementById('powPlanText').innerText = 'Failed to generate PoW plan.';
+      }
+    })
+    .catch(err => {
+      document.getElementById('recruiterDmText').innerText = 'Error: ' + err.message;
+    });
+}
+
+function copyPitchText(fieldId) {
+  const text = document.getElementById(fieldId).innerText;
+  navigator.clipboard.writeText(text);
+  alert('📋 Copied to clipboard!');
+}
+
+loadData();
+renderOpportunities();
+</script>
+<script src="./assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>
