@@ -1,21 +1,22 @@
 <p align="center">
-  <a href="https://github.com/Aryansharma906/GetHired">
-    <img src="assets/gethired-hero-banner.svg" alt="getHired 2.0 — Autonomous Career Intelligence & AI Orchestration by Aryan Sharma" width="100%" />
+  <a href="https://github.com/Aryansharma906/FrontierPilot">
+    <img src="assets/frontierpilot-hero-banner.svg" alt="FrontierPilot 2.0 — Autonomous Career Radar & AI Cockpit by Orbitron AI" width="100%" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Aryansharma906/GetHired"><img src="https://img.shields.io/badge/Orchestrator-getHired_2.0-4f46e5?style=for-the-badge&logo=rocket&logoColor=white" alt="getHired 2.0"></a>
-  <a href="https://github.com/Aryansharma906"><img src="https://img.shields.io/badge/Author-Aryan_Sharma-0ea5e9?style=for-the-badge&logo=github&logoColor=white" alt="Author Aryan Sharma"></a>
-  <img src="https://img.shields.io/badge/AI_Engine-Gemini_2.5_Flash-8b5cf6?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI">
+  <a href="https://github.com/Aryansharma906/FrontierPilot"><img src="https://img.shields.io/badge/Platform-FrontierPilot_2.0-4f46e5?style=for-the-badge&logo=rocket&logoColor=white" alt="FrontierPilot 2.0"></a>
+  <img src="https://img.shields.io/badge/Company-Orbitron_AI-0ea5e9?style=for-the-badge&logo=openai&logoColor=white" alt="Orbitron AI">
+  <a href="https://github.com/Aryansharma906"><img src="https://img.shields.io/badge/Founder-Aryan_Sharma-8b5cf6?style=for-the-badge&logo=github&logoColor=white" alt="Aryan Sharma"></a>
+  <img src="https://img.shields.io/badge/AI_Engine-Gemini_2.5_Flash-3b82f6?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI">
   <img src="https://img.shields.io/badge/Approval_Hub-Slack_Interactive-10b981?style=for-the-badge&logo=slack&logoColor=white" alt="Slack Hub">
   <img src="https://img.shields.io/badge/Security-Zero--Leak_Guard-f59e0b?style=for-the-badge&logo=shield&logoColor=white" alt="Zero-Leak Guard">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge" alt="MIT License"></a>
 </p>
 
 <p align="center">
-  <b>Autonomous Career Intelligence, Real-Time Opportunity Radar, and LinkedIn Marketing Engine</b><br>
-  <i>Built for high-agency engineers, founders, and autonomous AI agents.</i>
+  <b>Autonomous Frontier Career Intelligence, Real-Time Opportunity Radar, and Multi-Agent AI Cockpit</b><br>
+  <i>Engineered by <b>Orbitron AI</b> • Built by <b>Aryan Sharma</b></i>
 </p>
 
 <p align="center">
@@ -29,15 +30,15 @@
 
 ---
 
-## 🌟 Overview: What is getHired 2.0?
+## 🌟 Overview: What is FrontierPilot?
 
-**getHired 2.0** is an enterprise-grade AI orchestration system created by **Aryan Sharma**. It bridges **career intelligence** with **thought-leadership publishing**:
+**FrontierPilot 2.0** is an enterprise-grade autonomous career and thought-leadership orchestration cockpit developed by **Orbitron AI**, founded by **Aryan Sharma**:
 
-1. **Autonomous Opportunity Radar**: Discovers high-leverage AI engineering roles, scores profile alignment using **Google Gemini 2.5 Flash**, diagnoses skill gaps, and tailors live ATS resumes and interview preparation dossiers.
-2. **Interactive Slack Approval Hub**: Dispatches rich Block Kit approval cards directly to your mobile Slack channel—allowing you to review, approve, reject, or publish applications and LinkedIn drafts in 1 tap.
-3. **12 Production AI Marketing Skills**: Autonomous Claude Code and Codex skills that draft viral LinkedIn posts using verified 2026 hook formulas, humanize AI copy to bypass slop detectors, and manage professional presence without human friction.
-4. **Multi-Cloud Persistence**: Real-time two-way synchronization across **Google Sheets**, **Google Drive**, **Gmail**, **Notion**, and direct **LinkedIn REST API** connections.
-5. **Zero-Leak Security Guard**: Built-in automated pre-commit and CI credential scanners that make it 100% safe to showcase in a public GitHub repository.
+1. **Autonomous Opportunity Radar**: Scans frontier engineering roles across top research labs and startups, scores role fit using **Google Gemini 2.5 Flash**, detects skill gaps, and synthesizes tailored ATS resumes.
+2. **Interactive Slack Mobile Cockpit**: Dispatches rich Block Kit interactive cards to your Slack channel for 1-tap mobile application reviews and LinkedIn publishing.
+3. **12 Production AI Marketing Skills**: Autonomous Claude Code and Codex agents drafting high-engagement founder posts using verified 2026 hook formulas.
+4. **5-Way Multi-Cloud Sync**: Continuous bi-directional synchronization with **Google Sheets**, **Google Drive**, **Gmail**, **Notion**, and direct **LinkedIn REST API**.
+5. **Zero-Leak Security Guard**: Hardened local pre-commit hooks and GitHub Actions CI guards preventing credential exposure.
 
 ---
 
@@ -147,8 +148,8 @@
 
 ```bash
 # Clone the canonical repository
-git clone https://github.com/Aryansharma906/GetHired.git
-cd GetHired
+git clone https://github.com/Aryansharma906/FrontierPilot.git
+cd FrontierPilot
 
 # Install Python requirements
 pip install -r requirements.txt
@@ -266,8 +267,7 @@ All AI generation in getHired strictly adheres to human-first editorial guidelin
 Distributed under the **MIT License**.
 
 ```text
-Copyright (c) 2026 Aryan Sharma <aryanaryan.9956@icloud.com>
-Portions Copyright (c) 2026 Sergey Bulaev
+Copyright (c) 2026 Orbitron AI / Aryan Sharma <aryanaryan.9956@icloud.com>
 ```
 
 See [`LICENSE`](LICENSE) for complete legal terms.
@@ -275,6 +275,6 @@ See [`LICENSE`](LICENSE) for complete legal terms.
 ---
 
 <p align="center">
-  <b>Designed with high agency by <a href="https://github.com/Aryansharma906">Aryan Sharma</a></b><br>
-  <sub>Autonomous AI Engineering • Career Intelligence • Thought Leadership</sub>
+  <b>FrontierPilot 2.0 • Designed &amp; Engineered by <a href="https://github.com/Aryansharma906">Orbitron AI / Aryan Sharma</a></b><br>
+  <sub>Autonomous AI Engineering • Career Cockpit • Multi-Agent Orchestration</sub>
 </p>

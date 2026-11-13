@@ -43,6 +43,7 @@ def serve_media(filename: str):
 
 
 @app.route("/assets/<path:filename>")
+@app.route("/frontierpilot/assets/<path:filename>")
 @app.route("/gethired/assets/<path:filename>")
 @app.route("/dossier/assets/<path:filename>")
 def serve_docs_assets(filename: str):
@@ -51,6 +52,7 @@ def serve_docs_assets(filename: str):
 
 
 @app.route("/manifest.json")
+@app.route("/frontierpilot/manifest.json")
 @app.route("/gethired/manifest.json")
 @app.route("/dossier/manifest.json")
 def serve_manifest():
@@ -58,6 +60,7 @@ def serve_manifest():
 
 
 @app.route("/sw.js")
+@app.route("/frontierpilot/sw.js")
 @app.route("/gethired/sw.js")
 @app.route("/dossier/sw.js")
 def serve_service_worker():
@@ -77,11 +80,14 @@ def legacy_index_redirect():
     return redirect("/", code=302)
 
 
+@app.route("/frontierpilot")
+@app.route("/frontier-pilot")
+@app.route("/FrontierPilot")
 @app.route("/gethired")
 @app.route("/get-hired")
 @app.route("/getHired")
 @app.route("/dossier")
-def gethired_dashboard():
+def frontierpilot_dashboard():
     return render_template("dossier.html")
 
 

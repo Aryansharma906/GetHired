@@ -1,8 +1,8 @@
 {
-  "name": "getHired — Career Intelligence & Opportunity Radar",
-  "short_name": "getHired",
-  "description": "Career Intelligence, High-Leverage Opportunity Radar, and Autonomous Engine by Aryan Sharma",
-  "start_url": "./dossier.html",
+  "name": "FrontierPilot — Autonomous Career Radar & AI Cockpit",
+  "short_name": "FrontierPilot",
+  "description": "Frontier Career Radar & Autonomous Multi-Agent AI Cockpit by Orbitron AI",
+  "start_url": "./frontierpilot.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f9f8f5",

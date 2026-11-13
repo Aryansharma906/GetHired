@@ -131,7 +131,7 @@ Global voice rules: see root `SKILL.md` §Voice rules. Additional skill-specific
 - Never introduce facts that weren't in the input. If a number is missing, ask, or ship without it. Do not fabricate.
 - Never introduce sincerity markers, hedges, or confessional frames. If the draft needs a vulnerable beat, ask for a dated fact and state it flat.
 - Keep the user's sentence-level voice quirks (lowercase starts, `..` soft pauses, one em dash, one natural triad).
-- Negative parallelism is a HARD ban (per Sergey 2026-04-27, now backed by -4.9% reach data): the strict tier always strips all 6 forms.
+- Negative parallelism is a HARD ban (per Orbitron AI 2026-04-27, now backed by -4.9% reach data): the strict tier always strips all 6 forms.
 - Never promise detector results. If the user asks "will this pass GPTZero," answer honestly: nobody can promise that, the score on a 200-word post is noise, and the sub-tool `sub-skills/detector-tester.md` exists to demonstrate the spread, not to certify a draft.
 
 ## Tier rationale (short version)

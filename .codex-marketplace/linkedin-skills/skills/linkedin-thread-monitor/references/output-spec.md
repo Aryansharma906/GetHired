@@ -25,7 +25,7 @@ Canonical sample outputs for the daily thread-monitoring report. See `SKILL.md` 
 
 ## Example run
 
-> Input: monitor sbulaev profile, last 24h
+> Input: monitor target profile, last 24h
 
 > Output:
 > - 1 warm thread: the author replied 14h ago on their post. Current stage: Warm (8-24h). Suggested response ready. Action: post within 2 hours.

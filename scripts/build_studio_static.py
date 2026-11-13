@@ -93,13 +93,14 @@ const SEED_STATIC_DRAFTS = {json.dumps(drafts, indent=2)};
     (DOCS_DIR / "index.html").write_text(static_studio, encoding="utf-8")
     print(f"  • Generated {DOCS_DIR / 'index.html'} ({len(static_studio)} chars)")
 
-    # 3. Synchronize docs/dossier.html and docs/gethired.html from template
+    # 3. Synchronize docs/dossier.html, docs/gethired.html, and docs/frontierpilot.html from template
     src_dossier = (TEMPLATES_DIR / "dossier.html").read_text(encoding="utf-8")
     (DOCS_DIR / "dossier.html").write_text(src_dossier, encoding="utf-8")
     (DOCS_DIR / "gethired.html").write_text(src_dossier, encoding="utf-8")
-    print(f"  • Generated {DOCS_DIR / 'dossier.html'} & {DOCS_DIR / 'gethired.html'} ({len(src_dossier)} chars)")
+    (DOCS_DIR / "frontierpilot.html").write_text(src_dossier, encoding="utf-8")
+    print(f"  • Generated {DOCS_DIR / 'dossier.html'}, {DOCS_DIR / 'gethired.html'} & {DOCS_DIR / 'frontierpilot.html'} ({len(src_dossier)} chars)")
 
-    print("✅ Static Studio & getHired build complete!")
+    print("✅ Static Studio & FrontierPilot build complete!")
 
 if __name__ == "__main__":
     build()

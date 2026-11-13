@@ -7,8 +7,8 @@
     "url": "https://github.com/Aryansharma906"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Aryansharma906/GetHired",
-  "repository": "https://github.com/Aryansharma906/GetHired",
+  "homepage": "https://github.com/Aryansharma906/FrontierPilot",
+  "repository": "https://github.com/Aryansharma906/FrontierPilot",
   "keywords": [
     "linkedin",
     "marketing",
@@ -24,14 +24,14 @@
     "composerIcon": "./assets/icon.svg",
     "shortDescription": "LinkedIn marketing skills for Claude Code and Codex.",
     "longDescription": "A bundle of 12 LinkedIn marketing skills for Claude Code and Codex: post writing, comment drafting, reply handling, hook extraction, humanizing, profile optimization, content planning, employee advocacy, thread monitoring, and engager analytics.",
-    "developerName": "Aryan Sharma",
+    "developerName": "Orbitron AI",
     "category": "Productivity",
     "capabilities": [
       "Interactive",
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/Aryansharma906/GetHired",
+    "websiteURL": "https://github.com/Aryansharma906/FrontierPilot",
     "defaultPrompt": [
       "Draft a LinkedIn post from my notes.",
       "Improve this LinkedIn comment.",

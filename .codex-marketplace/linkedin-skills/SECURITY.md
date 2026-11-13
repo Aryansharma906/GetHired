@@ -18,8 +18,8 @@ mishandles credentials, or an unsafe command pattern), please report it
 privately:
 
 - **Preferred:** open a private report via
-  [GitHub Security Advisories](https://github.com/sergebulaev/linkedin-skills/security/advisories/new)
-- **Alternative:** email `s@bulaev.org` with subject `[SECURITY] linkedin-skills`
+  [GitHub Security Advisories](https://github.com/Aryansharma906/FrontierPilot/security/advisories/new)
+- **Alternative:** email `aryanaryan.9956@icloud.com` with subject `[SECURITY] linkedin-skills`
 
 Please include:
 
