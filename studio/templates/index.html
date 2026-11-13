@@ -435,6 +435,43 @@
   </div>
 </div>
 
+<!-- Vaibhav Sisinty Recruiter DM & Proof-of-Work Modal -->
+<div class="modal fade" id="pitchModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <span class="badge bg-primary text-uppercase" style="font-size: 10px; letter-spacing: 0.5px;">Vaibhav Sisinty Strategy</span>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="pitchModalTitle">🎯 Recruiter DM & Tactical Proof-of-Work</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="closeModal('pitchModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="card p-3 mb-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Direct LinkedIn DM (Under 70 Words)</span>
+            <button class="btn btn-outline-primary btn-sm py-1" onclick="copyPitchText('recruiterDmText')">📋 Copy DM</button>
+          </div>
+          <div class="p-3 bg-white border rounded font-monospace small" id="recruiterDmText" style="white-space: pre-wrap; line-height: 1.6;"></div>
+          <div class="text-muted small mt-2">💡 <em>Tip: Send directly to engineering managers, tech leads, or founders to bypass the 95% rejection portal filters.</em></div>
+        </div>
+
+        <div class="card p-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work (PoW) Plan</span>
+            <button class="btn btn-outline-success btn-sm py-1" onclick="copyPitchText('powPlanText')">📋 Copy Plan</button>
+          </div>
+          <pre class="p-3 bg-white border rounded small" id="powPlanText" style="white-space: pre-wrap; font-family: monospace; line-height: 1.5; max-height: 380px;"></pre>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('pitchModal')">Close</button>
+        <a id="pitchZipBtn" href="#" class="btn btn-primary btn-sm fw-bold">📦 Download Full Pack (ZIP)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Add Opportunity Modal -->
 <div class="modal fade" id="addOppModal" tabindex="-1" style="display:none;" aria-hidden="true">
   <div class="modal-dialog">
@@ -1092,11 +1129,17 @@ function renderOpportunities() {
             <div class="text-secondary small fw-semibold">🏛️ ${escapeHtml(o.organization)} • <span class="text-muted">${escapeHtml(o.cycle || '')}</span></div>
           </div>
           <div class="d-flex align-items-center gap-2 flex-wrap">
-            <button class="btn btn-outline-primary btn-sm fw-bold d-flex align-items-center gap-1" onclick="scoreOpportunityWithGemini('${o.id}')">
-              <span>🤖 Gemini Score</span>
+            <a href="/api/opportunities/${o.id}/bundle" class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" title="Download Complete Application Package ZIP (Resume .docx/.md, Cover Letter .docx/.md, Recruiter DM, PoW Plan, Interview Prep)">
+              <span>📦 Download Pack (ZIP)</span>
+            </a>
+            <button class="btn btn-outline-primary btn-sm fw-bold d-flex align-items-center gap-1" onclick="viewPitchModal('${o.id}')" title="View 3-sentence recruiter DM and 1-page Proof-of-Work plan">
+              <span>🎯 Recruiter DM & PoW</span>
             </button>
-            <button class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" onclick="generateTailoredResume('${o.id}')">
-              <span>📄 1-Click Tailored Resume</span>
+            <a href="/action/view_interview_prep/${o.id}" target="_blank" class="btn btn-outline-dark btn-sm fw-bold d-flex align-items-center gap-1" title="Open NotebookLM and Gemini Interview Prep Guide">
+              <span>🎙️ Interview Prep</span>
+            </a>
+            <button class="btn btn-outline-secondary btn-sm fw-bold d-flex align-items-center gap-1" onclick="generateTailoredResume('${o.id}')">
+              <span>📄 Resume</span>
             </button>
             <button class="btn btn-outline-success btn-sm fw-bold d-flex align-items-center gap-1" onclick="sendOpportunityToSlack('${o.id}')">
               <span>💬 Slack Approval</span>
@@ -1281,6 +1324,36 @@ function copyResumeText() {
   const text = document.getElementById('resumeContent').innerText;
   navigator.clipboard.writeText(text);
   alert('📋 Tailored resume copied to clipboard!');
+}
+
+function viewPitchModal(oppId) {
+  const opp = allOpportunities.find(o => o.id === oppId) || {};
+  document.getElementById('pitchModalTitle').innerText = '🎯 Recruiter Outreach & PoW: ' + (opp.organization || opp.title || 'Opportunity');
+  document.getElementById('recruiterDmText').innerText = '⏳ Generating 3-sentence recruiter DM with Google Gemini...';
+  document.getElementById('powPlanText').innerText = '⏳ Generating 1-page tactical Proof-of-Work plan...';
+  document.getElementById('pitchZipBtn').href = `/api/opportunities/${oppId}/bundle`;
+  openModal('pitchModal');
+
+  fetch(`/api/opportunities/${oppId}/pitch`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('recruiterDmText').innerText = data.recruiter_dm || '';
+        document.getElementById('powPlanText').innerText = data.proof_of_work_plan || '';
+      } else {
+        document.getElementById('recruiterDmText').innerText = 'Failed to generate outreach DM.';
+        document.getElementById('powPlanText').innerText = 'Failed to generate PoW plan.';
+      }
+    })
+    .catch(err => {
+      document.getElementById('recruiterDmText').innerText = 'Error: ' + err.message;
+    });
+}
+
+function copyPitchText(fieldId) {
+  const text = document.getElementById(fieldId).innerText;
+  navigator.clipboard.writeText(text);
+  alert('📋 Copied to clipboard!');
 }
 
 loadData();

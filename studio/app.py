@@ -11,7 +11,7 @@ import os
 import sys
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request, redirect, send_from_directory
+from flask import Flask, jsonify, render_template, request, redirect, send_from_directory, send_file
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -733,6 +733,217 @@ def view_tailored_resume_page(opp_id: str):
     </body>
     </html>"""
     return page
+
+
+@app.route("/action/view_interview_prep/<opp_id>", methods=["GET"])
+def view_interview_prep_page(opp_id: str):
+    """Mobile-friendly HTML preview of NotebookLM & Gemini Interview Prep guide."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    try:
+        opps = json.loads(opps_path.read_text(encoding="utf-8"))
+    except Exception:
+        opps = []
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return "Opportunity not found", 404
+
+    from lib.job_hunter_engine import JobHunterEngine
+    engine = JobHunterEngine()
+    prep = engine.generate_interview_prep_guide(target)
+    
+    org = target.get("organization", "Company")
+    title = target.get("title", "Role")
+    score = target.get("match_score", 90)
+
+    tech_html = ""
+    for i, q in enumerate(prep.get("technical_questions", []), 1):
+        q_text = q.get("question", "")
+        a_text = q.get("answer_key", "")
+        tech_html += f"""
+        <div class="q-card">
+            <div class="q-title">Q{i}: {q_text}</div>
+            <div class="q-answer"><strong>Ideal Key:</strong> {a_text}</div>
+        </div>
+        """
+
+    star_html = ""
+    for i, s in enumerate(prep.get("behavioral_star_scenarios", []), 1):
+        q_text = s.get("question", "")
+        s_framework = s.get("star_framework", "")
+        star_html += f"""
+        <div class="q-card">
+            <div class="q-title">Behavioral Q{i}: {q_text}</div>
+            <div class="q-answer"><strong>STAR Blueprint:</strong> {s_framework}</div>
+        </div>
+        """
+
+    system_design = prep.get("system_design_challenge", "Design high-scale LLM evaluation harness.")
+    tech_summary = prep.get("company_tech_stack_summary", f"{org} engineering stack.")
+
+    notebooklm_prompt = (
+        f"You are the hiring team at {org} interviewing Aryan Sharma for the {title} position. "
+        f"Aryan has published research on LLM prompt injection and evaluates models at Handshake. "
+        f"Simulate a rigorous 30-minute technical and system design interview starting now."
+    )
+    import html as html_lib
+    escaped_prompt = html_lib.escape(notebooklm_prompt)
+
+    page = f"""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>🎙️ Interview Prep: {org} — {title}</title>
+        <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px 14px; margin: 0; }}
+            .container {{ max-width: 760px; margin: 0 auto; }}
+            .header-card {{ background: #1e293b; border-radius: 14px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; }}
+            .badge-bar {{ font-size: 11px; text-transform: uppercase; color: #38bdf8; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }}
+            h2 {{ font-size: 20px; margin: 4px 0 8px 0; }}
+            .sub-info {{ color: #94a3b8; font-size: 14px; margin-bottom: 14px; }}
+            .actions-bar {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }}
+            .btn {{ display: inline-block; background: #3b82f6; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; border: none; cursor: pointer; }}
+            .btn-success {{ background: #10b981; }}
+            .btn-outline {{ background: transparent; border: 1px solid #64748b; color: #cbd5e1; }}
+            .section-card {{ background: #1e293b; border-radius: 12px; padding: 18px; margin-bottom: 16px; border: 1px solid #334155; }}
+            .section-title {{ font-size: 15px; font-weight: 700; color: #38bdf8; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }}
+            .q-card {{ background: #0f172a; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; border-left: 3px solid #38bdf8; }}
+            .q-title {{ font-weight: 600; font-size: 14px; color: #f1f5f9; margin-bottom: 6px; }}
+            .q-answer {{ font-size: 13px; color: #94a3b8; line-height: 1.5; }}
+            .prompt-box {{ background: #0f172a; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #cbd5e1; line-height: 1.5; white-space: pre-wrap; margin-bottom: 10px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-card">
+                <div class="badge-bar">VAIBHAV SISINTY STACK • NOTEBOOKLM & GEMINI INTERVIEW PREP</div>
+                <h2>{title}</h2>
+                <div class="sub-info">🏛️ {org} • Match Score: <strong style="color: #10b981;">{score}%</strong></div>
+                <div style="font-size: 13px; color: #cbd5e1; background: #0f172a; padding: 10px 14px; border-radius: 8px;">
+                    <strong>Tech Focus:</strong> {tech_summary}
+                </div>
+                <div class="actions-bar">
+                    <button class="btn btn-outline" onclick="copyNotebookPrompt()">📋 Copy NotebookLM Prompt</button>
+                    <a href="/api/opportunities/{opp_id}/bundle" class="btn">📦 Download ZIP Pack</a>
+                    <a href="/action/approve_job/{opp_id}" class="btn btn-success">✅ Approve & Stage</a>
+                    <a href="/" class="btn btn-outline">📱 Studio Hub</a>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🎙️ 1-Click Simulation Prompt for NotebookLM / Gemini Live</div>
+                <div class="prompt-box" id="promptBox">{escaped_prompt}</div>
+                <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="copyNotebookPrompt()">📋 Copy Prompt</button>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🏗️ System Design Challenge</div>
+                <div class="q-card" style="border-left-color: #f59e0b;">
+                    <div class="q-title">{system_design}</div>
+                    <div class="q-answer"><strong>Aryan's Approach:</strong> Architect an asynchronous event-driven pipeline in Python/FastAPI with Redis streaming queue, decoupled worker pools running batch inference, and automated safety assertions.</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">⚡ Deep-Dive Technical Questions</div>
+                {tech_html}
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🌟 STAR Behavioral Frameworks</div>
+                {star_html}
+            </div>
+        </div>
+
+        <script>
+            function copyNotebookPrompt() {{
+                const text = document.getElementById('promptBox').innerText;
+                navigator.clipboard.writeText(text);
+                alert('🎙️ NotebookLM interview simulation prompt copied!');
+            }}
+        </script>
+    </body>
+    </html>"""
+    return page
+
+
+@app.route("/api/opportunities/<opp_id>/bundle", methods=["GET"])
+def download_opportunity_bundle(opp_id: str):
+    """Generate and return full application package ZIP (ATS resume .docx/.md, cover letter .docx/.md, recruiter DM, PoW plan, interview prep)."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    opps = []
+    if opps_path.exists():
+        try:
+            opps = json.loads(opps_path.read_text(encoding="utf-8"))
+        except Exception:
+            opps = []
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return jsonify({"success": False, "error": f"Opportunity {opp_id} not found"}), 404
+
+    from lib.job_hunter_engine import JobHunterEngine
+    engine = JobHunterEngine()
+    bundle_res = engine.create_complete_application_bundle(target)
+    zip_path = Path(bundle_res["zip_path"])
+    if not zip_path.exists():
+        return jsonify({"success": False, "error": "Bundle generation failed"}), 500
+
+    return send_file(
+        str(zip_path),
+        as_attachment=True,
+        download_name=bundle_res.get("zip_filename", f"Aryan_Sharma_{opp_id}_Application_Package.zip"),
+        mimetype="application/zip"
+    )
+
+
+@app.route("/api/opportunities/<opp_id>/pitch", methods=["GET"])
+def get_opportunity_pitch(opp_id: str):
+    """Return 3-sentence recruiter DM and 1-page Proof-of-Work tactical plan."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    try:
+        opps = json.loads(opps_path.read_text(encoding="utf-8"))
+    except Exception:
+        opps = []
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return jsonify({"success": False, "error": f"Opportunity {opp_id} not found"}), 404
+
+    from lib.job_hunter_engine import JobHunterEngine
+    engine = JobHunterEngine()
+    dm_data = engine.generate_recruiter_outreach_dm(target)
+    pow_plan = engine.generate_proof_of_work_plan(target)
+
+    return jsonify({
+        "success": True,
+        "organization": target.get("organization"),
+        "role": target.get("title"),
+        "recruiter_dm": dm_data.get("linkedin_dm_3_sentences"),
+        "cold_email_subject": dm_data.get("cold_email_subject"),
+        "proof_of_work_plan": pow_plan,
+    })
+
+
+@app.route("/api/opportunities/<opp_id>/interview_prep", methods=["GET"])
+def get_opportunity_interview_prep(opp_id: str):
+    """Return NotebookLM & Gemini interview prep guide JSON."""
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    try:
+        opps = json.loads(opps_path.read_text(encoding="utf-8"))
+    except Exception:
+        opps = []
+    target = next((o for o in opps if o.get("id") == opp_id), None)
+    if not target:
+        return jsonify({"success": False, "error": f"Opportunity {opp_id} not found"}), 404
+
+    from lib.job_hunter_engine import JobHunterEngine
+    engine = JobHunterEngine()
+    prep_data = engine.generate_interview_prep_guide(target)
+
+    return jsonify({
+        "success": True,
+        "organization": target.get("organization"),
+        "role": target.get("title"),
+        "prep_data": prep_data,
+    })
 
 
 @app.route("/api/opportunities/<opp_id>/send_slack", methods=["POST"])
