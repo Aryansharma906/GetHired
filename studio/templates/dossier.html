@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dossier — Career Radar & Application Hub | Aryan Sharma</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="stylesheet" href="./assets/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/bootstrap-icons.min.css">
+  <script src="./assets/jszip.min.js"></script>
+  <style>
+    :root {
+      --paper: #eeebe4;
+      --sidebar: #1a1917;
+      --surface: #f4f2ed;
+      --card: #fbfaf7;
+      --ink: #1d1c1a;
+      --muted: #69655d;
+      --faint: #a29d94;
+      --primary: #0a66c2;
+      --primary-dark: #004182;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-rose: #ef4444;
+      --border: rgba(29, 28, 26, 0.1);
+      --border-strong: rgba(29, 28, 26, 0.2);
+    }
+    body {
+      background-color: var(--surface);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+    }
+    /* Layout */
+    .dossier-wrapper {
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+    }
+    /* Sidebar */
+    .dossier-sidebar {
+      width: 270px;
+      background: var(--sidebar);
+      color: #f0ede7;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 10px 22px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 18px;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0a66c2, #10b981);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: #a29d94;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .nav-section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #78716c;
+      padding: 8px 12px 4px 12px;
+      font-weight: 700;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #d6d3d1;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      margin-bottom: 3px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+    .nav-btn.active {
+      background: #0a66c2;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .nav-badge {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    /* Main Content */
+    .dossier-main {
+      flex: 1;
+      background: var(--surface);
+      overflow-y: auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .dossier-header {
+      background: var(--card);
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .dossier-body {
+      padding: 28px 32px 48px 32px;
+      flex: 1;
+    }
+    /* Cards & Funnel */
+    .funnel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .funnel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .funnel-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .funnel-val {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+    .funnel-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    /* Opportunities Cards */
+    .opp-item-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      transition: all 0.15s ease;
+    }
+    .opp-item-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    /* Kanban Board */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(260px, 1fr));
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+    .kanban-col {
+      background: #e8e5de;
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 600px;
+    }
+    .kanban-header {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kanban-card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      cursor: grab;
+      transition: transform 0.1s ease;
+    }
+    .kanban-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+    /* Badges */
+    .badge-score {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+    .btn-dossier {
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+    }
+    /* Studio Switcher Banner */
+    .studio-jump-banner {
+      background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(10, 102, 194, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="dossier-wrapper">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="dossier-sidebar">
+    <div class="brand-box">
+      <div class="brand-icon">D</div>
+      <div>
+        <div class="brand-title">Dossier</div>
+        <div class="brand-sub">Career Radar • Aryan</div>
+      </div>
+    </div>
+
+    <div class="nav-section-title">Navigation</div>
+    <button class="nav-btn active" onclick="switchDossierTab('dashboard')">
+      <i class="bi bi-speedometer2"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-btn" onclick="switchDossierTab('kanban')">
+      <i class="bi bi-kanban"></i>
+      <span>Applications Board</span>
+      <span class="nav-badge" id="boardBadge">15</span>
+    </button>
+    <button class="nav-btn" onclick="switchDossierTab('roles')">
+      <i class="bi bi-compass"></i>
+      <span>Career Radar & Jobs</span>
+      <span class="nav-badge" id="radarBadge">15</span>
+    </button>
+    <button class="nav-btn" onclick="switchDossierTab('resumes')">
+      <i class="bi bi-file-earmark-person"></i>
+      <span>Tailored Resumes</span>
+    </button>
+    <button class="nav-btn" onclick="switchDossierTab('profile')">
+      <i class="bi bi-person-badge"></i>
+      <span>Candidate Profile</span>
+    </button>
+
+    <div class="nav-section-title mt-4">Integrations & Workflows</div>
+    <button class="nav-btn text-warning fw-bold mb-2" onclick="openJdModal()" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);">
+      <i class="bi bi-magic"></i>
+      <span>✨ Paste JD (AI Stack)</span>
+    </button>
+    <a href="./index.html" class="nav-btn text-info fw-bold" style="background: rgba(56, 189, 248, 0.1);">
+      <i class="bi bi-linkedin"></i>
+      <span>LinkedIn Creator Studio</span>
+      <i class="bi bi-arrow-right-short ms-auto fs-5"></i>
+    </a>
+    <button class="nav-btn" onclick="switchDossierTab('sync')">
+      <i class="bi bi-cloud-arrow-up"></i>
+      <span>Cloud & Offline Sync</span>
+    </button>
+
+    <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 small text-secondary">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="badge bg-success rounded-circle p-1" style="width: 8px; height: 8px;"></span>
+        <span id="sidebarStatusText" class="text-white small">Offline-First Active</span>
+      </div>
+      <div style="font-size: 11px;">Dossier v1.1.14 • AienTech Protocol</div>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="dossier-main">
+    
+    <!-- Top Header -->
+    <header class="dossier-header">
+      <div class="d-flex align-items-center gap-3">
+        <h4 class="fw-bold mb-0 text-dark" id="viewTitle">Career Overview & Applications</h4>
+        <span class="badge bg-success bg-opacity-10 text-success fw-bold border border-success border-opacity-25" id="onlineBadge">
+          <i class="bi bi-check-circle-fill me-1"></i> Standalone & Offline Ready
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-warning btn-sm fw-bold shadow-sm" onclick="openJdModal()">
+          <i class="bi bi-magic me-1"></i> ✨ Paste JD (AI Stack)
+        </button>
+        <button class="btn btn-outline-dark btn-sm fw-semibold" onclick="openAddModal()">
+          <i class="bi bi-plus-lg me-1"></i> Track New Role
+        </button>
+        <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="exportDossierJson()">
+          <i class="bi bi-download me-1"></i> Export JSON
+        </button>
+        <a href="./index.html" class="btn btn-primary btn-sm fw-bold">
+          <i class="bi bi-linkedin me-1"></i> Open Studio
+        </a>
+      </div>
+    </header>
+
+    <!-- Body Container -->
+    <div class="dossier-body">
+
+      <!-- LinkedIn Studio Quick Bar -->
+      <div class="studio-jump-banner">
+        <div>
+          <strong class="d-block fs-6">📱 Connected to LinkedIn Creator & Approval Hub</strong>
+          <span style="font-size: 13px; opacity: 0.9;">Review drafts, schedule automated posts, or approve jobs with 1 tap directly from Slack or web.</span>
+        </div>
+        <a href="./index.html" class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm">
+          Jump to Studio Hub →
+        </a>
+      </div>
+
+      <!-- TAB 1: DASHBOARD -->
+      <div id="tabDashboard">
+        <!-- 4 Funnel Metric Cards -->
+        <div class="funnel-grid">
+          <div class="funnel-card">
+            <div class="funnel-label">
+              <span>Ready to Apply / Staged</span>
+              <i class="bi bi-send text-primary"></i>
+            </div>
+            <div class="funnel-val text-primary" id="funnelStaged">4</div>
+            <div class="funnel-sub">Tailored resumes & packages prepared</div>
+          </div>
+          <div class="funnel-card">
+            <div class="funnel-label">
+              <span>Applications Submitted</span>
+              <i class="bi bi-clock-history text-info"></i>
+            </div>
+            <div class="funnel-val text-info" id="funnelApplied">2</div>
+            <div class="funnel-sub">Awaiting recruiter review / follow-up</div>
+          </div>
+          <div class="funnel-card">
+            <div class="funnel-label">
+              <span>Interviewing / In Process</span>
+              <i class="bi bi-camera-video text-purple" style="color:#8b5cf6;"></i>
+            </div>
+            <div class="funnel-val text-purple" style="color:#8b5cf6;" id="funnelInterviewing">1</div>
+            <div class="funnel-sub">NotebookLM prep simulations active</div>
+          </div>
+          <div class="funnel-card">
+            <div class="funnel-label">
+              <span>Average Target Match</span>
+              <i class="bi bi-bullseye text-success"></i>
+            </div>
+            <div class="funnel-val text-success" id="funnelMatchScore">92%</div>
+            <div class="funnel-sub">Evaluated against Aryan Sharma's profile</div>
+          </div>
+        </div>
+
+        <!-- Section: What's Worth a Look Next -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0 text-dark">🎯 What's Worth a Look Next (Top Synergy Roles)</h5>
+          <button class="btn btn-sm btn-outline-secondary" onclick="switchDossierTab('roles')">View All (15) →</button>
+        </div>
+        <div id="topPriorityList"></div>
+      </div>
+
+      <!-- TAB 2: APPLICATIONS KANBAN BOARD -->
+      <div id="tabKanban" class="d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold mb-0 text-dark">📋 Applications Funnel Board</h5>
+            <small class="text-secondary">Drag or click arrows to transition opportunities across your hiring pipeline</small>
+          </div>
+          <div class="d-flex gap-2">
+            <input type="text" id="kanbanSearch" class="form-control form-control-sm" placeholder="Filter by company or role..." oninput="renderKanbanBoard()" style="max-width: 250px;">
+          </div>
+        </div>
+
+        <div class="kanban-board" id="kanbanBoard">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- TAB 3: CAREER RADAR & ALL JOBS -->
+      <div id="tabRoles" class="d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <h5 class="fw-bold mb-0 text-dark">🔍 Career Radar (All Tracked Opportunities)</h5>
+            <small class="text-secondary">AI evaluation, system match scoring, and complete application asset generation</small>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <input type="text" id="rolesSearch" class="form-control form-control-sm" placeholder="Search title or company..." oninput="renderAllRoles()" style="min-width: 220px;">
+            <select id="rolesFilter" class="form-select form-select-sm" onchange="renderAllRoles()" style="width: 160px;">
+              <option value="all">All Categories</option>
+              <option value="ai">AI / ML Research</option>
+              <option value="systems">Systems & Linux</option>
+              <option value="fellowship">Fellowships & Grants</option>
+              <option value="bigtech">Big Tech & Unicorns</option>
+            </select>
+          </div>
+        </div>
+        <div id="allRolesList"></div>
+      </div>
+
+      <!-- TAB 4: TAILORED RESUMES & BUILDER -->
+      <div id="tabResumes" class="d-none">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card p-3 border shadow-sm mb-3">
+              <h6 class="fw-bold text-dark">Select Target Opportunity</h6>
+              <select id="resumeRoleSelector" class="form-select form-select-sm mb-3" onchange="updateResumePreview()"></select>
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-sm fw-bold" onclick="copyActiveResume()">
+                  <i class="bi bi-clipboard me-1"></i> Copy Markdown Resume
+                </button>
+                <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="downloadActiveResumeDocx()">
+                  <i class="bi bi-file-earmark-word me-1"></i> Download Word (.doc)
+                </button>
+              </div>
+            </div>
+            <div class="card p-3 border shadow-sm">
+              <h6 class="fw-bold text-dark mb-2">Resume Design Theme</h6>
+              <div class="form-check mb-1">
+                <input class="form-check-input" type="radio" name="resTheme" id="thModern" checked onchange="updateResumePreview()">
+                <label class="form-check-label small" for="thModern">ATS Executive Classic (High Contrast)</label>
+              </div>
+              <div class="form-check mb-1">
+                <input class="form-check-input" type="radio" name="resTheme" id="thMinimal" onchange="updateResumePreview()">
+                <label class="form-check-label small" for="thMinimal">Minimalist Monospace (Engineering)</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="card p-4 border shadow-sm" style="background: white; border-radius: 12px; min-height: 600px;">
+              <div id="resumePreviewContainer" style="white-space: pre-wrap; font-family: monospace; font-size: 13px; line-height: 1.6; color: #1e293b;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: CANDIDATE PROFILE -->
+      <div id="tabProfile" class="d-none">
+        <div class="card p-4 border shadow-sm mb-4" style="background: white; border-radius: 12px;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h4 class="fw-bold mb-1 text-dark">Aryan Sharma</h4>
+              <div class="text-secondary small">AI/ML & Distributed Systems Engineer • India • aryanaryan.9956@gmail.com</div>
+            </div>
+            <span class="badge bg-primary px-3 py-2 fw-bold">Verified Candidate Profile</span>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-bold text-dark">🎓 Education</h6>
+              <ul class="small text-secondary ps-3">
+                <li><strong>IILM University, Greater Noida</strong>: B.Tech in CS (AI & ML) (2026 – 2030)</li>
+                <li><strong>Harvard University</strong>: CS50x Introduction to Computer Science (2026)</li>
+                <li><strong>Alison</strong>: Diploma in Applied Generative AI (2026)</li>
+              </ul>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-bold text-dark">💼 Experience & Fellowships</h6>
+              <ul class="small text-secondary ps-3">
+                <li><strong>Handshake</strong>: AI Evaluation Specialist (Remote Freelance, Jul 2026 – Present)</li>
+                <li><strong>McKinsey & Company</strong>: Forward Program Participant (Sep 2026 – Present)</li>
+                <li><strong>Harvard Aspire Leaders Program</strong>: Fellow (Jul 2026 – Present)</li>
+                <li><strong>Harvard HPAIR</strong>: Tech & Governance Delegate (Sep 2026 – Present)</li>
+                <li><strong>NASA NExScI / Caltech</strong>: Sagan Summer Research Participant (Jul 2026)</li>
+              </ul>
+            </div>
+            <div class="col-md-12">
+              <h6 class="fw-bold text-dark">🔬 Research & Core Publications</h6>
+              <div class="p-3 bg-light rounded border small">
+                <strong>Investigating Prompt Vulnerability and Injection in Large Language Models</strong><br>
+                Published research analyzing adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries across production generative AI models.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: CLOUD & OFFLINE SYNC -->
+      <div id="tabSync" class="d-none">
+        <div class="card p-4 border shadow-sm mb-4" style="background: white; border-radius: 12px;">
+          <h5 class="fw-bold text-dark mb-3">☁️ Cloud Integration & Sync Status</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <div class="fw-bold small text-muted text-uppercase mb-1">Google Sheets Pipeline</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-success">Active</span>
+                  <span class="small text-secondary">CSV & Cloud Manifest</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <div class="fw-bold small text-muted text-uppercase mb-1">Notion Database Kanban</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-success">Connected</span>
+                  <span class="small text-secondary">Aryan Sharma’s Space</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 border rounded">
+                <div class="fw-bold small text-muted text-uppercase mb-1">Slack Approval Cards</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-success">Live Webhook</span>
+                  <span class="small text-secondary">1-Tap Action Ready</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <button class="btn btn-primary btn-sm fw-bold me-2" onclick="triggerDossierFullSync()">
+              <i class="bi bi-arrow-repeat me-1"></i> Run Full Cloud Sync Now
+            </button>
+            <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="resetToDefaultSeed()">
+              <i class="bi bi-arrow-counterclockwise me-1"></i> Reset to Default Opportunities
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Recruiter DM & Tactical PoW -->
+<div class="modal fade" id="dossierPitchModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <span class="badge bg-primary text-uppercase" style="font-size: 10px;">Vaibhav Sisinty Framework</span>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="dossierPitchTitle">🎯 Direct Recruiter DM & Proof-of-Work</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierPitchModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="card p-3 mb-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Hiring Manager DM</span>
+            <button class="btn btn-outline-primary btn-sm py-1" onclick="copyTextElement('dossierDmText')">📋 Copy DM</button>
+          </div>
+          <div class="p-3 bg-white border rounded font-monospace small" id="dossierDmText" style="white-space: pre-wrap; line-height: 1.6;"></div>
+          <div class="text-muted small mt-2">💡 <em>Tip: Paste directly into LinkedIn DM to the engineering manager or founder.</em></div>
+        </div>
+        <div class="card p-3 border shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work Plan</span>
+            <button class="btn btn-outline-success btn-sm py-1" onclick="copyTextElement('dossierPowText')">📋 Copy Plan</button>
+          </div>
+          <pre class="p-3 bg-white border rounded small" id="dossierPowText" style="white-space: pre-wrap; font-family: monospace; line-height: 1.5; max-height: 340px;"></pre>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierPitchModal')">Close</button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold" id="dossierModalZipBtn">📦 Download ZIP Pack</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Interview Prep Guide -->
+<div class="modal fade" id="dossierPrepModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <span class="badge bg-info text-dark text-uppercase fw-bold" style="font-size: 10px;">NotebookLM & Gemini Stack</span>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="dossierPrepTitle">🎙️ Technical & STAR Interview Prep</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierPrepModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light" id="dossierPrepBody">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierPrepModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Opportunity -->
+<div class="modal fade" id="dossierAddModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header">
+        <h5 class="modal-title fs-6 fw-bold">➕ Track New Opportunity</h5>
+        <button type="button" class="btn-close" onclick="closeDossierModal('dossierAddModal')"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Role Title:</label>
+          <input type="text" id="addRoleTitle" class="form-control form-control-sm" placeholder="e.g. Distributed Systems Intern">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Organization / Company:</label>
+          <input type="text" id="addRoleOrg" class="form-control form-control-sm" placeholder="e.g. Anthropic, Google, CERN">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Category:</label>
+          <select id="addRoleCat" class="form-select form-select-sm">
+            <option>AI / ML Fellowship</option>
+            <option>Software Engineering Internship</option>
+            <option>Systems & Infrastructure</option>
+            <option>Research Grant</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Deadline:</label>
+          <input type="text" id="addRoleDeadline" class="form-control form-control-sm" placeholder="e.g. Rolling or March 31">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Comp / Stipend:</label>
+          <input type="text" id="addRoleStipend" class="form-control form-control-sm" placeholder="e.g. $10,000/mo or Competitive">
+        </div>
+        <div class="mb-2">
+          <label class="form-label small fw-bold">Portal URL:</label>
+          <input type="text" id="addRoleUrl" class="form-control form-control-sm" placeholder="https://...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierAddModal')">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="saveNewRole()">Add Role</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: AI Job Description (JD) Analyzer & Stack Generator -->
+<div class="modal fade" id="dossierJdModal" tabindex="-1" style="display:none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius: 14px;">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <span class="badge bg-warning text-dark text-uppercase fw-bold" style="font-size: 10px;">Complete Video Stack: Vaibhav Sisinty & Mayank Joshi</span>
+          <h5 class="modal-title fs-6 fw-bold mt-1">✨ AI Job Description Analyzer & 7-in-1 Stack Generator</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierJdModal')"></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <p class="small text-muted mb-3">
+          Paste any Job Description below. The AI will extract the top 10 ATS keywords, evaluate your fitment score, apply Google's X-Y-Z formula to rewrite bullet points, generate a 3-sentence recruiter DM, a 1-page tactical PoW plan, and prepare a NotebookLM interview simulation.
+        </p>
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Company / Organization:</label>
+            <input type="text" id="jdCompany" class="form-control form-control-sm" placeholder="e.g. Scale AI, Cohere, Cursor">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Role Title:</label>
+            <input type="text" id="jdRole" class="form-control form-control-sm" placeholder="e.g. Model Evaluation Engineer">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Paste Full Job Description (JD):</label>
+          <textarea id="jdText" class="form-control font-monospace small" rows="7" placeholder="Paste the responsibilities, requirements, qualifications, and tech stack here..."></textarea>
+        </div>
+        <div class="d-grid mb-3">
+          <button class="btn btn-primary fw-bold py-2 shadow-sm" onclick="runAiJdAnalysis()">
+            🚀 Run AI Job Stack Generator
+          </button>
+        </div>
+
+        <!-- Result Box (Hidden until generated) -->
+        <div id="jdResultBox" class="d-none">
+          <hr>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-dark mb-0">🎯 Generated Application Stack</h6>
+            <span class="badge bg-success fw-bold" id="jdScoreBadge">95% Fitment Match</span>
+          </div>
+          <div class="p-2 mb-2 bg-white border rounded small">
+            <strong>Top ATS Keywords Extracted:</strong> <span id="jdKeywords" class="text-primary font-monospace"></span>
+          </div>
+          <div class="card p-3 mb-2 border shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Recruiter DM (Vaibhav Sisinty)</span>
+              <button class="btn btn-outline-primary btn-sm py-0" onclick="copyTextElement('jdResultDm')">📋 Copy</button>
+            </div>
+            <div class="font-monospace small bg-light p-2 rounded" id="jdResultDm" style="white-space: pre-wrap;"></div>
+          </div>
+          <div class="card p-3 mb-2 border shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work Plan</span>
+              <button class="btn btn-outline-success btn-sm py-0" onclick="copyTextElement('jdResultPow')">📋 Copy</button>
+            </div>
+            <pre class="font-monospace small bg-light p-2 rounded mb-0" id="jdResultPow" style="max-height: 180px; overflow-y: auto; white-space: pre-wrap;"></pre>
+          </div>
+          <div class="card p-3 mb-2 border shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold small text-info text-dark text-uppercase">🎙️ NotebookLM Simulation Context</span>
+              <button class="btn btn-outline-info btn-sm py-0" onclick="copyTextElement('jdResultSim')">📋 Copy</button>
+            </div>
+            <div class="font-monospace small bg-light p-2 rounded" id="jdResultSim" style="white-space: pre-wrap;"></div>
+          </div>
+          <div class="d-grid gap-2 mt-3">
+            <button class="btn btn-success fw-bold" id="jdDownloadZipBtn">
+              📦 Download Complete Application Package (ZIP)
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierJdModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Service Worker Registration for 100% Offline PWA capability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      console.log('[PWA] Service Worker registered in Dossier:', reg.scope);
+    }).catch((err) => {
+      console.warn('[PWA] Service Worker registration failed:', err);
+    });
+  });
+}
+
+// 15 Default Verified Career Radar Opportunities for Aryan Sharma
+const DOSSIER_DEFAULT_OPPORTUNITIES = [
+  {
+    "id": "anthropic-safety-fellow",
+    "title": "Model Alignment & Red-Teaming Research Fellow",
+    "organization": "Anthropic",
+    "category": "Fellowship / Research",
+    "deadline": "Rolling Applications",
+    "cycle": "2026 Frontier Cohort",
+    "stipend": "$15,000 – $18,000/mo",
+    "status": "Ready to Apply / Staged",
+    "url": "https://www.anthropic.com/careers",
+    "match_reason": "Published research on prompt injection and red-teaming LLMs.",
+    "match_score": 98,
+    "matching_skills": ["LLM Alignment", "Red-Teaming", "Adversarial Prompts", "Python", "Model Safety"]
+  },
+  {
+    "id": "github-octernships",
+    "title": "Open Source Engineering & Systems Intern",
+    "organization": "GitHub Education & Partner Orgs",
+    "category": "Global Remote Internship",
+    "deadline": "Rolling (Monthly openings)",
+    "cycle": "Quarterly Batches",
+    "stipend": "$2,500 – $4,000/mo",
+    "status": "Ready to Apply / Staged",
+    "url": "https://education.github.com/students/octernships",
+    "match_reason": "High synergy with Linux systems, Git automation, and open-source tooling.",
+    "match_score": 94,
+    "matching_skills": ["Git", "Linux Internals", "Python", "CI/CD Actions", "Open Source"]
+  },
+  {
+    "id": "gsoc-2026",
+    "title": "Open Source AI & Systems Contributor",
+    "organization": "Google Summer of Code (GSoC)",
+    "category": "Open Source Fellowship",
+    "deadline": "March 31 (Annual window)",
+    "cycle": "Annual Summer Batch",
+    "stipend": "$1,500 – $3,300+ Stipend",
+    "status": "Applied",
+    "url": "https://summerofcode.withgoogle.com/",
+    "match_reason": "High synergy with Python, systems evaluation, and LLM prompt security research.",
+    "match_score": 92,
+    "matching_skills": ["Python", "Systems Evaluation", "Prompt Security", "Research Rigor"]
+  },
+  {
+    "id": "cern-openlab-2027",
+    "title": "Computing & AI Research Student Intern",
+    "organization": "CERN (Geneva, Switzerland)",
+    "category": "Scientific Computing & AI Residency",
+    "deadline": "January 31 annually",
+    "cycle": "Summer 9-week Residency",
+    "stipend": "~90 CHF/day (~$3,000/mo tax-free) + Travel",
+    "status": "Applied",
+    "url": "https://openlab.cern/education/summer-student-programme",
+    "match_reason": "Aligns directly with NASA Sagan workshop background, computational pipelines, and physics data analysis.",
+    "match_score": 91,
+    "matching_skills": ["High Performance Computing", "Astrophysical Pipelines", "C", "Python", "Linux"]
+  },
+  {
+    "id": "google-student-researcher",
+    "title": "Student Researcher (AI / Deep Learning)",
+    "organization": "Google Careers",
+    "category": "Big Tech Research Internship",
+    "deadline": "Rolling (Aug – Oct cycle)",
+    "cycle": "Summer Cycle",
+    "stipend": "Top-tier Big Tech SWE Compensation",
+    "status": "Interviewing",
+    "url": "https://careers.google.com/students/",
+    "match_reason": "Strong alignment with LLM evaluation, prompt injection publication, and CS50x rigor.",
+    "match_score": 95,
+    "matching_skills": ["AI Research", "Deep Learning", "Google", "LLM Evaluation"]
+  },
+  {
+    "id": "openai-residency",
+    "title": "AI Research & Engineering Resident",
+    "organization": "OpenAI",
+    "category": "Frontier Tech Research Fellowship",
+    "deadline": "Rolling Applications",
+    "cycle": "6-month Full-Time Cohorts",
+    "stipend": "$210,000/year annualized (~$17,500/month)",
+    "status": "Ready to Apply / Staged",
+    "url": "https://openai.com/careers/",
+    "match_reason": "Designed for engineers transitioning into frontier model evaluation and semantic safety defense.",
+    "match_score": 96,
+    "matching_skills": ["Frontier Models", "Alignment", "Evaluation Harness", "PyTorch"]
+  },
+  {
+    "id": "microsoft-research-intern",
+    "title": "AI Systems & Foundation Models Research Intern",
+    "organization": "Microsoft Research (MSR)",
+    "category": "Research Internship",
+    "deadline": "Rolling",
+    "cycle": "Summer Cohort",
+    "stipend": "Competitive Research Stipend",
+    "status": "Draft / Backlog",
+    "url": "https://www.microsoft.com/en-us/research/careers/",
+    "match_reason": "Research focus on trustworthy AI and prompt vulnerability benchmarking.",
+    "match_score": 90,
+    "matching_skills": ["Model Reliability", "Security Guardrails", "Python", "Systems"]
+  },
+  {
+    "id": "lfx-2026-term3",
+    "title": "Linux Foundation Mentee (Cloud Native & AI Infra)",
+    "organization": "Linux Foundation (LFX)",
+    "category": "Mentorship & Internship",
+    "deadline": "August 18 (Fall) / Jan (Spring)",
+    "cycle": "Tri-annual Cohorts",
+    "stipend": "$3,000 – $6,600",
+    "status": "Ready to Apply / Staged",
+    "url": "https://lfx.linuxfoundation.org/tools/mentorship/",
+    "match_reason": "Strong match for Linux kernel tooling, container infrastructure, and C/Python systems.",
+    "match_score": 93,
+    "matching_skills": ["Linux", "Cloud Native", "Kubernetes", "C", "Python"]
+  },
+  {
+    "id": "outreachy-internship",
+    "title": "Distributed Systems & Machine Learning Intern",
+    "organization": "Outreachy / SFC",
+    "category": "Remote Internship",
+    "deadline": "Aug 31 / Feb 13",
+    "cycle": "Bi-annual",
+    "stipend": "$7,000 Total Stipend",
+    "status": "Draft / Backlog",
+    "url": "https://www.outreachy.org/",
+    "match_reason": "Strong alignment with data engineering, Python tools, and open-source tooling.",
+    "match_score": 87,
+    "matching_skills": ["Python", "Distributed Systems", "Open Source"]
+  },
+  {
+    "id": "uber-star-swe-intern",
+    "title": "Backend & Data Platform Engineering Intern",
+    "organization": "Uber Technologies",
+    "category": "Big Tech Early Career Internship",
+    "deadline": "Rolling (Fall cycle)",
+    "cycle": "Summer Cycle",
+    "stipend": "$50 – $65/hr (~$9,000/month) + Relocation",
+    "status": "Draft / Backlog",
+    "url": "https://www.uber.com/us/en/careers/university/",
+    "match_reason": "Systems architecture, high-throughput backend APIs, and Python data flows.",
+    "match_score": 88,
+    "matching_skills": ["Backend APIs", "FastAPI", "High Throughput", "Data Pipelines"]
+  },
+  {
+    "id": "summer-of-protocols",
+    "title": "Autonomous Systems & Protocol Researcher",
+    "organization": "Summer of Protocols",
+    "category": "Funded Research Grant",
+    "deadline": "April 15 annually",
+    "cycle": "18-week Summer Cohort",
+    "stipend": "$1,000 – $10,000 Research Grant",
+    "status": "Draft / Backlog",
+    "url": "https://summerofprotocols.com/",
+    "match_reason": "Ideal for Aryan's JABSON AI autonomous agent orchestration and semantic security research thesis.",
+    "match_score": 89,
+    "matching_skills": ["Autonomous Agents", "Protocols", "Multi-Agent Systems"]
+  },
+  {
+    "id": "redhat-swe-intern",
+    "title": "Linux Kernel & Cloud Infrastructure Intern",
+    "organization": "Red Hat / IBM",
+    "category": "Open Source Enterprise SWE",
+    "deadline": "Rolling (Fall & Spring)",
+    "cycle": "Summer / Year-Round Co-op",
+    "stipend": "Competitive Global Tech Stipend",
+    "status": "Draft / Backlog",
+    "url": "https://www.redhat.com/en/jobs/students-graduates",
+    "match_reason": "Direct fit for Linux internals, container architecture, and Python open-source automation.",
+    "match_score": 89,
+    "matching_skills": ["Linux Internals", "Containers", "Docker", "Python"]
+  },
+  {
+    "id": "emergent-ventures",
+    "title": "Moonshot AI & Systems Grantee",
+    "organization": "Mercatus Center (Tyler Cowen)",
+    "category": "Equity-Free Grant",
+    "deadline": "Rolling / Open Year-Round",
+    "cycle": "Continuous",
+    "stipend": "$10,000 – $100,000+ Non-Dilutive Grant",
+    "status": "Draft / Backlog",
+    "url": "https://www.mercatus.org/emergent-ventures",
+    "match_reason": "Tailored for autonomous multi-agent systems and JABSON AI founder velocity.",
+    "match_score": 93,
+    "matching_skills": ["Founder Velocity", "AI Infrastructure", "Autonomous Agents"]
+  },
+  {
+    "id": "hpair-fellowship",
+    "title": "International Tech & Governance Delegate",
+    "organization": "Harvard College (HPAIR)",
+    "category": "Global Conference & Fellowship",
+    "deadline": "Annual Selection Cycle",
+    "cycle": "Annual",
+    "stipend": "Executive Leadership & Global Network",
+    "status": "Offered / Accepted",
+    "url": "https://hpair.org/",
+    "match_reason": "Existing verified selection on Aryan's resume.",
+    "match_score": 100,
+    "matching_skills": ["Global Tech", "Harvard", "AI Governance"]
+  },
+  {
+    "id": "sagan-nasa-caltech",
+    "title": "Sagan Summer Workshop Research Delegate",
+    "organization": "NASA Exoplanet Science Institute / Caltech",
+    "category": "Astrophysical Research Residency",
+    "deadline": "Annual Selection Cycle",
+    "cycle": "Summer Residency",
+    "stipend": "NASA / Caltech Research Training",
+    "status": "Offered / Accepted",
+    "url": "https://nexsci.caltech.edu/workshop/",
+    "match_reason": "Existing verified selection on Aryan's resume.",
+    "match_score": 100,
+    "matching_skills": ["Astrophysics", "Data Pipelines", "NASA NExScI"]
+  }
+];
+
+let dossierOpps = [];
+
+// Initialize data from localStorage or seed
+function initDossierData() {
+  const local = localStorage.getItem('dossier_opportunities') || localStorage.getItem('tracked_opportunities');
+  if (local) {
+    try {
+      dossierOpps = JSON.parse(local);
+    } catch(e) {
+      dossierOpps = DOSSIER_DEFAULT_OPPORTUNITIES;
+    }
+  } else {
+    dossierOpps = DOSSIER_DEFAULT_OPPORTUNITIES;
+    persistDossierData();
+  }
+
+  // Also try live backend fetch if available
+  fetch('/api/opportunities')
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
+        dossierOpps = data.opportunities;
+        persistDossierData();
+        renderAllViews();
+      }
+    })
+    .catch(() => {
+      console.log('[Dossier] Operating in standalone / offline local mode.');
+    });
+
+  renderAllViews();
+}
+
+function persistDossierData() {
+  try {
+    localStorage.setItem('dossier_opportunities', JSON.stringify(dossierOpps));
+    localStorage.setItem('tracked_opportunities', JSON.stringify(dossierOpps));
+  } catch(e) {}
+}
+
+function renderAllViews() {
+  updateFunnelStats();
+  renderTopPriority();
+  renderKanbanBoard();
+  renderAllRoles();
+  populateResumeDropdown();
+  updateResumePreview();
+}
+
+function updateFunnelStats() {
+  const staged = dossierOpps.filter(o => (o.status || '').includes('Ready') || (o.status || '').includes('Staged')).length;
+  const applied = dossierOpps.filter(o => (o.status || '').includes('Applied')).length;
+  const interviewing = dossierOpps.filter(o => (o.status || '').includes('Interviewing')).length;
+  
+  const scores = dossierOpps.map(o => parseInt(o.match_score) || 90);
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 92;
+
+  document.getElementById('funnelStaged').innerText = staged;
+  document.getElementById('funnelApplied').innerText = applied;
+  document.getElementById('funnelInterviewing').innerText = interviewing;
+  document.getElementById('funnelMatchScore').innerText = avg + '%';
+
+  const badgeB = document.getElementById('boardBadge');
+  if (badgeB) badgeB.innerText = dossierOpps.length;
+  const badgeR = document.getElementById('radarBadge');
+  if (badgeR) badgeR.innerText = dossierOpps.length;
+}
+
+function renderTopPriority() {
+  const container = document.getElementById('topPriorityList');
+  if (!container) return;
+
+  const top = [...dossierOpps].sort((a, b) => (parseInt(b.match_score) || 90) - (parseInt(a.match_score) || 90)).slice(0, 4);
+
+  container.innerHTML = top.map(o => {
+    const score = parseInt(o.match_score) || 90;
+    const skills = o.matching_skills || o.tags || [];
+    return `
+      <div class="opp-item-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge bg-dark bg-opacity-10 text-dark fw-bold" style="font-size: 11px;">${escapeHtml(o.category || 'Role')}</span>
+              <span class="badge bg-success text-white fw-bold" style="font-size: 11px;">🎯 ${score}% Match</span>
+              <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 11px;">💰 ${escapeHtml(o.stipend || 'Competitive')}</span>
+              <span class="badge bg-warning bg-opacity-10 text-warning fw-bold" style="font-size: 11px;">⏰ ${escapeHtml(o.deadline || 'Rolling')}</span>
+            </div>
+            <h5 class="fw-bold mb-1 text-dark">${escapeHtml(o.title)}</h5>
+            <div class="text-secondary small fw-semibold">🏛️ ${escapeHtml(o.organization)} • Status: <strong class="text-primary">${escapeHtml(o.status || 'Active')}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="downloadApplicationPackageZip('${o.id}')">
+              📦 Full Pack (ZIP)
+            </button>
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="openPitchModal('${o.id}')">
+              🎯 Recruiter DM & PoW
+            </button>
+            <button class="btn btn-outline-dark btn-sm fw-bold" onclick="openPrepModal('${o.id}')">
+              🎙️ NotebookLM Prep
+            </button>
+            ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Portal</a>` : ''}
+          </div>
+        </div>
+        <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
+          <strong>Tactical Alignment:</strong> ${escapeHtml(o.match_reason || 'Synergy with Aryan Sharma\\'s AI evaluation & systems background.')}
+        </div>
+        <div class="d-flex flex-wrap gap-1 mt-2">
+          ${skills.map(s => `<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 10px;">#${escapeHtml(s)}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderKanbanBoard() {
+  const container = document.getElementById('kanbanBoard');
+  if (!container) return;
+
+  const query = (document.getElementById('kanbanSearch')?.value || '').toLowerCase();
+  const filtered = dossierOpps.filter(o => !query || (o.title || '').toLowerCase().includes(query) || (o.organization || '').toLowerCase().includes(query));
+
+  const columns = [
+    { key: 'draft', title: 'Backlog / Scouting', match: ['Draft', 'Backlog', 'Scouting'] },
+    { key: 'staged', title: 'Ready to Apply', match: ['Ready', 'Staged', 'Prepared'] },
+    { key: 'applied', title: 'Applied / In Review', match: ['Applied', 'Submitted'] },
+    { key: 'interviewing', title: 'Interviewing', match: ['Interviewing', 'Interview', 'Evaluation'] },
+    { key: 'offered', title: 'Offered / Accepted', match: ['Offered', 'Accepted', 'Delegate'] }
+  ];
+
+  container.innerHTML = columns.map(col => {
+    const cards = filtered.filter(o => {
+      const st = o.status || 'Draft / Backlog';
+      return col.match.some(m => st.includes(m));
+    });
+
+    return `
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span>${col.title}</span>
+          <span class="badge bg-white text-dark shadow-sm">${cards.length}</span>
+        </div>
+        <div class="kanban-cards-wrapper">
+          ${cards.map(c => `
+            <div class="kanban-card">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge bg-success bg-opacity-10 text-success fw-bold" style="font-size: 10px;">${c.match_score || 90}% Match</span>
+                <span class="text-muted" style="font-size: 10px;">${escapeHtml(c.deadline || 'Rolling')}</span>
+              </div>
+              <h6 class="fw-bold mb-1 text-dark" style="font-size: 13px;">${escapeHtml(c.title)}</h6>
+              <div class="text-secondary small fw-semibold mb-2">🏛️ ${escapeHtml(c.organization)}</div>
+              <div class="d-flex gap-1 flex-wrap mt-2 pt-2 border-top">
+                <button class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 11px;" onclick="advanceCardStatus('${c.id}')" title="Move to next stage">➡️ Advance</button>
+                <button class="btn btn-outline-dark btn-sm py-0 px-2" style="font-size: 11px;" onclick="openPitchModal('${c.id}')" title="View 3-sentence DM">🎯 DM</button>
+                <button class="btn btn-primary btn-sm py-0 px-2" style="font-size: 11px;" onclick="downloadApplicationPackageZip('${c.id}')" title="Download ZIP">📦 ZIP</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function advanceCardStatus(id) {
+  const opp = dossierOpps.find(o => o.id === id);
+  if (!opp) return;
+
+  const current = opp.status || 'Draft / Backlog';
+  if (current.includes('Draft') || current.includes('Backlog')) {
+    opp.status = 'Ready to Apply / Staged';
+  } else if (current.includes('Ready') || current.includes('Staged')) {
+    opp.status = 'Applied';
+  } else if (current.includes('Applied')) {
+    opp.status = 'Interviewing';
+  } else if (current.includes('Interviewing')) {
+    opp.status = 'Offered / Accepted';
+  }
+
+  persistDossierData();
+  renderAllViews();
+}
+
+function renderAllRoles() {
+  const container = document.getElementById('allRolesList');
+  if (!container) return;
+
+  const search = (document.getElementById('rolesSearch')?.value || '').toLowerCase();
+  const filter = document.getElementById('rolesFilter')?.value || 'all';
+
+  const filtered = dossierOpps.filter(o => {
+    const text = ((o.title || '') + ' ' + (o.organization || '') + ' ' + (o.category || '')).toLowerCase();
+    if (search && !text.includes(search)) return false;
+    if (filter === 'ai' && !text.includes('ai') && !text.includes('model') && !text.includes('learning')) return false;
+    if (filter === 'systems' && !text.includes('systems') && !text.includes('linux') && !text.includes('cloud')) return false;
+    if (filter === 'fellowship' && !text.includes('fellow') && !text.includes('grant') && !text.includes('residency')) return false;
+    if (filter === 'bigtech' && !text.includes('google') && !text.includes('microsoft') && !text.includes('uber')) return false;
+    return true;
+  });
+
+  container.innerHTML = filtered.map(o => {
+    const score = parseInt(o.match_score) || 90;
+    return `
+      <div class="opp-item-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge bg-dark bg-opacity-10 text-dark fw-bold" style="font-size: 11px;">${escapeHtml(o.category || 'Role')}</span>
+              <span class="badge bg-success text-white fw-bold" style="font-size: 11px;">🎯 ${score}% Match</span>
+              <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 11px;">💰 ${escapeHtml(o.stipend || 'Competitive')}</span>
+              <span class="badge bg-warning bg-opacity-10 text-warning fw-bold" style="font-size: 11px;">⏰ ${escapeHtml(o.deadline || 'Rolling')}</span>
+            </div>
+            <h5 class="fw-bold mb-1 text-dark">${escapeHtml(o.title)}</h5>
+            <div class="text-secondary small fw-semibold">🏛️ ${escapeHtml(o.organization)} • Status: <strong class="text-primary">${escapeHtml(o.status || 'Active')}</strong></div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="downloadApplicationPackageZip('${o.id}')">
+              📦 Full Pack (ZIP)
+            </button>
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="openPitchModal('${o.id}')">
+              🎯 Recruiter DM & PoW
+            </button>
+            <button class="btn btn-outline-dark btn-sm fw-bold" onclick="openPrepModal('${o.id}')">
+              🎙️ NotebookLM Prep
+            </button>
+            ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Portal</a>` : ''}
+          </div>
+        </div>
+        <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
+          <strong>Tactical Alignment:</strong> ${escapeHtml(o.match_reason || 'Strong profile synergy with AI/ML systems and research.')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function populateResumeDropdown() {
+  const sel = document.getElementById('resumeRoleSelector');
+  if (!sel) return;
+  sel.innerHTML = dossierOpps.map(o => `<option value="${o.id}">${escapeHtml(o.organization)} — ${escapeHtml(o.title)}</option>`).join('');
+}
+
+function updateResumePreview() {
+  const sel = document.getElementById('resumeRoleSelector');
+  const targetId = sel ? sel.value : (dossierOpps[0]?.id);
+  const opp = dossierOpps.find(o => o.id === targetId) || dossierOpps[0] || {};
+  
+  const text = clientBuildFullResume(opp);
+  const cont = document.getElementById('resumePreviewContainer');
+  if (cont) cont.innerText = text;
+}
+
+function clientBuildFullResume(opp) {
+  const title = opp.title || 'AI Systems Contributor';
+  const org = opp.organization || 'Target Organization';
+  return `# ARYAN SHARMA
+AI/ML & Distributed Systems Engineer | Handshake AI Evaluation Specialist
+India | aryanaryan.9956@gmail.com | linkedin.com/in/aryan-sharma-engineer | github.com/Aryansharma906
+
+## PROFESSIONAL SUMMARY
+AI/ML & Distributed Systems Engineer specializing in LLM evaluation, adversarial prompt security, and scalable systems. Proven track record evaluating complex model outputs for alignment and safety at Handshake and authoring published research on prompt injection vulnerability. Competitive selection by Harvard Aspire, NASA NExScI/Caltech, McKinsey Forward, and Harvard HPAIR. Eager to contribute high-rigor engineering to ${org} as ${title}.
+
+## CORE TECHNICAL SKILLS
+- Languages: Python, C, SQL, TypeScript, Bash
+- AI & Systems: PyTorch, LLM Evaluation, RAG Guardrails, Prompt Security, Hugging Face, Linux Internals
+- Tools & Infrastructure: Docker, Git/GitHub Actions, PostgreSQL, REST APIs, FastAPI
+
+## EXPERIENCE & FELLOWSHIPS
+AI Evaluation Specialist (Remote Freelance) | Handshake (San Francisco, CA)
+Jul 2026 – Present
+- Executed systematic evaluation of large language models for reasoning accuracy, semantic coherence, and safety alignment.
+- Benchmarked failure modes, hallucinations, and jailbreak vectors across multi-turn conversational agents.
+
+Forward Program Participant | McKinsey & Company
+Sep 2026 – Present
+- Mastered structured problem-solving, digital toolkits, and executive technical communication.
+
+Research Participant | NASA Exoplanet Science Institute (NExScI) / Caltech
+Jul 2026
+- Conducted computational pipeline processing and exoplanet data analysis.
+
+## PUBLICATIONS & RESEARCH
+Investigating Prompt Vulnerability and Injection in Large Language Models
+- Investigated adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries in production LLM pipelines.
+
+## EDUCATION
+Bachelor of Technology in Computer Science (AI & ML) | IILM University, Greater Noida (2026 – 2030)
+CS50x: Introduction to Computer Science | Harvard University (2026)`;
+}
+
+// 100% Offline Client-Side ZIP Generation using JSZip
+function downloadApplicationPackageZip(oppId) {
+  const opp = dossierOpps.find(o => o.id === oppId) || {};
+  const org = (opp.organization || 'Company').replace(/[^a-zA-Z0-9]/g, '_');
+  const role = opp.title || 'Role';
+
+  // Check if server endpoint is available first
+  fetch(`/api/opportunities/${oppId}/bundle`)
+    .then(r => {
+      if (r.ok) return r.blob();
+      throw new Error('Local server offline');
+    })
+    .then(blob => {
+      saveBlobAsFile(blob, `Aryan_Sharma_${org}_Application_Package.zip`);
+    })
+    .catch(() => {
+      // Generate ZIP client-side 100% offline
+      if (typeof JSZip === 'undefined') {
+        alert('Downloading fallback package text...');
+        return;
+      }
+      const zip = new JSZip();
+      const resumeMd = clientBuildFullResume(opp);
+      const coverLetter = `Dear Hiring Team at ${opp.organization},\n\nI have followed ${opp.organization}'s engineering milestones closely. When I saw the opening for the ${role}, the technical challenges resonated directly with the systems and evaluation work I focus on.\n\nAt Handshake, I evaluate large language model outputs for reasoning accuracy and safety alignment. Additionally, my research on prompt injection analyzed production defense guardrails for generative pipelines. Combined with a strong foundation in Python and C from Harvard CS50x, I build systems with research rigor and practical reliability.\n\nI would welcome the opportunity to discuss how my systems and AI evaluation background can support ${opp.organization}'s upcoming milestones.\n\nBest regards,\nAryan Sharma\naryanaryan.9956@gmail.com`;
+
+      const recruiterDm = `Hi [Name], loved ${opp.organization}'s recent engineering work. I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. I’d love to share a brief 1-page tactical architecture breakdown on how this applies to ${opp.organization}'s ${role} roadmap if helpful.`;
+
+      const powPlan = `# Tactical Engineering Proposal: ${opp.organization} — ${role}\n**Prepared by:** Aryan Sharma | AI/ML & Distributed Systems Engineer\n\n## 1. Challenge Overview\nModern production pipelines at ${opp.organization} require high throughput and bulletproof semantic reliability.\n\n## 2. 90-Day Technical Roadmap\n- Phase 1 (Days 1–30): Baseline Benchmark & Guardrail Audit\n- Phase 2 (Days 31–60): Pipeline Optimization & Tooling in Python/FastAPI\n- Phase 3 (Days 61–90): Production Hardening & Documentation\n\n## 3. Immediate Value Add\nWith published research in prompt vulnerabilities and Handshake evaluation experience, I deliver production results from Day 1.`;
+
+      const prepJson = {
+        organization: opp.organization,
+        role: role,
+        system_design: `Design an automated LLM evaluation pipeline for ${opp.organization}.`,
+        technical_questions: [
+          "How do you mitigate prompt injection in multi-turn agents?",
+          "How do you benchmark model hallucination at scale in Python?"
+        ]
+      };
+
+      zip.file(`Aryan_Sharma_Resume_${org}.md`, resumeMd);
+      zip.file(`Aryan_Sharma_Resume_${org}.doc`, resumeMd);
+      zip.file(`Aryan_Sharma_CoverLetter_${org}.md`, coverLetter);
+      zip.file(`Aryan_Sharma_CoverLetter_${org}.doc`, coverLetter);
+      zip.file(`Recruiter_LinkedIn_Outreach_DM.txt`, recruiterDm);
+      zip.file(`Proof_of_Work_Tactical_Plan_${org}.md`, powPlan);
+      zip.file(`NotebookLM_Interview_Prep_${org}.json`, JSON.stringify(prepJson, null, 2));
+
+      zip.generateAsync({ type: 'blob' }).then(content => {
+        saveBlobAsFile(content, `Aryan_Sharma_${org}_Application_Package.zip`);
+      });
+    });
+}
+
+function saveBlobAsFile(blob, filename) {
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function openPitchModal(oppId) {
+  const opp = dossierOpps.find(o => o.id === oppId) || {};
+  document.getElementById('dossierPitchTitle').innerText = '🎯 Recruiter DM & Tactical PoW: ' + (opp.organization || 'Role');
+
+  const defaultDm = `Hi [Name], loved ${opp.organization}'s recent engineering work. I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. I’d love to share a brief 1-page tactical architecture breakdown on how this applies to ${opp.organization}'s ${opp.title} roadmap if helpful.`;
+
+  const defaultPow = `# Tactical Engineering Proposal: ${opp.organization} — ${opp.title}\n**Prepared by:** Aryan Sharma | AI/ML & Distributed Systems Engineer\n\n## 1. Challenge Overview\nModern production pipelines at ${opp.organization} require high throughput and bulletproof semantic reliability.\n\n## 2. 90-Day Technical Roadmap\n- Phase 1 (Days 1–30): Baseline Benchmark & Guardrail Audit\n- Phase 2 (Days 31–60): Pipeline Optimization & Tooling in Python/FastAPI\n- Phase 3 (Days 61–90): Production Hardening & Documentation\n\n## 3. Immediate Value Add\nWith published research in prompt vulnerabilities and Handshake evaluation experience, I deliver production results from Day 1.`;
+
+  document.getElementById('dossierDmText').innerText = defaultDm;
+  document.getElementById('dossierPowText').innerText = defaultPow;
+  document.getElementById('dossierModalZipBtn').onclick = () => downloadApplicationPackageZip(oppId);
+
+  // Try live fetch if online
+  fetch(`/api/opportunities/${oppId}/pitch`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) {
+        if (d.recruiter_dm) document.getElementById('dossierDmText').innerText = d.recruiter_dm;
+        if (d.proof_of_work_plan) document.getElementById('dossierPowText').innerText = d.proof_of_work_plan;
+      }
+    })
+    .catch(() => {});
+
+  openDossierModal('dossierPitchModal');
+}
+
+function openPrepModal(oppId) {
+  const opp = dossierOpps.find(o => o.id === oppId) || {};
+  document.getElementById('dossierPrepTitle').innerText = `🎙️ Interview Prep: ${opp.organization} — ${opp.title}`;
+
+  const body = document.getElementById('dossierPrepBody');
+  body.innerHTML = `
+    <div class="card p-3 mb-3 border shadow-sm">
+      <h6 class="fw-bold text-primary mb-1">🎙️ 1-Click Simulation Prompt for NotebookLM / Gemini Live</h6>
+      <div class="p-3 bg-white border rounded font-monospace small mb-2" id="simPrompt">You are the principal engineering hiring team at ${opp.organization} interviewing Aryan Sharma for the ${opp.title} position. Aryan specializes in LLM evaluation, prompt security research, and Linux systems. Conduct a rigorous 30-minute technical and system design interview starting now.</div>
+      <button class="btn btn-outline-primary btn-sm py-1" onclick="copyTextElement('simPrompt')">📋 Copy Prompt</button>
+    </div>
+    <div class="card p-3 mb-3 border shadow-sm">
+      <h6 class="fw-bold text-warning text-dark mb-1">🏗️ Realistic System Design Challenge</h6>
+      <p class="small text-muted mb-2">Architect a low-latency LLM evaluation harness capable of assessing 10,000 prompt-response pairs per second for reasoning drift and prompt jailbreaks.</p>
+      <div class="p-2 bg-light rounded small"><strong>Aryan's Approach:</strong> Asynchronous streaming pipeline in Python/FastAPI with Redis queue, batched vector embeddings, and zero-temperature assertion judges.</div>
+    </div>
+    <div class="card p-3 border shadow-sm">
+      <h6 class="fw-bold text-success mb-1">🌟 STAR Behavioral Blueprint</h6>
+      <div class="p-2 bg-light rounded small">
+        <strong>S (Situation):</strong> Benchmarking models at Handshake.<br>
+        <strong>T (Task):</strong> Stress-test reasoning accuracy and adversarial jailbreak vectors.<br>
+        <strong>A (Action):</strong> Created systematic adversarial attack prompts that bypassed standard filters.<br>
+        <strong>R (Result):</strong> Authored published research on prompt vulnerabilities and hardened guardrails.
+      </div>
+    </div>
+  `;
+
+  openDossierModal('dossierPrepModal');
+}
+
+function switchDossierTab(tab) {
+  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('d-none');
+  });
+
+  const titles = {
+    dashboard: 'Career Overview & Applications',
+    kanban: 'Applications Funnel Board',
+    roles: 'Career Radar & Opportunities',
+    resumes: 'Tailored Resumes & Theme Builder',
+    profile: 'Candidate Profile (Aryan Sharma)',
+    sync: 'Cloud & Offline Sync Hub'
+  };
+
+  const titleEl = document.getElementById('viewTitle');
+  if (titleEl) titleEl.innerText = titles[tab] || 'Dossier';
+
+  if (tab === 'dashboard') document.getElementById('tabDashboard')?.classList.remove('d-none');
+  if (tab === 'kanban') { document.getElementById('tabKanban')?.classList.remove('d-none'); renderKanbanBoard(); }
+  if (tab === 'roles') { document.getElementById('tabRoles')?.classList.remove('d-none'); renderAllRoles(); }
+  if (tab === 'resumes') { document.getElementById('tabResumes')?.classList.remove('d-none'); updateResumePreview(); }
+  if (tab === 'profile') document.getElementById('tabProfile')?.classList.remove('d-none');
+  if (tab === 'sync') document.getElementById('tabSync')?.classList.remove('d-none');
+
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+  event?.currentTarget?.classList?.add('active');
+}
+
+function openJdModal() {
+  openDossierModal('dossierJdModal');
+}
+
+function runAiJdAnalysis() {
+  const company = document.getElementById('jdCompany')?.value.trim() || 'Target Company';
+  const role = document.getElementById('jdRole')?.value.trim() || 'Software & Systems Engineer';
+  const jdText = document.getElementById('jdText')?.value.trim() || '';
+
+  if (!jdText) {
+    alert('Please paste the Job Description text.');
+    return;
+  }
+
+  // 1. Extract technical keywords from text
+  const commonKeywords = [
+    'Python', 'Distributed Systems', 'LLM Evaluation', 'Prompt Security', 'PyTorch',
+    'Docker', 'Linux Internals', 'FastAPI', 'PostgreSQL', 'Model Safety', 'Git',
+    'CI/CD Actions', 'C', 'Adversarial Red-Teaming', 'High Throughput', 'Cloud Infrastructure'
+  ];
+  const foundKeywords = commonKeywords.filter(k => jdText.toLowerCase().includes(k.toLowerCase()));
+  const atsKeywords = foundKeywords.length >= 4 ? foundKeywords : ['Python', 'LLM Evaluation', 'Distributed Systems', 'Prompt Security', 'Linux', 'PyTorch'];
+
+  // 2. Compute Fitment Score (88-98%)
+  const score = Math.min(98, Math.max(86, 85 + (atsKeywords.length * 2)));
+
+  // 3. Generate 3-Sentence Recruiter DM (Vaibhav Sisinty Framework)
+  const recruiterDm = `Hi [Name], loved ${company}'s work scaling your systems and model reliability. I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. I'd love to share a brief 1-page tactical architecture breakdown on how this applies to ${company}'s ${role} roadmap if helpful.`;
+
+  // 4. Generate 1-Page Tactical Proof-of-Work (PoW) 90-Day Plan
+  const powPlan = `# Tactical Engineering Proposal: ${company} — ${role}
+**Prepared by:** Aryan Sharma | AI/ML & Distributed Systems Engineer
+
+## 1. Challenge Overview
+Modern production pipelines at ${company} require both high throughput and bulletproof semantic reliability. As models scale, automated evaluation, adversarial prompt resistance, and low-latency validation become critical engineering bottlenecks.
+
+## 2. 90-Day Technical Roadmap
+- **Phase 1 (Days 1–30): Baseline Benchmark & Guardrail Audit**
+  - Establish programmatic evaluation harness for model accuracy and semantic drift.
+  - Implement automated regression testing for adversarial prompts and jailbreak boundaries.
+- **Phase 2 (Days 31–60): Pipeline Optimization & Tooling**
+  - Deploy lightweight asynchronous middleware in Python/FastAPI for sub-50ms security checks.
+  - Integrate continuous evaluation into GitHub Actions CI/CD.
+- **Phase 3 (Days 61–90): Production Hardening & Documentation**
+  - Stress-test system under peak load and publish reproducibility benchmarks.
+  - Establish self-healing monitoring alerts for edge-case failures.
+
+## 3. Immediate Value Add
+With published research in LLM prompt vulnerabilities and practical experience benchmarking reasoning models at Handshake, I eliminate ramp-up time and deliver production-grade results from Day 1.`;
+
+  // 5. Generate NotebookLM / Gemini Live Simulation Prompt
+  const simPrompt = `You are the principal engineering hiring team at ${company} interviewing Aryan Sharma for the ${role} position. Aryan specializes in LLM evaluation, prompt security research, and Linux systems. Conduct a rigorous 30-minute technical and system design interview starting now.`;
+
+  // Display results
+  document.getElementById('jdScoreBadge').innerText = `${score}% Fitment Match`;
+  document.getElementById('jdKeywords').innerText = atsKeywords.join(', ');
+  document.getElementById('jdResultDm').innerText = recruiterDm;
+  document.getElementById('jdResultPow').innerText = powPlan;
+  document.getElementById('jdResultSim').innerText = simPrompt;
+  document.getElementById('jdResultBox').classList.remove('d-none');
+
+  // Add to tracker & persist
+  const newId = 'opp_' + Date.now();
+  const newOpp = {
+    id: newId,
+    title: role,
+    organization: company,
+    category: 'AI / ML Engineering',
+    deadline: 'Rolling',
+    stipend: 'Competitive',
+    url: '#',
+    status: 'Ready to Apply / Staged',
+    match_score: score,
+    match_reason: `High synergy with ${atsKeywords.slice(0, 3).join(', ')} extracted from JD.`,
+    matching_skills: atsKeywords
+  };
+  dossierOpps.unshift(newOpp);
+  persistDossierData();
+  renderAllViews();
+
+  // Wire ZIP download
+  document.getElementById('jdDownloadZipBtn').onclick = () => downloadApplicationPackageZip(newId);
+}
+
+function openAddModal() { openDossierModal('dossierAddModal'); }
+
+function saveNewRole() {
+  const title = document.getElementById('addRoleTitle')?.value.trim();
+  const org = document.getElementById('addRoleOrg')?.value.trim();
+  if (!title || !org) { alert('Title and Organization are required'); return; }
+
+  const newOpp = {
+    id: 'opp_' + Date.now(),
+    title,
+    organization: org,
+    category: document.getElementById('addRoleCat')?.value || 'Job',
+    deadline: document.getElementById('addRoleDeadline')?.value || 'Rolling',
+    stipend: document.getElementById('addRoleStipend')?.value || 'Competitive',
+    url: document.getElementById('addRoleUrl')?.value || '#',
+    status: 'Ready to Apply / Staged',
+    match_score: 90,
+    match_reason: 'Tracked directly by Aryan Sharma in Dossier',
+    matching_skills: ['AI/ML', 'Engineering', 'Systems']
+  };
+
+  dossierOpps.unshift(newOpp);
+  persistDossierData();
+  closeDossierModal('dossierAddModal');
+  renderAllViews();
+}
+
+function exportDossierJson() {
+  const blob = new Blob([JSON.stringify(dossierOpps, null, 2)], { type: 'application/json' });
+  saveBlobAsFile(blob, `Dossier_Career_Radar_Backup_${new Date().toISOString().slice(0,10)}.json`);
+}
+
+function triggerDossierFullSync() {
+  alert('🔄 Synchronizing Dossier across Google Sheets, Drive, Notion, and Slack...');
+  fetch('/api/dossier/sync', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'all' })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.success) alert('✅ Cloud synchronization complete!');
+    else alert('Cloud notice: ' + (d.error || 'Saved locally in browser'));
+  })
+  .catch(() => {
+    alert('⚡ Running in local standalone mode. All data is saved in your browser localStorage!');
+  });
+}
+
+function resetToDefaultSeed() {
+  if (confirm('Reset to the 15 verified default opportunities?')) {
+    dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
+    persistDossierData();
+    renderAllViews();
+    alert('✅ Reset complete.');
+  }
+}
+
+function openDossierModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.style.display = 'block';
+  m.classList.add('show');
+  let b = document.getElementById('modalBackdrop');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'modalBackdrop';
+    b.className = 'modal-backdrop fade show';
+    b.onclick = () => closeDossierModal(id);
+    document.body.appendChild(b);
+  }
+}
+
+function closeDossierModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.style.display = 'none';
+  m.classList.remove('show');
+  const b = document.getElementById('modalBackdrop');
+  if (b) b.remove();
+}
+
+function copyTextElement(id) {
+  const text = document.getElementById(id)?.innerText || '';
+  navigator.clipboard.writeText(text);
+  alert('📋 Copied to clipboard!');
+}
+
+function copyActiveResume() {
+  const text = document.getElementById('resumePreviewContainer')?.innerText || '';
+  navigator.clipboard.writeText(text);
+  alert('📋 Tailored resume markdown copied to clipboard!');
+}
+
+function downloadActiveResumeDocx() {
+  const text = document.getElementById('resumePreviewContainer')?.innerText || '';
+  const sel = document.getElementById('resumeRoleSelector');
+  const filename = `Aryan_Sharma_Resume_${(sel ? sel.options[sel.selectedIndex].text : 'Role').replace(/[^a-zA-Z0-9]/g, '_')}.doc`;
+  const blob = new Blob([text], { type: 'application/msword' });
+  saveBlobAsFile(blob, filename);
+}
+
+function escapeHtml(t) {
+  if (t === null || t === undefined) return '';
+  return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+window.addEventListener('online', () => {
+  const b = document.getElementById('onlineBadge');
+  if (b) { b.className = 'badge bg-success bg-opacity-10 text-success fw-bold'; b.innerHTML = '<i class="bi bi-cloud-check-fill me-1"></i> Online & Cloud Synced'; }
+});
+window.addEventListener('offline', () => {
+  const b = document.getElementById('onlineBadge');
+  if (b) { b.className = 'badge bg-warning bg-opacity-10 text-warning fw-bold'; b.innerHTML = '<i class="bi bi-lightning-charge-fill me-1"></i> Offline Mode (Local Storage)'; }
+});
+
+initDossierData();
+</script>
+<script src="./assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

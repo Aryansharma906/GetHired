@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a66c2" />
+      <stop offset="100%" stop-color="#004182" />
+    </linearGradient>
+    <linearGradient id="spark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#grad)" />
+  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="8" stroke-dasharray="12 12" />
+  <circle cx="256" cy="256" r="110" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="8" />
+  <path d="M190 350 L190 200 L230 200 L230 350 Z" fill="#ffffff" />
+  <circle cx="210" cy="160" r="22" fill="#ffffff" />
+  <path d="M260 250 C260 220 280 200 315 200 C345 200 365 220 365 255 L365 350 L325 350 L325 265 C325 245 315 235 300 235 C285 235 275 245 275 265 L275 350 L235 350 L235 200 L260 200 Z" fill="#ffffff" />
+  <polygon points="390,130 405,165 440,180 405,195 390,230 375,195 340,180 375,165" fill="url(#spark)" />
+</svg>
