@@ -1,5 +1,5 @@
 // Service Worker for LinkedIn Studio & Dossier Career Radar (Offline-First PWA)
-const CACHE_NAME = 'studio-cache-v2';
+const CACHE_NAME = 'studio-cache-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

@@ -1,19 +1,54 @@
+# Environment and credentials (CRITICAL FOR PUBLIC REPO)
 .env
-.env.local
+.env.*
+!.env.example
+!.env.sample
+*.env
+*.env.*
+credentials.json
+client_secret*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.pkcs12
+id_rsa*
+id_ed25519*
+
+# Python & virtual environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .venv/
 venv/
-.DS_Store
+ENV/
+env/
 *.egg-info/
+dist/
+build/
+.eggs/
 
-# local marketing assets — not meant for the public repo
-marketing/
-
-# local skill testing scratch area
+# Local testing and scratch directories
 testing/
-
-
-# Playwright MCP session artifacts
+marketing/
 .playwright-mcp/
 /fk-*
+*.log
+*.sqlite3
+*.db
+
+# macOS & OS artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

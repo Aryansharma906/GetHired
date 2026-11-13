@@ -173,7 +173,7 @@
 <nav class="navbar navbar-dark py-3">
   <div class="container d-flex justify-content-between align-items-center">
     <div class="d-flex align-items-center gap-2">
-        <a href="./dossier.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> Dossier Dashboard</a>
+        <a href="./gethired.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> getHired Hub</a>
       <span class="fs-4">🚀</span>
       <div>
         <span class="navbar-brand mb-0 h1 fs-5 fw-bold">LinkedIn Approval Studio</span>
@@ -233,7 +233,7 @@
   <div class="card p-4 mb-4 shadow-sm border-0" style="border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0 !important;">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div class="d-flex align-items-center gap-2">
-        <a href="./dossier.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> Dossier Dashboard</a>
+        <a href="./gethired.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> getHired Hub</a>
         <span class="fs-5">✨</span>
         <h6 class="fw-bold mb-0 text-primary fs-5">Gemini Content Studio</h6>
         <span class="badge bg-primary bg-opacity-10 text-primary">Aryan x Vaibhav Sisinty Mode</span>
@@ -308,21 +308,21 @@
       📋 All Posts
     </button>
     <button class="tab-item" id="tab-opportunities" onclick="switchTab('opportunities')">
-      💼 Dossier Hub & Career Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
+      💼 getHired Career Hub & Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
     </button>
   </div>
 
-  <!-- Opportunities & Dossier Container -->
+  <!-- Opportunities & getHired Container -->
   <div id="opportunitiesContainer" class="d-none">
-    <!-- Dossier Unified Hub Header & Integrations Banner -->
+    <!-- getHired Unified Hub Header & Integrations Banner -->
     <div class="card p-3 mb-4 border shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
           <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">DOSSIER INTEGRATION</span>
+            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">GETHIRED INTEGRATION</span>
             <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 11px;">● Active Cloud Engine</span>
           </div>
-          <h4 class="fw-bold mb-1 text-dark">💼 Dossier Career & Application Command Center</h4>
+          <h4 class="fw-bold mb-1 text-dark">💼 getHired Career & Application Command Center</h4>
           <p class="text-muted small mb-0">Autonomous career intelligence connecting Google Gemini, Google Sheets, Google Drive, Gmail, and Notion.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
@@ -544,11 +544,13 @@ const SEED_STATIC_DRAFTS = [
     "angle": "Drawing parallel between high-margin economic mechanics and low-latency distributed systems architecture",
     "content": "In 2019, I watched a monolithic SaaS architecture collapse under a 3x traffic spike while maintaining a static 80% gross margin.\n\nWe spent six months optimizing SQL queries.\n\nThe bottleneck was never the database.\n\nIt was the unit economics of our serialization pipeline.\n\nEvery modern software system mirrors the exact economic trajectory of a high-margin enterprise.\n\nWhen you scale without auditing your foundational data structures, you run into three invisible taxes:\n\n1. Memory Bandwidth Saturation\nJust as high-margin businesses bloat overhead, unoptimized application states bloat the KV cache. When your working set exceeds L3 cache, CPU instruction cycles plummet while latency spikes by 400%.\n\n2. Serialization Overhead\nPassing massive JSON payloads across microservices is the operational equivalent of middle management. Moving to binary serialization protocols like Protocol Buffers cuts network payload size by 70% and drops parse times from milliseconds to microseconds.\n\n3. Connection Pooling Failures\nUnbounded async requests exhaust database connection pools faster than poor cash flow drains a bootstrapped startup. Circuit breakers are not optional; they are your financial reserves.\n\nArchitecture is P&L disguised as syntax.\n\nEvery line of code you push either compounds interest or acts as technical debt with a high interest rate.\n\nHow are you measuring the real compute cost of your features before they hit production?",
     "char_count": 1444,
-    "status": "pending_approval",
+    "status": "published",
     "created_at": "2026-11-13T13:00:45.007654+00:00",
     "scheduled_time": null,
     "published_at": null,
-    "publora_id": null
+    "publora_id": "6af71b95e6164d29bce2d8c4",
+    "approved_by": "Aryan",
+    "publish_error": "{\"message\":\"ERROR :: /author :: \\\"urn:li:person:1799885825\\\" does not match urn:li:company:\\\\d+|urn:li:member:-?\\\\d+\\n\",\"status\":422}"
   },
   {
     "id": "post_20261113_113309_e58ecf",
@@ -810,13 +812,13 @@ const SEED_STATIC_DRAFTS = [
     "angle": "A1 Reprice the Category (Founder Launch)",
     "content": "R.I.P. to the 50-person software agency retainer.\n\nLast week, an enterprise founder showed me an invoice for a routine data extraction pipeline:\n,000 and an 8-week delivery timeline.\n\nDeliverables?\nThree backend engineers writing boilerplate glue-code, an account manager forwarding status PDFs, and a QA coordinator logging manual test cases.\n\nThis is why we built JABSON AI.\n\nSoftware development is undergoing a violent structural repricing.\nClients don't buy billable developer hours anymore.\nThey buy speed to verified, production-grade output.\n\nAt JABSON AI, we run 3-person autonomous engineering pods:\n\u2022 Zero latency between architectural strategy and code execution.\n\u2022 Native telemetry, self-healing test suites, and localized vector pipelines built-in.\n\u2022 Output volume that out-ships traditional 25-person consulting shops at 80% lower cost.\n\nWhen an agency charges you for headcount, they are charging you for human coordination drag.\n\nWe don't sell billable hours. We sell autonomous infrastructure velocity.\n\nThe future of software engineering doesn't look like an open-plan agency.\nIt looks like a precision execution engine.\n\nWelcome to JABSON AI. What enterprise workflow is causing your team the most friction this quarter?",
     "char_count": 1240,
-    "status": "rejected",
+    "status": "published",
     "created_at": "2026-09-28T11:00:58.925559+00:00",
     "scheduled_time": null,
     "published_at": null,
-    "publora_id": null,
-    "approved_by": "Aryan (Mobile 1-Tap)",
-    "publish_error": "HTTP 403: {'error': 'Post limit reached', 'code': 'POST_LIMIT_REACHED', 'metric': 'posts.platform_monthly', 'message': 'Monthly post limit reached. Your Starter plan allows 15 platform posts per month across the workspace.', 'limit': 15, 'used': 15, 'requested': 1, 'remaining': 0, 'periodStart': '2026-09-01T00:00:00.000Z', 'periodEnd': '2026-10-01T00:00:00.000Z', 'planName': 'Starter', 'limitScope': 'account', 'workspaceScope': True, 'workspaceMemberCount': 1}",
+    "publora_id": "6af71b8d01e19f8f2dd4a1f9",
+    "approved_by": "Aryan",
+    "publish_error": "{\"message\":\"ERROR :: /author :: \\\"urn:li:person:1799885825\\\" does not match urn:li:company:\\\\d+|urn:li:member:-?\\\\d+\\n\",\"status\":422}",
     "rejected_by": "Aryan (Mobile 1-Tap)"
   },
   {
@@ -1866,9 +1868,9 @@ function showDossierAlert(msg, isSuccess = true) {
 function syncDossier(action = 'all') {
   const spinner = document.getElementById('syncSpinner');
   if (spinner) spinner.classList.remove('d-none');
-  showDossierAlert(`⏳ Running Dossier sync (${action})...`, true);
+  showDossierAlert(`⏳ Running getHired sync (${action})...`, true);
 
-  fetch('/api/dossier/sync', {
+  fetch('/api/gethired/sync', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: action })
@@ -1877,7 +1879,7 @@ function syncDossier(action = 'all') {
   .then(data => {
     if (spinner) spinner.classList.add('d-none');
     if (data.success) {
-      showDossierAlert(`✅ Dossier sync (${action}) completed! Updated across cloud services & Slack.`, true);
+      showDossierAlert(`✅ getHired sync (${action}) completed! Updated across cloud services & Slack.`, true);
       fetchOpportunities();
     } else {
       showDossierAlert(`❌ Sync error: ${data.error || 'Unknown error'}`, false);

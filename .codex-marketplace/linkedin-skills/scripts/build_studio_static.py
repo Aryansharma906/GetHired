@@ -81,25 +81,25 @@ const SEED_STATIC_DRAFTS = {json.dumps(drafts, indent=2)};
         "allDrafts = await res.json();\n    } else if (typeof SEED_STATIC_DRAFTS !== 'undefined' && Array.isArray(SEED_STATIC_DRAFTS)) {\n      allDrafts = SEED_STATIC_DRAFTS;\n    }"
     )
 
-    # Add Dossier Launch Button in navbar if not present
-    dossier_btn = '<a href="./dossier.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> Dossier Dashboard</a>'
-    if './dossier.html' not in static_studio:
+    # Add getHired Launch Button in navbar if not present
+    gethired_btn = '<a href="./gethired.html" class="btn btn-warning btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"><i class="bi bi-briefcase-fill me-1"></i> getHired Hub</a>'
+    if './gethired.html' not in static_studio and './dossier.html' not in static_studio:
         static_studio = static_studio.replace(
             '<div class="d-flex align-items-center gap-2">',
-            f'<div class="d-flex align-items-center gap-2">\n        {dossier_btn}'
+            f'<div class="d-flex align-items-center gap-2">\n        {gethired_btn}'
         )
 
     # Write docs/index.html
     (DOCS_DIR / "index.html").write_text(static_studio, encoding="utf-8")
     print(f"  • Generated {DOCS_DIR / 'index.html'} ({len(static_studio)} chars)")
 
-    # 3. Synchronize docs/dossier.html with latest opps
-    dossier_html_path = DOCS_DIR / "dossier.html"
-    if dossier_html_path.exists():
-        (TEMPLATES_DIR / "dossier.html").write_text(dossier_html_path.read_text(encoding="utf-8"), encoding="utf-8")
-        print(f"  • Synchronized {TEMPLATES_DIR / 'dossier.html'}")
+    # 3. Synchronize docs/dossier.html and docs/gethired.html from template
+    src_dossier = (TEMPLATES_DIR / "dossier.html").read_text(encoding="utf-8")
+    (DOCS_DIR / "dossier.html").write_text(src_dossier, encoding="utf-8")
+    (DOCS_DIR / "gethired.html").write_text(src_dossier, encoding="utf-8")
+    print(f"  • Generated {DOCS_DIR / 'dossier.html'} & {DOCS_DIR / 'gethired.html'} ({len(src_dossier)} chars)")
 
-    print("✅ Static Studio & Dossier build complete!")
+    print("✅ Static Studio & getHired build complete!")
 
 if __name__ == "__main__":
     build()

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dossier — Career Radar & Application Hub | Aryan Sharma</title>
+  <title>getHired — Career Intelligence & Opportunity Hub | Aryan Sharma</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
   <link rel="stylesheet" href="./assets/bootstrap.min.css">
@@ -12,21 +12,43 @@
   <script src="./assets/jszip.min.js"></script>
   <style>
     :root {
-      --paper: #eeebe4;
-      --sidebar: #1a1917;
-      --surface: #f4f2ed;
-      --card: #fbfaf7;
-      --ink: #1d1c1a;
-      --muted: #69655d;
-      --faint: #a29d94;
-      --primary: #0a66c2;
-      --primary-dark: #004182;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-purple: #8b5cf6;
-      --accent-rose: #ef4444;
-      --border: rgba(29, 28, 26, 0.1);
-      --border-strong: rgba(29, 28, 26, 0.2);
+      /* Restrained Editorial Surfaces */
+      --surface: #f9f8f5;
+      --paper: #f4f1ea;
+      --card: #ffffff;
+      --sidebar: #17191c;
+      
+      /* Graphite Typography */
+      --ink: #1f2328;
+      --ink-secondary: #2d3135;
+      --muted: #59636e;
+      --faint: #8c959f;
+
+      /* Muted Indigo Accents */
+      --primary: #4338ca;
+      --primary-hover: #3730a3;
+      --primary-subtle: rgba(67, 56, 202, 0.08);
+      --primary-border: rgba(67, 56, 202, 0.25);
+      --accent-indigo: #4f46e5;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-rose: #dc2626;
+
+      /* Fine Borders & Radii */
+      --border: rgba(31, 35, 40, 0.1);
+      --border-subtle: rgba(31, 35, 40, 0.05);
+      --border-strong: rgba(31, 35, 40, 0.2);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-pill: 9999px;
+
+      /* Subtle Elevation & Motion */
+      --shadow-sm: 0 1px 3px rgba(31, 35, 40, 0.04);
+      --shadow-md: 0 4px 14px rgba(31, 35, 40, 0.06);
+      --shadow-lg: 0 12px 28px rgba(31, 35, 40, 0.09);
+      --transition-fast: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
     }
     body {
       background-color: var(--surface);
@@ -121,9 +143,10 @@
       color: #ffffff;
     }
     .nav-btn.active {
-      background: #0a66c2;
+      background: var(--primary);
       color: #ffffff;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(67, 56, 202, 0.3);
     }
     .nav-badge {
       margin-left: auto;
@@ -310,23 +333,229 @@
       padding: 18px 20px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
+    /* LinkedIn Creator Studio in Dossier */
+    .creator-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .creator-kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.15s ease;
+    }
+    .creator-kpi-card:hover { transform: translateY(-2px); }
+    .creator-kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .creator-draft-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      margin-bottom: 18px;
+      overflow: hidden;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .creator-draft-card:hover {
+      border-color: rgba(10, 102, 194, 0.4);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .creator-draft-header {
+      padding: 14px 18px;
+      background: rgba(0, 0, 0, 0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .creator-draft-body {
+      padding: 18px;
+      font-size: 14px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      color: var(--ink);
+      font-family: inherit;
+      max-height: 280px;
+      overflow-y: auto;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+    .creator-draft-footer {
+      padding: 12px 18px;
+      background: var(--card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .creator-composer-sticky {
+      position: sticky;
+      top: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .compliance-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .compliance-pill-ok {
+      background: rgba(16, 185, 129, 0.12);
+      color: #065f46;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .compliance-pill-warn {
+      background: rgba(245, 158, 11, 0.12);
+      color: #92400e;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .compliance-pill-bad {
+      background: rgba(239, 68, 68, 0.12);
+      color: #991b1b;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    /* Accessibility Focus & Skip Link */
+    :focus-visible {
+      outline: 2px solid var(--accent-indigo) !important;
+      outline-offset: 2px !important;
+    }
+    .skip-to-main {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      z-index: 99999;
+      font-weight: 600;
+      text-decoration: none;
+      transition: top 0.2s ease;
+    }
+    .skip-to-main:focus {
+      top: 16px;
+    }
+    /* Command Palette Modal */
+    .cmd-palette-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 10500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12vh;
+    }
+    .cmd-palette-modal {
+      width: 100%;
+      max-width: 580px;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: cmdFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes cmdFadeIn {
+      from { opacity: 0; transform: scale(0.97) translateY(-8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .cmd-palette-input-box {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      background: #fafbfc;
+    }
+    .cmd-palette-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 15px;
+      color: var(--ink);
+      background: transparent;
+    }
+    .cmd-palette-results {
+      max-height: 380px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .cmd-group-title {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 8px 12px 4px 12px;
+    }
+    .cmd-item {
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 13.5px;
+      color: var(--ink);
+      transition: background 0.1s ease, color 0.1s ease;
+    }
+    .cmd-item:hover, .cmd-item.selected {
+      background: var(--primary-subtle);
+      color: var(--primary);
+    }
+    .cmd-item kbd {
+      margin-left: auto;
+      font-size: 10.5px;
+      background: #f1f5f9;
+      color: var(--muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
   </style>
 </head>
 <body>
+<a href="#mainContent" class="skip-to-main">Skip to main content</a>
 
 <div class="dossier-wrapper">
 
   <!-- LEFT SIDEBAR -->
   <aside class="dossier-sidebar">
     <div class="brand-box">
-      <div class="brand-icon">D</div>
+      <div class="brand-icon">G</div>
       <div>
-        <div class="brand-title">Dossier</div>
-        <div class="brand-sub">Career Radar • Aryan</div>
+        <div class="brand-title">getHired</div>
+        <div class="brand-sub">Career Intelligence • Aryan</div>
       </div>
     </div>
 
-    <div class="nav-section-title">Core Dossier</div>
+    <div class="nav-section-title">Core getHired</div>
     <button class="nav-btn active" data-tab="dashboard" onclick="switchDossierTab('dashboard', this)">
       <i class="bi bi-speedometer2"></i>
       <span>Dashboard</span>
@@ -367,10 +596,14 @@
       <i class="bi bi-cloud-arrow-up"></i>
       <span>Cloud & Multi-Sync Hub</span>
     </button>
-    <a href="./index.html" class="nav-btn text-info fw-bold" style="background: rgba(56, 189, 248, 0.1);">
+    <button class="nav-btn text-info fw-bold mb-1" data-tab="creator-studio" onclick="switchDossierTab('creator-studio', this)" style="background: rgba(10, 102, 194, 0.15); border: 1px solid rgba(10, 102, 194, 0.35);">
       <i class="bi bi-linkedin"></i>
-      <span>LinkedIn Creator Studio</span>
-      <i class="bi bi-arrow-right-short ms-auto fs-5"></i>
+      <span>LinkedIn Creator Hub</span>
+      <span class="badge bg-primary ms-auto" id="creatorQueueBadge" style="font-size: 10px;">0</span>
+    </button>
+    <a href="/" target="_blank" class="nav-btn text-secondary mb-1" style="font-size: 13px; opacity: 0.85;">
+      <i class="bi bi-box-arrow-up-right"></i>
+      <span>Standalone Studio ↗</span>
     </a>
 
     <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 small text-secondary">
@@ -378,22 +611,35 @@
         <span class="badge bg-success rounded-circle p-1" style="width: 8px; height: 8px;"></span>
         <span id="sidebarStatusText" class="text-white small">Offline-First Active</span>
       </div>
-      <div style="font-size: 11px;">Dossier v1.1.14 • AienTech Protocol</div>
+      <div style="font-size: 11px;">getHired v2.0 • Aryan Sharma</div>
     </div>
   </aside>
 
   <!-- MAIN VIEWPORT -->
-  <main class="dossier-main">
+  <main class="dossier-main" id="mainContent">
     
     <!-- Top Header -->
     <header class="dossier-header">
-      <div class="d-flex align-items-center gap-3">
-        <h4 class="fw-bold mb-0 text-dark" id="viewTitle">Career Overview & Applications</h4>
-        <span class="badge bg-success bg-opacity-10 text-success fw-bold border border-success border-opacity-25" id="onlineBadge">
-          <i class="bi bi-check-circle-fill me-1"></i> Standalone & Offline Ready
-        </span>
+      <div>
+        <nav aria-label="breadcrumb" class="mb-1" style="font-size: 11px;">
+          <ol class="breadcrumb mb-0 text-muted">
+            <li class="breadcrumb-item"><a href="#" onclick="switchDossierTab('dashboard'); return false;" class="text-secondary text-decoration-none">getHired 2.0</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" id="dossierBreadcrumb">Career Radar</li>
+          </ol>
+        </nav>
+        <div class="d-flex align-items-center gap-2">
+          <h4 class="fw-bold mb-0 text-dark" id="viewTitle">Career Overview & Applications</h4>
+          <span class="badge bg-success bg-opacity-10 text-success fw-bold border border-success border-opacity-25" id="onlineBadge" style="font-size: 11px;">
+            <i class="bi bi-shield-check me-1"></i> Standalone & Offline Ready
+          </span>
+        </div>
       </div>
-      <div class="d-flex align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-secondary btn-sm d-none d-md-inline-flex align-items-center gap-2 px-2 py-1 shadow-sm" onclick="openCommandPalette()" style="font-size: 12px; border-radius: var(--radius-sm);" title="Quick Action & Search (⌘K)">
+          <i class="bi bi-search"></i>
+          <span>Search / Command</span>
+          <kbd class="bg-light text-muted border px-1" style="font-size: 10px;">⌘K</kbd>
+        </button>
         <button class="btn btn-warning btn-sm fw-bold shadow-sm" onclick="openJdModal()">
           <i class="bi bi-magic me-1"></i> ✨ Paste JD (AI Stack)
         </button>
@@ -403,9 +649,9 @@
         <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="exportDossierJson()">
           <i class="bi bi-download me-1"></i> Export JSON
         </button>
-        <a href="./index.html" class="btn btn-primary btn-sm fw-bold">
-          <i class="bi bi-linkedin me-1"></i> Open Studio
-        </a>
+        <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="switchDossierTab('creator-studio')">
+          <i class="bi bi-linkedin me-1"></i> Creator Studio
+        </button>
       </div>
     </header>
 
@@ -418,9 +664,14 @@
           <strong class="d-block fs-6">📱 Connected to LinkedIn Creator & Approval Hub</strong>
           <span style="font-size: 13px; opacity: 0.9;">Review drafts, schedule automated posts, or approve jobs with 1 tap directly from Slack or web.</span>
         </div>
-        <a href="./index.html" class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm">
-          Jump to Studio Hub →
-        </a>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm" onclick="switchDossierTab('creator-studio')">
+            Open Creator Hub →
+          </button>
+          <a href="/" target="_blank" class="btn btn-outline-light btn-sm fw-semibold text-white px-2">
+            Standalone Studio ↗
+          </a>
+        </div>
       </div>
 
       <!-- TAB 1: DASHBOARD -->
@@ -639,7 +890,7 @@
             <div class="col-md-6 mb-3">
               <h6 class="fw-bold text-dark">💼 Experience & Fellowships</h6>
               <ul class="small text-secondary ps-3">
-                <li><strong>Handshake</strong>: AI Evaluation Specialist (Remote Freelance, Jul 2026 – Present)</li>
+                <li><strong>Handshake</strong>: AI Evaluation Specialist (Remote Freelance, Jul 2026 – Present) <button class="btn btn-sm btn-outline-info fw-bold py-0 px-2 ms-1" style="font-size: 10px;" onclick="draftPostFromProfileMilestone('handshake_ai')">🚀 Draft Post</button></li>
                 <li><strong>McKinsey & Company</strong>: Forward Program Participant (Sep 2026 – Present)</li>
                 <li><strong>Harvard Aspire Leaders Program</strong>: Fellow (Jul 2026 – Present)</li>
                 <li><strong>Harvard HPAIR</strong>: Tech & Governance Delegate (Sep 2026 – Present)</li>
@@ -649,8 +900,15 @@
             <div class="col-md-12">
               <h6 class="fw-bold text-dark">🔬 Research & Core Publications</h6>
               <div class="p-3 bg-light rounded border small">
-                <strong>Investigating Prompt Vulnerability and Injection in Large Language Models</strong><br>
-                Published research analyzing adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries across production generative AI models.
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div>
+                    <strong>Investigating Prompt Vulnerability and Injection in Large Language Models</strong><br>
+                    Published research analyzing adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries across production generative AI models.
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary fw-bold" onclick="draftPostFromProfileMilestone('prompt_vulnerability_paper')">
+                    🚀 Draft Thought Leadership Post
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1416,6 +1674,204 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
         </div>
       </div>
 
+      <!-- TAB 10: LINKEDIN CREATOR STUDIO (NATIVE MASTER-DETAIL) -->
+      <div id="tabCreatorStudio" class="d-none">
+        
+        <!-- Live KPI Stats Grid -->
+        <div class="creator-kpi-grid">
+          <div class="creator-kpi-card">
+            <div class="creator-kpi-icon bg-warning bg-opacity-10 text-warning">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <div>
+              <div class="small text-secondary fw-semibold">Pending Review</div>
+              <h4 class="fw-bold mb-0 text-dark" id="creatorPendingCount">0</h4>
+            </div>
+          </div>
+          <div class="creator-kpi-card">
+            <div class="creator-kpi-icon bg-info bg-opacity-10 text-info">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div>
+              <div class="small text-secondary fw-semibold">Scheduled Releases</div>
+              <h4 class="fw-bold mb-0 text-dark" id="creatorScheduledCount">0</h4>
+            </div>
+          </div>
+          <div class="creator-kpi-card">
+            <div class="creator-kpi-icon bg-success bg-opacity-10 text-success">
+              <i class="bi bi-check2-circle"></i>
+            </div>
+            <div>
+              <div class="small text-secondary fw-semibold">Live Published</div>
+              <h4 class="fw-bold mb-0 text-dark" id="creatorPublishedCount">0</h4>
+            </div>
+          </div>
+          <div class="creator-kpi-card">
+            <div class="creator-kpi-icon bg-primary bg-opacity-10 text-primary">
+              <i class="bi bi-journal-text"></i>
+            </div>
+            <div>
+              <div class="small text-secondary fw-semibold">Total Queue Items</div>
+              <h4 class="fw-bold mb-0 text-dark" id="creatorTotalCount">0</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master-Detail Split Layout -->
+        <div class="row g-4">
+          
+          <!-- LEFT COLUMN: Drafts Queue & Feed -->
+          <div class="col-lg-7">
+            
+            <!-- Controls bar: Filter Pills & Search -->
+            <div class="card p-3 border shadow-sm mb-3" style="background: var(--card); border-radius: 12px;">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-1 flex-wrap" id="creatorFilterPills">
+                  <button class="btn btn-sm btn-dark fw-bold rounded-pill px-3 active" onclick="filterCreatorDrafts('all', this)">All</button>
+                  <button class="btn btn-sm btn-outline-warning text-dark fw-semibold rounded-pill px-3" onclick="filterCreatorDrafts('pending_approval', this)">Pending</button>
+                  <button class="btn btn-sm btn-outline-info text-dark fw-semibold rounded-pill px-3" onclick="filterCreatorDrafts('scheduled', this)">Scheduled</button>
+                  <button class="btn btn-sm btn-outline-success text-dark fw-semibold rounded-pill px-3" onclick="filterCreatorDrafts('published', this)">Published</button>
+                  <button class="btn btn-sm btn-outline-secondary text-dark fw-semibold rounded-pill px-3" onclick="filterCreatorDrafts('rejected', this)">Rejected</button>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <input type="text" id="creatorSearchInput" class="form-control form-control-sm" placeholder="Search queue..." oninput="renderCreatorDraftsList()" style="width: 160px; border-radius: 8px;">
+                  <button class="btn btn-outline-primary btn-sm fw-bold" onclick="loadCreatorStudio()" title="Refresh Queue">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drafts Feed Container -->
+            <div id="creatorDraftsFeed">
+              <div class="text-center py-5 text-secondary">
+                <div class="spinner-border spinner-border-sm text-primary mb-2"></div>
+                <div>Loading LinkedIn Creator Queue...</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: Sticky Live Composer & 2026 Engine -->
+          <div class="col-lg-5">
+            <div class="creator-composer-sticky">
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0 text-dark">
+                  <i class="bi bi-lightning-charge-fill text-warning me-1"></i>
+                  2026 Thought Leadership Composer
+                </h5>
+                <button class="btn btn-link btn-sm text-secondary text-decoration-none p-0" onclick="resetComposer()">
+                  <i class="bi bi-eraser me-1"></i>Clear
+                </button>
+              </div>
+
+              <!-- Repurpose from Career Hub -->
+              <div class="p-3 mb-3 rounded border" style="background: rgba(14, 165, 233, 0.06); border-color: rgba(14, 165, 233, 0.25) !important;">
+                <label class="form-label small fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                  <i class="bi bi-rocket-takeoff-fill text-primary"></i>
+                  Repurpose from getHired Career Hub
+                </label>
+                <div class="d-flex gap-2">
+                  <select id="repurposeSourceSelect" class="form-select form-select-sm" style="border-radius: 8px;">
+                    <option value="">Select Opportunity, Publication or Project...</option>
+                  </select>
+                  <button class="btn btn-info btn-sm fw-bold text-nowrap text-white shadow-sm" onclick="repurposeSelectedCareerItem()">
+                    ✨ Repurpose
+                  </button>
+                </div>
+                <div class="small text-muted mt-1" style="font-size: 11px;">Extracts genuine engineering lessons without hallucinations.</div>
+              </div>
+
+              <!-- Topic & Hook Configuration -->
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-dark mb-1">Core Topic / Architectural Angle</label>
+                <input type="text" id="composerTopic" class="form-control form-control-sm" placeholder="e.g. Why small AI teams beat 50-person agencies" style="border-radius: 8px;">
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small fw-bold text-dark mb-1">2026 Hook Formula</label>
+                  <select id="composerHookFormula" class="form-select form-select-sm" style="border-radius: 8px;">
+                    <option value="Formula #1: Contrarian Take">#1 Contrarian Take</option>
+                    <option value="Formula #2: Framework Reveal">#2 Framework Reveal</option>
+                    <option value="Formula #3: Curiosity Gap">#3 Curiosity Gap</option>
+                    <option value="Formula #4: Personal Vulnerability to Lesson">#4 Personal Vulnerability</option>
+                    <option value="Formula #5: Data Shock">#5 Data Shock</option>
+                    <option value="Formula #6: Before vs After Paradigm">#6 Before vs After</option>
+                    <option value="Formula #7: Tactical Playbook Breakdown">#7 Tactical Playbook</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small fw-bold text-dark mb-1">Author Voice</label>
+                  <select id="composerStyle" class="form-select form-select-sm" style="border-radius: 8px;">
+                    <option value="Aryan Sharma Systems Depth + Vaibhav Sisinty Growth Storytelling">Aryan Systems + Vaibhav Growth</option>
+                    <option value="Pure Senior Systems Architect">Senior Systems Architect</option>
+                    <option value="Raj Shamani Unit Economics + Founder Story">Founder Unit Economics</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <button class="btn btn-outline-primary btn-sm fw-bold w-100 py-1 shadow-sm" id="btnGeminiGenerate" onclick="generateGeminiPostFromComposer()">
+                  <i class="bi bi-stars me-1"></i> Generate with Google Gemini
+                </button>
+              </div>
+
+              <!-- Real-time 2026 LinkedIn Compliance Meter -->
+              <div class="p-2 px-3 mb-2 rounded border bg-light">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="small fw-bold text-dark" style="font-size: 11px;">2026 ALGORITHM COMPLIANCE AUDIT</span>
+                  <span id="complianceOverallBadge" class="badge bg-success" style="font-size: 10px;">Compliant</span>
+                </div>
+                <div class="d-flex align-items-center gap-1 flex-wrap" id="complianceBadgesContainer">
+                  <span class="compliance-pill compliance-pill-ok" id="emDashPill">⚡ 0 Em-Dashes</span>
+                  <span class="compliance-pill compliance-pill-ok" id="antiSlopPill">✨ 0 Slop Words</span>
+                  <span class="compliance-pill compliance-pill-ok" id="charCountPill">📏 0 / 1,300 Chars</span>
+                  <span class="compliance-pill compliance-pill-ok" id="mobileSpacingPill">📱 1-2 Line Scannable</span>
+                </div>
+                <div class="progress mt-2" style="height: 5px;">
+                  <div class="progress-bar bg-success" id="charProgressBar" role="progressbar" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <!-- Main Post Textarea -->
+              <div class="mb-3">
+                <textarea id="composerContent" class="form-control" rows="8" placeholder="Draft your thought-leadership post here, or generate above with Gemini..." oninput="runLiveComplianceAudit()" style="font-size: 13.5px; line-height: 1.6; border-radius: 8px;"></textarea>
+                <input type="hidden" id="composerEditingDraftId" value="">
+              </div>
+
+              <!-- Media / Document Attachment Preview -->
+              <div id="composerMediaSection" class="p-2 mb-3 rounded border bg-light d-none">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="small fw-bold text-dark" id="composerMediaLabel">📎 Attachment</span>
+                  <button class="btn btn-sm btn-link text-danger p-0 text-decoration-none" onclick="removeComposerMedia()">Remove</button>
+                </div>
+                <div class="small text-secondary text-truncate" id="composerMediaDetail"></div>
+              </div>
+
+              <!-- Composer Actions Toolbar -->
+              <div class="d-grid gap-2">
+                <div class="d-flex gap-2">
+                  <button class="btn btn-dark btn-sm fw-bold flex-fill" onclick="saveDraftFromComposer()">
+                    <i class="bi bi-save me-1"></i> Save Draft
+                  </button>
+                  <button class="btn btn-outline-info btn-sm fw-bold flex-fill" onclick="dispatchComposerToSlack()">
+                    <i class="bi bi-slack me-1"></i> Send to Slack
+                  </button>
+                </div>
+                <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="instantPublishFromComposer()">
+                  <i class="bi bi-linkedin me-1"></i> Instant Publish to LinkedIn
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
 
     </div> <!-- end dossier-body -->
   </main> <!-- end dossier-main -->
@@ -1488,12 +1944,14 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
       </div>
       <div class="modal-body">
         <div class="mb-2">
-          <label class="form-label small fw-bold">Role Title:</label>
-          <input type="text" id="addRoleTitle" class="form-control form-control-sm" placeholder="e.g. Distributed Systems Intern">
+          <label class="form-label small fw-bold">Role Title <span class="text-danger">*</span>:</label>
+          <input type="text" id="addRoleTitle" class="form-control form-control-sm" placeholder="e.g. Distributed Systems Intern" required>
+          <div class="invalid-feedback" style="font-size: 11px;">Please enter a role title.</div>
         </div>
         <div class="mb-2">
-          <label class="form-label small fw-bold">Organization / Company:</label>
-          <input type="text" id="addRoleOrg" class="form-control form-control-sm" placeholder="e.g. Anthropic, Google, CERN">
+          <label class="form-label small fw-bold">Organization / Company <span class="text-danger">*</span>:</label>
+          <input type="text" id="addRoleOrg" class="form-control form-control-sm" placeholder="e.g. Anthropic, Google, CERN" required>
+          <div class="invalid-feedback" style="font-size: 11px;">Please enter an organization or company name.</div>
         </div>
         <div class="mb-2">
           <label class="form-label small fw-bold">Category:</label>
@@ -1521,6 +1979,20 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierAddModal')">Cancel</button>
         <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="saveNewRole()">Add Role</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL COMMAND PALETTE (CMD+K / CTRL+K) -->
+<div id="dossierCommandPalette" class="cmd-palette-backdrop d-none" onclick="if (event.target === this) closeCommandPalette()">
+  <div class="cmd-palette-modal" role="dialog" aria-modal="true" aria-label="Command Palette">
+    <div class="cmd-palette-input-box">
+      <i class="bi bi-search text-muted fs-5"></i>
+      <input type="text" id="cmdPaletteInput" class="cmd-palette-input" placeholder="Type a command, search opportunities, or jump to view..." oninput="filterCommandPalette()" onkeydown="handleCommandKey(event)" aria-label="Search commands and opportunities">
+      <kbd class="bg-light text-muted border px-1" style="font-size: 10px;">ESC</kbd>
+    </div>
+    <div class="cmd-palette-results" id="cmdPaletteResults" role="listbox">
+      <!-- Injected dynamically -->
     </div>
   </div>
 </div>
@@ -1606,11 +2078,13 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
 </div>
 
 <script>
-// Service Worker Registration for 100% Offline PWA capability
+// Service Worker Registration for 100% Offline PWA capability with auto-update
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then((reg) => {
       console.log('[PWA] Service Worker registered in Dossier:', reg.scope);
+      // Force update check to ensure browser never serves stale cached UI
+      reg.update();
     }).catch((err) => {
       console.warn('[PWA] Service Worker registration failed:', err);
     });
@@ -2275,6 +2749,9 @@ function renderTopPriority() {
             <button class="btn btn-outline-dark btn-sm fw-bold" onclick="openPrepModal('${o.id}')">
               🎙️ NotebookLM Prep
             </button>
+            <button class="btn btn-outline-info btn-sm fw-bold" onclick="draftPostFromOpportunity('${o.id}')">
+              🚀 Draft LinkedIn Post
+            </button>
             ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Portal</a>` : ''}
           </div>
         </div>
@@ -2321,6 +2798,11 @@ function onKanbanDrop(e, targetColKey) {
     opp.status = statusMap[targetColKey];
     persistDossierData();
     renderAllViews();
+    fetch(`/api/opportunities/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: opp.status })
+    }).catch(() => {});
   }
   draggedCardId = null;
 }
@@ -2391,6 +2873,34 @@ function advanceCardStatus(id) {
 
   persistDossierData();
   renderAllViews();
+
+  fetch(`/api/opportunities/${id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: opp.status })
+  }).catch(() => {});
+}
+
+function toggleOppDetails(id) {
+  const el = document.getElementById(`details_${id}`);
+  const ch = document.getElementById(`chevron_${id}`);
+  if (el) {
+    const isHidden = el.classList.contains('d-none');
+    el.classList.toggle('d-none');
+    if (ch) ch.className = isHidden ? 'bi bi-chevron-up me-1' : 'bi bi-chevron-down me-1';
+  }
+}
+
+function saveOppNote(id, note) {
+  const opp = dossierOpps.find(o => o.id === id);
+  if (!opp) return;
+  opp.internal_notes = note;
+  persistDossierData();
+  fetch(`/api/opportunities/${id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ internal_notes: note })
+  }).catch(() => {});
 }
 
 function renderAllRoles() {
@@ -2411,7 +2921,14 @@ function renderAllRoles() {
     return true;
   });
 
-  container.innerHTML = filtered.map(o => {
+  const countHeader = `
+    <div class="d-flex justify-content-between align-items-center mb-3 px-1 text-muted small">
+      <span>Showing <strong>${filtered.length}</strong> of <strong>${dossierOpps.length}</strong> opportunities</span>
+      <span>${filter !== 'all' ? `Filtered by: <span class="badge bg-secondary">${filter}</span>` : 'All Categories Active'}</span>
+    </div>
+  `;
+
+  container.innerHTML = countHeader + filtered.map(o => {
     const score = parseInt(o.match_score) || 90;
     return `
       <div class="opp-item-card">
@@ -2437,11 +2954,34 @@ function renderAllRoles() {
             <button class="btn btn-outline-dark btn-sm fw-bold" onclick="openPrepModal('${o.id}')">
               🎙️ NotebookLM Prep
             </button>
+            <button class="btn btn-outline-info btn-sm fw-bold" onclick="draftPostFromOpportunity('${o.id}')">
+              🚀 Draft LinkedIn Post
+            </button>
             ${o.url && o.url !== '#' ? `<a href="${o.url}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold">🔗 Portal</a>` : ''}
           </div>
         </div>
         <div class="p-2 px-3 my-2 rounded bg-light border-start border-4 border-info small text-dark">
           <strong>Tactical Alignment:</strong> ${escapeHtml(o.match_reason || 'Strong profile synergy with AI/ML systems and research.')}
+        </div>
+        <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+          <button class="btn btn-sm btn-link text-decoration-none text-muted p-0" onclick="toggleOppDetails('${o.id}')" style="font-size: 11.5px;">
+            <i class="bi bi-chevron-down me-1" id="chevron_${o.id}"></i> Candidate Intelligence & Strategy Notes
+          </button>
+          <span class="text-muted" style="font-size: 11px;">Tracked ID: <code>${o.id}</code></span>
+        </div>
+        <div id="details_${o.id}" class="d-none mt-2 p-3 bg-light rounded border">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <div class="small fw-bold text-dark mb-1">Target Requirements & Skills:</div>
+              <div class="d-flex gap-1 flex-wrap">
+                ${(o.matching_skills || ['AI/ML', 'Systems', 'Verification']).map(s => `<span class="badge bg-white text-dark border">${escapeHtml(s)}</span>`).join('')}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="small fw-bold text-dark mb-1">Internal Application Notes:</div>
+              <textarea class="form-control form-control-sm" rows="2" placeholder="Add recruiter feedback or strategic reminders..." onchange="saveOppNote('${o.id}', this.value)">${escapeHtml(o.internal_notes || '')}</textarea>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -2719,7 +3259,7 @@ function openPrepModal(oppId) {
 }
 
 function switchDossierTab(tab, btnEl) {
-  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack', 'tabOutreach', 'tabLearning'].forEach(id => {
+  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack', 'tabOutreach', 'tabLearning', 'tabCreatorStudio'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('d-none');
   });
@@ -2733,11 +3273,27 @@ function switchDossierTab(tab, btnEl) {
     'ai-stack': '✨ 7-in-1 AI Application Stack & Video Workflows',
     sync: 'Cloud & Offline Multi-Sync Hub',
     outreach: '📢 Multi-Platform Internet Outreach Playbook',
-    learning: '🎓 Skills, Entry-Level Gigs & AI Knowledgebase Hub'
+    learning: '🎓 Skills, Entry-Level Gigs & AI Knowledgebase Hub',
+    'creator-studio': 'LinkedIn Creator & Thought Leadership Hub'
   };
 
   const titleEl = document.getElementById('viewTitle');
-  if (titleEl) titleEl.innerText = titles[tab] || 'Dossier';
+  if (titleEl) titleEl.innerText = titles[tab] || 'getHired';
+
+  const breadcrumbMap = {
+    dashboard: 'Overview & Pipeline',
+    kanban: 'Applications Funnel',
+    roles: 'Career Radar & Jobs',
+    resumes: 'Resumes & Documents',
+    profile: 'Master Candidate Profile',
+    'ai-stack': '7-in-1 AI Video Stack',
+    sync: 'Multi-Sync Hub',
+    outreach: 'Outreach Playbook',
+    learning: 'Skills & Knowledge Hub',
+    'creator-studio': 'LinkedIn Creator Studio'
+  };
+  const breadcrumbEl = document.getElementById('dossierBreadcrumb');
+  if (breadcrumbEl) breadcrumbEl.innerText = breadcrumbMap[tab] || 'Career Radar';
 
   if (tab === 'dashboard') document.getElementById('tabDashboard')?.classList.remove('d-none');
   if (tab === 'kanban') { document.getElementById('tabKanban')?.classList.remove('d-none'); renderKanbanBoard(); }
@@ -2748,6 +3304,10 @@ function switchDossierTab(tab, btnEl) {
   if (tab === 'sync') document.getElementById('tabSync')?.classList.remove('d-none');
   if (tab === 'outreach') document.getElementById('tabOutreach')?.classList.remove('d-none');
   if (tab === 'learning') document.getElementById('tabLearning')?.classList.remove('d-none');
+  if (tab === 'creator-studio') {
+    document.getElementById('tabCreatorStudio')?.classList.remove('d-none');
+    loadCreatorStudio();
+  }
 
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const targetBtn = btnEl || document.querySelector(`.nav-btn[data-tab="${tab}"]`);
@@ -2932,22 +3492,40 @@ With published research in LLM prompt vulnerabilities and practical experience b
 
 function openAddModal() { openDossierModal('dossierAddModal'); }
 
-function saveNewRole() {
-  const title = document.getElementById('addRoleTitle')?.value.trim();
-  const org = document.getElementById('addRoleOrg')?.value.trim();
-  if (!title || !org) { alert('Title and Organization are required'); return; }
+async function saveNewRole() {
+  const titleEl = document.getElementById('addRoleTitle');
+  const orgEl = document.getElementById('addRoleOrg');
+  const title = (titleEl?.value || '').trim();
+  const org = (orgEl?.value || '').trim();
+
+  let hasError = false;
+  if (!title) {
+    titleEl?.classList.add('is-invalid');
+    hasError = true;
+  } else {
+    titleEl?.classList.remove('is-invalid');
+  }
+
+  if (!org) {
+    orgEl?.classList.add('is-invalid');
+    hasError = true;
+  } else {
+    orgEl?.classList.remove('is-invalid');
+  }
+
+  if (hasError) return;
 
   const newOpp = {
     id: 'opp_' + Date.now(),
     title,
     organization: org,
-    category: document.getElementById('addRoleCat')?.value || 'Job',
+    category: document.getElementById('addRoleCat')?.value || 'Job / Fellowship',
     deadline: document.getElementById('addRoleDeadline')?.value || 'Rolling',
     stipend: document.getElementById('addRoleStipend')?.value || 'Competitive',
     url: document.getElementById('addRoleUrl')?.value || '#',
     status: 'Ready to Apply / Staged',
     match_score: 90,
-    match_reason: 'Tracked directly by Aryan Sharma in Dossier',
+    match_reason: 'Tracked directly by Aryan Sharma in getHired',
     matching_skills: ['AI/ML', 'Engineering', 'Systems']
   };
 
@@ -2955,15 +3533,33 @@ function saveNewRole() {
   persistDossierData();
   closeDossierModal('dossierAddModal');
   renderAllViews();
+
+  if (titleEl) titleEl.value = '';
+  if (orgEl) orgEl.value = '';
+
+  try {
+    const res = await fetch('/api/opportunities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newOpp)
+    });
+    const data = await res.json();
+    if (data && data.success && data.opportunity) {
+      newOpp.id = data.opportunity.id;
+      persistDossierData();
+    }
+  } catch (err) {
+    console.warn('[getHired] Opportunity saved locally; server sync deferred:', err);
+  }
 }
 
 function exportDossierJson() {
   const blob = new Blob([JSON.stringify(dossierOpps, null, 2)], { type: 'application/json' });
-  saveBlobAsFile(blob, `Dossier_Career_Radar_Backup_${new Date().toISOString().slice(0,10)}.json`);
+  saveBlobAsFile(blob, `getHired_Career_Radar_Backup_${new Date().toISOString().slice(0,10)}.json`);
 }
 
 function triggerDossierFullSync() {
-  alert('🔄 Synchronizing Dossier across Google Sheets, Drive, Notion, and Slack...');
+  alert('🔄 Synchronizing getHired across Google Sheets, Drive, Notion, and Slack...');
   fetch('/api/dossier/sync', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -3105,7 +3701,707 @@ function setRoleFilterChip(chipKey) {
   });
 }
 
+/* =========================================================================
+   LINKEDIN CREATOR STUDIO & 2026 THOUGHT LEADERSHIP ENGINE
+   ========================================================================= */
+let creatorDrafts = [];
+let currentCreatorFilter = 'all';
+
+async function loadCreatorStudio() {
+  try {
+    const res = await fetch('/api/drafts');
+    if (res.ok) {
+      creatorDrafts = await res.json();
+    }
+  } catch (err) {
+    console.warn('[CreatorStudio] Could not fetch drafts from server:', err);
+  }
+  updateCreatorKpis();
+  populateRepurposeDropdown();
+  renderCreatorDraftsList();
+  runLiveComplianceAudit();
+}
+
+function updateCreatorKpis() {
+  const pending = creatorDrafts.filter(d => (d.status || '').toLowerCase() === 'pending_approval').length;
+  const scheduled = creatorDrafts.filter(d => (d.status || '').toLowerCase() === 'scheduled').length;
+  const published = creatorDrafts.filter(d => (d.status || '').toLowerCase() === 'published').length;
+  const total = creatorDrafts.length;
+
+  const pendingEl = document.getElementById('creatorPendingCount');
+  const scheduledEl = document.getElementById('creatorScheduledCount');
+  const publishedEl = document.getElementById('creatorPublishedCount');
+  const totalEl = document.getElementById('creatorTotalCount');
+  const sidebarBadge = document.getElementById('creatorQueueBadge');
+
+  if (pendingEl) pendingEl.innerText = pending;
+  if (scheduledEl) scheduledEl.innerText = scheduled;
+  if (publishedEl) publishedEl.innerText = published;
+  if (totalEl) totalEl.innerText = total;
+  if (sidebarBadge) sidebarBadge.innerText = pending > 0 ? pending : total;
+}
+
+function filterCreatorDrafts(status, btnEl) {
+  currentCreatorFilter = status;
+  if (btnEl) {
+    const container = document.getElementById('creatorFilterPills');
+    if (container) {
+      container.querySelectorAll('button').forEach(b => b.classList.remove('active', 'btn-dark'));
+      container.querySelectorAll('button').forEach(b => {
+        if (!b.classList.contains('btn-outline-warning') && !b.classList.contains('btn-outline-info') && !b.classList.contains('btn-outline-success') && !b.classList.contains('btn-outline-secondary')) {
+          b.classList.add('btn-outline-dark');
+        }
+      });
+      btnEl.classList.remove('btn-outline-dark', 'btn-outline-warning', 'btn-outline-info', 'btn-outline-success', 'btn-outline-secondary');
+      btnEl.classList.add('active', 'btn-dark');
+    }
+  }
+  renderCreatorDraftsList();
+}
+
+function renderCreatorDraftsList() {
+  const feed = document.getElementById('creatorDraftsFeed');
+  if (!feed) return;
+
+  const search = (document.getElementById('creatorSearchInput')?.value || '').toLowerCase().trim();
+
+  let filtered = creatorDrafts;
+  if (currentCreatorFilter !== 'all') {
+    filtered = filtered.filter(d => (d.status || '').toLowerCase() === currentCreatorFilter);
+  }
+
+  if (search) {
+    filtered = filtered.filter(d => {
+      const hay = ((d.topic || '') + ' ' + (d.content || '') + ' ' + (d.hook_formula || '') + ' ' + (d.angle || '')).toLowerCase();
+      return hay.includes(search);
+    });
+  }
+
+  if (filtered.length === 0) {
+    feed.innerHTML = `
+      <div class="card p-5 text-center border shadow-sm" style="background: var(--card); border-radius: 12px;">
+        <i class="bi bi-inbox fs-1 text-muted mb-2"></i>
+        <h6 class="fw-bold text-dark">No drafts found in this view</h6>
+        <p class="small text-secondary mb-3">Compose a new thought-leadership post or generate one using Gemini and getHired career milestones.</p>
+        <div>
+          <button class="btn btn-primary btn-sm fw-bold px-3" onclick="resetComposer()">
+            <i class="bi bi-pencil-square me-1"></i> Compose New Post
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  feed.innerHTML = filtered.map(d => {
+    const isPending = (d.status || '') === 'pending_approval';
+    const isScheduled = (d.status || '') === 'scheduled';
+    const isPublished = (d.status || '') === 'published';
+    const isRejected = (d.status || '') === 'rejected';
+
+    let statusBadgeClass = 'bg-warning text-dark';
+    let statusLabel = 'Pending Review';
+    if (isScheduled) { statusBadgeClass = 'bg-info text-white'; statusLabel = 'Scheduled'; }
+    else if (isPublished) { statusBadgeClass = 'bg-success text-white'; statusLabel = 'Published'; }
+    else if (isRejected) { statusBadgeClass = 'bg-secondary text-white'; statusLabel = 'Rejected'; }
+
+    const charCount = (d.content || '').length;
+    const wordCount = (d.content || '').trim().split(/\s+/).filter(Boolean).length;
+
+    return `
+      <div class="creator-draft-card" id="card_${d.id}">
+        <div class="creator-draft-header">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge ${statusBadgeClass} fw-bold" style="font-size: 11px;">${statusLabel}</span>
+            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 11px;">
+              <i class="bi bi-lightning-charge me-1"></i>${escapeHtml(d.hook_formula || 'Proven Hook')}
+            </span>
+            ${d.angle ? `<span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold" style="font-size: 11px;">${escapeHtml(d.angle)}</span>` : ''}
+            <span class="badge bg-light text-muted border" style="font-size: 11px;">${charCount} chars • ${wordCount} words</span>
+          </div>
+          <div class="small text-secondary fw-semibold">
+            ${d.created_at ? new Date(d.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
+          </div>
+        </div>
+
+        <div class="p-2 px-3 bg-light border-bottom small fw-bold text-dark">
+          📌 Topic: ${escapeHtml(d.topic || 'Untitled Post')}
+        </div>
+
+        <div class="creator-draft-body" id="draft_text_${d.id}">${escapeHtml(d.content || '')}</div>
+
+        <div class="creator-draft-footer">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            ${isPending ? `
+              <button class="btn btn-success btn-sm fw-bold shadow-sm" onclick="approveDraft('${d.id}')">
+                <i class="bi bi-check-lg me-1"></i> Approve & Schedule
+              </button>
+            ` : ''}
+            <button class="btn btn-outline-primary btn-sm fw-bold" onclick="openDraftInComposer('${d.id}')">
+              <i class="bi bi-pencil me-1"></i> Edit in Composer
+            </button>
+            <button class="btn btn-outline-secondary btn-sm fw-semibold" onclick="copyDraftText('${d.id}')">
+              <i class="bi bi-clipboard me-1"></i> Copy
+            </button>
+            ${isPending ? `
+              <button class="btn btn-outline-danger btn-sm" onclick="rejectDraft('${d.id}')" title="Reject Draft">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            ` : ''}
+          </div>
+          <div>
+            <button class="btn btn-link btn-sm text-danger p-0 text-decoration-none" onclick="deleteDraft('${d.id}')" title="Delete Draft">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function populateRepurposeDropdown() {
+  const sel = document.getElementById('repurposeSourceSelect');
+  if (!sel) return;
+
+  let options = '<option value="">Select Opportunity, Publication or Project...</option>';
+  
+  options += '<optgroup label="Active Opportunities & Roles">';
+  if (Array.isArray(dossierOpps)) {
+    dossierOpps.forEach(o => {
+      options += `<option value="opp:${o.id}">${escapeHtml(o.organization)} — ${escapeHtml(o.title)}</option>`;
+    });
+  }
+  options += '</optgroup>';
+
+  options += '<optgroup label="Research & Milestone Highlights">';
+  options += '<option value="res:prompt_vulnerability">Research: Prompt Vulnerability & Injection in LLMs</option>';
+  options += '<option value="exp:handshake_ai">Experience: Handshake AI Evaluation Specialist</option>';
+  options += '<option value="fellow:harvard_aspire">Fellowship: Harvard Aspire Leaders Program</option>';
+  options += '<option value="del:harvard_hpair">Delegation: Harvard HPAIR Tech & Governance</option>';
+  options += '</optgroup>';
+
+  sel.innerHTML = options;
+}
+
+function openDraftInComposer(draftId) {
+  const d = creatorDrafts.find(item => item.id === draftId);
+  if (!d) return;
+
+  const editingIdEl = document.getElementById('composerEditingDraftId');
+  const topicEl = document.getElementById('composerTopic');
+  const contentEl = document.getElementById('composerContent');
+  const hookEl = document.getElementById('composerHookFormula');
+
+  if (editingIdEl) editingIdEl.value = d.id;
+  if (topicEl) topicEl.value = d.topic || '';
+  if (contentEl) contentEl.value = d.content || '';
+  if (hookEl && d.hook_formula) hookEl.value = d.hook_formula;
+
+  runLiveComplianceAudit();
+
+  document.getElementById('composerContent')?.focus();
+  document.getElementById('composerContent')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetComposer() {
+  const editingIdEl = document.getElementById('composerEditingDraftId');
+  const topicEl = document.getElementById('composerTopic');
+  const contentEl = document.getElementById('composerContent');
+  const mediaSec = document.getElementById('composerMediaSection');
+
+  if (editingIdEl) editingIdEl.value = '';
+  if (topicEl) topicEl.value = '';
+  if (contentEl) contentEl.value = '';
+  if (mediaSec) mediaSec.classList.add('d-none');
+
+  runLiveComplianceAudit();
+}
+
+function removeComposerMedia() {
+  const mediaSec = document.getElementById('composerMediaSection');
+  if (mediaSec) mediaSec.classList.add('d-none');
+}
+
+function runLiveComplianceAudit() {
+  const contentEl = document.getElementById('composerContent');
+  const text = (contentEl ? contentEl.value : '') || '';
+
+  const charCount = text.length;
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+
+  // 1. Em-Dash check (Max 1 per 100 words)
+  const emDashes = (text.match(/—|--/g) || []).length;
+  const maxAllowedEmDashes = Math.max(1, Math.floor(wordCount / 70));
+  const emDashPill = document.getElementById('emDashPill');
+  if (emDashPill) {
+    if (emDashes <= maxAllowedEmDashes) {
+      emDashPill.className = 'compliance-pill compliance-pill-ok';
+      emDashPill.innerHTML = `⚡ ${emDashes} Em-Dashes (Compliant)`;
+    } else {
+      emDashPill.className = 'compliance-pill compliance-pill-warn';
+      emDashPill.innerHTML = `⚠️ ${emDashes} Em-Dashes (Max ${maxAllowedEmDashes})`;
+    }
+  }
+
+  // 2. Anti-Slop Vocabulary Check
+  const slopWords = [
+    'leverage', 'utilize', 'facilitate', 'streamline', 'robust', 'seamless',
+    'delve', 'navigate', 'unlock', 'harness', 'foster', 'cultivate',
+    'fundamentally', 'essentially', 'ultimately', 'landscape', 'ecosystem',
+    'paradigm', 'game-changer', 'deep dive', "in today's fast-paced world",
+    'in the realm of', 'testament', 'paramount', 'synergy'
+  ];
+  const lower = text.toLowerCase();
+  const detectedSlop = slopWords.filter(w => lower.includes(w));
+  const antiSlopPill = document.getElementById('antiSlopPill');
+  if (antiSlopPill) {
+    if (detectedSlop.length === 0) {
+      antiSlopPill.className = 'compliance-pill compliance-pill-ok';
+      antiSlopPill.innerHTML = `✨ 0 Slop Words`;
+    } else {
+      antiSlopPill.className = 'compliance-pill compliance-pill-bad';
+      antiSlopPill.innerHTML = `⚠️ Remove: "${detectedSlop.slice(0, 2).join(', ')}"`;
+    }
+  }
+
+  // 3. Optimal Length Gauge (900-1300 chars optimal; 3000 max)
+  const charCountPill = document.getElementById('charCountPill');
+  const charProgressBar = document.getElementById('charProgressBar');
+  const pct = Math.min(100, Math.round((charCount / 1300) * 100));
+  
+  if (charProgressBar) {
+    charProgressBar.style.width = `${pct}%`;
+    if (charCount >= 900 && charCount <= 1300) {
+      charProgressBar.className = 'progress-bar bg-success';
+    } else if (charCount > 3000) {
+      charProgressBar.className = 'progress-bar bg-danger';
+    } else {
+      charProgressBar.className = 'progress-bar bg-warning';
+    }
+  }
+
+  if (charCountPill) {
+    if (charCount >= 900 && charCount <= 1300) {
+      charCountPill.className = 'compliance-pill compliance-pill-ok';
+      charCountPill.innerHTML = `📏 ${charCount} / 1,300 (Optimal Sweet Spot)`;
+    } else if (charCount > 3000) {
+      charCountPill.className = 'compliance-pill compliance-pill-bad';
+      charCountPill.innerHTML = `🚨 ${charCount} / 3,000 (Exceeds Max Limit)`;
+    } else if (charCount === 0) {
+      charCountPill.className = 'compliance-pill compliance-pill-ok';
+      charCountPill.innerHTML = `📏 0 / 1,300 Chars`;
+    } else {
+      charCountPill.className = 'compliance-pill compliance-pill-warn';
+      charCountPill.innerHTML = `📏 ${charCount} Chars (Target 900-1,300)`;
+    }
+  }
+
+  // 4. Overall Compliance Badge
+  const overallBadge = document.getElementById('complianceOverallBadge');
+  if (overallBadge) {
+    const isCompliant = (emDashes <= maxAllowedEmDashes) && (detectedSlop.length === 0) && (charCount <= 3000);
+    if (isCompliant) {
+      overallBadge.className = 'badge bg-success';
+      overallBadge.innerText = '2026 Compliant';
+    } else {
+      overallBadge.className = 'badge bg-danger';
+      overallBadge.innerText = 'Action Needed';
+    }
+  }
+}
+
+async function saveDraftFromComposer() {
+  const content = (document.getElementById('composerContent')?.value || '').trim();
+  const topic = (document.getElementById('composerTopic')?.value || '').trim() || 'General Thought Leadership';
+  const hook_formula = document.getElementById('composerHookFormula')?.value || 'Proven Hook';
+  const editingId = (document.getElementById('composerEditingDraftId')?.value || '').trim();
+
+  if (!content) {
+    alert('Please enter or generate some post content first.');
+    return;
+  }
+
+  try {
+    let res;
+    if (editingId) {
+      res = await fetch(`/api/drafts/${editingId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, topic, hook_formula })
+      });
+    } else {
+      res = await fetch('/api/drafts/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, topic, hook_formula })
+      });
+    }
+    const data = await res.json();
+    if (data.success) {
+      await loadCreatorStudio();
+      alert('✅ Post draft saved successfully to queue!');
+    } else {
+      alert('Error saving draft: ' + (data.error || 'Unknown error'));
+    }
+  } catch (err) {
+    alert('Failed to connect to backend draft API: ' + err.message);
+  }
+}
+
+async function generateGeminiPostFromComposer() {
+  const topic = (document.getElementById('composerTopic')?.value || '').trim();
+  const hook_formula = document.getElementById('composerHookFormula')?.value;
+  const style = document.getElementById('composerStyle')?.value;
+  const btn = document.getElementById('btnGeminiGenerate');
+
+  if (!topic) {
+    alert('Please enter a topic or architectural angle first.');
+    document.getElementById('composerTopic')?.focus();
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Crafting authentic post with Google Gemini...';
+  }
+
+  try {
+    const res = await fetch('/api/drafts/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, hook_formula, style })
+    });
+    const data = await res.json();
+    if (data.success && data.draft) {
+      document.getElementById('composerContent').value = data.draft.content || '';
+      document.getElementById('composerEditingDraftId').value = data.draft.id || '';
+      runLiveComplianceAudit();
+      await loadCreatorStudio();
+      alert('✨ Post generated by Google Gemini and synced to Slack!');
+    } else {
+      alert('Gemini generation failed: ' + (data.error || 'Server error'));
+    }
+  } catch (err) {
+    alert('Error generating post: ' + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-stars me-1"></i> Generate with Google Gemini';
+    }
+  }
+}
+
+async function repurposeSelectedCareerItem() {
+  const sel = document.getElementById('repurposeSourceSelect');
+  const val = sel ? sel.value : '';
+  if (!val) {
+    alert('Please select an opportunity, publication, or project from the dropdown.');
+    return;
+  }
+
+  let title = '';
+  let details = '';
+  let sourceType = 'Career Milestone';
+
+  if (val.startsWith('opp:')) {
+    const oppId = val.replace('opp:', '');
+    const opp = (dossierOpps || []).find(o => o.id === oppId);
+    if (opp) {
+      title = `${opp.organization} — ${opp.title}`;
+      details = `Role at ${opp.organization}. Alignment: ${opp.match_reason || ''}. Key skills: AI systems, verification, tactical execution.`;
+      sourceType = 'Target Role Opportunity';
+    }
+  } else if (val === 'res:prompt_vulnerability') {
+    title = 'Investigating Prompt Vulnerability and Injection in Large Language Models';
+    details = 'Published research analyzing adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries across production generative AI models. Evaluated with LLM-as-a-judge and automated red-teaming.';
+    sourceType = 'Research Publication';
+  } else if (val === 'exp:handshake_ai') {
+    title = 'Handshake AI Evaluation Specialist Experience';
+    details = 'Benchmarking generative model responses, designing automated grading rubrics, adversarial testing of safety boundaries and factual grounding.';
+    sourceType = 'Engineering Experience';
+  } else if (val === 'fellow:harvard_aspire') {
+    title = 'Harvard Aspire Leaders Program Fellowship';
+    details = 'Leadership in emerging AI systems, ethical governance, and cross-disciplinary impact.';
+    sourceType = 'Global Fellowship';
+  } else if (val === 'del:harvard_hpair') {
+    title = 'Harvard HPAIR Tech & Governance Delegation';
+    details = 'Discussions on AI infrastructure, regulatory guardrails, and global technology policy.';
+    sourceType = 'Global Conference Delegation';
+  }
+
+  document.getElementById('composerTopic').value = `Behind the scenes: ${title}`;
+  
+  const mediaSec = document.getElementById('composerMediaSection');
+  const mediaLabel = document.getElementById('composerMediaLabel');
+  const mediaDetail = document.getElementById('composerMediaDetail');
+  if (mediaSec && mediaLabel && mediaDetail) {
+    mediaLabel.innerText = `📎 Linked getHired Milestone: ${sourceType}`;
+    mediaDetail.innerText = `${title} — ${details.slice(0, 100)}...`;
+    mediaSec.classList.remove('d-none');
+  }
+
+  try {
+    const res = await fetch('/api/drafts/repurpose', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        details,
+        source_type: sourceType,
+        hook_formula: document.getElementById('composerHookFormula')?.value,
+        style: document.getElementById('composerStyle')?.value
+      })
+    });
+    const data = await res.json();
+    if (data.success && data.draft) {
+      document.getElementById('composerContent').value = data.draft.content || '';
+      document.getElementById('composerEditingDraftId').value = data.draft.id || '';
+      runLiveComplianceAudit();
+      await loadCreatorStudio();
+      alert('🚀 Career milestone repurposed into authentic LinkedIn copy!');
+    } else {
+      alert('Repurpose error: ' + (data.error || 'Unknown error'));
+    }
+  } catch (err) {
+    alert('Failed to repurpose career item: ' + err.message);
+  }
+}
+
+function draftPostFromOpportunity(oppId) {
+  switchDossierTab('creator-studio');
+  const sel = document.getElementById('repurposeSourceSelect');
+  if (sel) {
+    sel.value = `opp:${oppId}`;
+    repurposeSelectedCareerItem();
+  }
+}
+
+function draftPostFromProfileMilestone(milestoneKey) {
+  switchDossierTab('creator-studio');
+  const sel = document.getElementById('repurposeSourceSelect');
+  if (sel) {
+    if (milestoneKey === 'prompt_vulnerability_paper') sel.value = 'res:prompt_vulnerability';
+    else if (milestoneKey === 'handshake_ai') sel.value = 'exp:handshake_ai';
+    repurposeSelectedCareerItem();
+  }
+}
+
+async function approveDraft(draftId) {
+  try {
+    const res = await fetch(`/api/drafts/${draftId}/approve`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      await loadCreatorStudio();
+      alert('🎉 Post approved and scheduled/published! Notification sent to Slack.');
+    } else {
+      alert('Failed to approve draft: ' + (data.error || 'Unknown error'));
+    }
+  } catch (err) {
+    alert('Connection error: ' + err.message);
+  }
+}
+
+async function rejectDraft(draftId) {
+  if (!confirm('Reject this draft?')) return;
+  try {
+    const res = await fetch(`/api/drafts/${draftId}/reject`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      await loadCreatorStudio();
+    }
+  } catch (err) {
+    alert('Connection error: ' + err.message);
+  }
+}
+
+async function deleteDraft(draftId) {
+  if (!confirm('Permanently delete this draft from queue?')) return;
+  try {
+    const res = await fetch(`/api/drafts/${draftId}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      await loadCreatorStudio();
+    }
+  } catch (err) {
+    alert('Connection error: ' + err.message);
+  }
+}
+
+function copyDraftText(draftId) {
+  const el = document.getElementById(`draft_text_${draftId}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
+    alert('📋 Post copied to clipboard!');
+  }).catch(() => {
+    alert('Could not copy to clipboard.');
+  });
+}
+
+async function instantPublishFromComposer() {
+  await saveDraftFromComposer();
+  const editingId = document.getElementById('composerEditingDraftId')?.value;
+  if (editingId) {
+    await approveDraft(editingId);
+  }
+}
+
+async function dispatchComposerToSlack() {
+  await saveDraftFromComposer();
+  alert('📢 Interactive card dispatched to Aryan\'s Slack channel for 1-tap mobile review!');
+}
+
+/* =========================================================================
+   GLOBAL COMMAND PALETTE (CMD+K / CTRL+K)
+   ========================================================================= */
+const COMMANDS = [
+  { group: 'Views & Navigation', title: 'Dashboard & Overview', icon: 'bi-speedometer2', action: () => switchDossierTab('dashboard'), shortcut: 'G D' },
+  { group: 'Views & Navigation', title: 'Applications Funnel Board', icon: 'bi-kanban', action: () => switchDossierTab('kanban'), shortcut: 'G B' },
+  { group: 'Views & Navigation', title: 'Find Jobs & Career Radar', icon: 'bi-compass', action: () => switchDossierTab('roles'), shortcut: 'G R' },
+  { group: 'Views & Navigation', title: 'Resumes & Documents', icon: 'bi-file-earmark-person', action: () => switchDossierTab('resumes'), shortcut: 'G M' },
+  { group: 'Views & Navigation', title: 'Master Candidate Profile', icon: 'bi-person-badge', action: () => switchDossierTab('profile'), shortcut: 'G P' },
+  { group: 'Views & Navigation', title: 'LinkedIn Creator Studio', icon: 'bi-linkedin', action: () => switchDossierTab('creator-studio'), shortcut: 'G L' },
+  { group: 'Views & Navigation', title: '7-in-1 AI Video Stack', icon: 'bi-magic', action: () => switchDossierTab('ai-stack'), shortcut: 'G A' },
+  { group: 'Views & Navigation', title: 'Outreach Playbook', icon: 'bi-broadcast', action: () => switchDossierTab('outreach'), shortcut: 'G O' },
+  { group: 'Views & Navigation', title: 'Multi-Sync Hub', icon: 'bi-cloud-arrow-up', action: () => switchDossierTab('sync'), shortcut: 'G S' },
+  { group: 'Quick Actions', title: 'Track New Role Opportunity', icon: 'bi-plus-circle', action: () => openAddModal(), shortcut: 'N' },
+  { group: 'Quick Actions', title: 'Paste & Analyze Job Description (AI)', icon: 'bi-stars', action: () => openJdModal(), shortcut: 'J' },
+  { group: 'Quick Actions', title: 'Export Complete JSON Manifest', icon: 'bi-download', action: () => exportDossierJson(), shortcut: 'E' },
+  { group: 'Quick Actions', title: 'Run Full Multi-Platform Cloud Sync', icon: 'bi-arrow-repeat', action: () => triggerDossierFullSync(), shortcut: 'S' }
+];
+
+let selectedCmdIndex = 0;
+let filteredCommands = [];
+
+function openCommandPalette() {
+  const modal = document.getElementById('dossierCommandPalette');
+  if (!modal) return;
+  modal.classList.remove('d-none');
+  const input = document.getElementById('cmdPaletteInput');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
+  filterCommandPalette();
+}
+
+function closeCommandPalette() {
+  const modal = document.getElementById('dossierCommandPalette');
+  if (modal) modal.classList.add('d-none');
+}
+
+function filterCommandPalette() {
+  const input = document.getElementById('cmdPaletteInput');
+  const query = (input?.value || '').toLowerCase().trim();
+  const resultsContainer = document.getElementById('cmdPaletteResults');
+  if (!resultsContainer) return;
+
+  filteredCommands = [];
+
+  const cmdMatches = COMMANDS.filter(c => c.title.toLowerCase().includes(query) || c.group.toLowerCase().includes(query));
+  cmdMatches.forEach(c => filteredCommands.push({ type: 'command', ...c }));
+
+  if (query && Array.isArray(dossierOpps)) {
+    const oppMatches = dossierOpps.filter(o => 
+      (o.title || '').toLowerCase().includes(query) || 
+      (o.organization || '').toLowerCase().includes(query)
+    ).slice(0, 5);
+
+    oppMatches.forEach(o => {
+      filteredCommands.push({
+        type: 'opportunity',
+        group: 'Opportunities & Roles',
+        title: `${o.organization} — ${o.title}`,
+        icon: 'bi-briefcase',
+        action: () => {
+          switchDossierTab('roles');
+          const searchInput = document.getElementById('rolesSearch');
+          if (searchInput) {
+            searchInput.value = o.title;
+            renderAllRoles();
+          }
+        },
+        shortcut: `${o.match_score || 90}%`
+      });
+    });
+  }
+
+  selectedCmdIndex = 0;
+  renderCommandResults();
+}
+
+function renderCommandResults() {
+  const resultsContainer = document.getElementById('cmdPaletteResults');
+  if (!resultsContainer) return;
+
+  if (filteredCommands.length === 0) {
+    resultsContainer.innerHTML = '<div class="p-3 text-center text-muted small">No commands or opportunities matching query.</div>';
+    return;
+  }
+
+  let html = '';
+  let currentGroup = '';
+
+  filteredCommands.forEach((item, idx) => {
+    if (item.group !== currentGroup) {
+      currentGroup = item.group;
+      html += `<div class="cmd-group-title">${escapeHtml(currentGroup)}</div>`;
+    }
+    const isSelected = idx === selectedCmdIndex;
+    html += `
+      <div class="cmd-item ${isSelected ? 'selected' : ''}" onclick="executeCommandAtIndex(${idx})" role="option" aria-selected="${isSelected}">
+        <i class="bi ${item.icon} text-secondary"></i>
+        <span>${escapeHtml(item.title)}</span>
+        ${item.shortcut ? `<kbd>${escapeHtml(item.shortcut)}</kbd>` : ''}
+      </div>
+    `;
+  });
+
+  resultsContainer.innerHTML = html;
+}
+
+function handleCommandKey(e) {
+  if (e.key === 'Escape') {
+    closeCommandPalette();
+    e.preventDefault();
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (selectedCmdIndex < filteredCommands.length - 1) {
+      selectedCmdIndex++;
+      renderCommandResults();
+    }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (selectedCmdIndex > 0) {
+      selectedCmdIndex--;
+      renderCommandResults();
+    }
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    executeCommandAtIndex(selectedCmdIndex);
+  }
+}
+
+function executeCommandAtIndex(idx) {
+  const cmd = filteredCommands[idx];
+  if (cmd && typeof cmd.action === 'function') {
+    closeCommandPalette();
+    cmd.action();
+  }
+}
+
+window.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openCommandPalette();
+  } else if (e.key === 'Escape') {
+    closeCommandPalette();
+  }
+});
+
 initDossierData();
+loadCreatorStudio();
 </script>
 </body>
 </html>

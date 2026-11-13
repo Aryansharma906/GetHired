@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from lib._env import load_env
-from lib.drafts_store import create_draft, get_draft, list_drafts
+from lib.drafts_store import create_draft, get_draft, list_drafts, update_draft, update_draft_status
 from lib.gemini_generator import generate_post_with_gemini
 from lib.slack_approver import process_slack_action, send_draft_to_slack
 
@@ -43,6 +43,7 @@ def serve_media(filename: str):
 
 
 @app.route("/assets/<path:filename>")
+@app.route("/gethired/assets/<path:filename>")
 @app.route("/dossier/assets/<path:filename>")
 def serve_docs_assets(filename: str):
     assets_dir = ROOT / "docs" / "assets"
@@ -50,12 +51,14 @@ def serve_docs_assets(filename: str):
 
 
 @app.route("/manifest.json")
+@app.route("/gethired/manifest.json")
 @app.route("/dossier/manifest.json")
 def serve_manifest():
     return send_from_directory(str(ROOT / "docs"), "manifest.json", mimetype="application/manifest+json")
 
 
 @app.route("/sw.js")
+@app.route("/gethired/sw.js")
 @app.route("/dossier/sw.js")
 def serve_service_worker():
     response = send_from_directory(str(ROOT / "docs"), "sw.js", mimetype="application/javascript")
@@ -69,14 +72,112 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/index.html")
+def legacy_index_redirect():
+    return redirect("/", code=302)
+
+
+@app.route("/gethired")
+@app.route("/get-hired")
+@app.route("/getHired")
 @app.route("/dossier")
-def dossier_dashboard():
+def gethired_dashboard():
     return render_template("dossier.html")
 
 
 @app.route("/api/drafts", methods=["GET"])
 def get_all_drafts():
     return jsonify(list_drafts())
+
+
+@app.route("/api/drafts/create", methods=["POST"])
+@app.route("/api/drafts", methods=["POST"])
+def create_draft_endpoint():
+    data = request.get_json() or {}
+    content = data.get("content", "").strip()
+    if not content:
+        return jsonify({"success": False, "error": "Content is required"}), 400
+    topic = data.get("topic", "General Thought Leadership").strip() or "General Thought Leadership"
+    hook_formula = data.get("hook_formula", "Proven Hook").strip() or "Proven Hook"
+    angle = data.get("angle", "Founder Perspective").strip() or "Founder Perspective"
+    status = data.get("status", "pending_approval")
+    draft = create_draft(
+        content=content,
+        topic=topic,
+        hook_formula=hook_formula,
+        angle=angle,
+        status=status,
+    )
+    return jsonify({"success": True, "draft": draft})
+
+
+@app.route("/api/drafts/<draft_id>", methods=["PUT", "POST"])
+def update_draft_endpoint(draft_id: str):
+    data = request.get_json() or {}
+    updated = update_draft(draft_id, **data)
+    if not updated:
+        return jsonify({"success": False, "error": "Draft not found"}), 404
+    return jsonify({"success": True, "draft": updated})
+
+
+@app.route("/api/drafts/repurpose", methods=["POST"])
+def repurpose_career_endpoint():
+    """Repurpose a Dossier career milestone, target role, or research project into a LinkedIn post."""
+    data = request.get_json() or {}
+    title = data.get("title", "").strip()
+    details = data.get("details", "").strip()
+    source_type = data.get("source_type", "Career Milestone").strip()
+    hook_pref = data.get("hook_formula") or "Contrarian Take"
+    style = data.get("style") or "Aryan Sharma Systems Depth + Vaibhav Sisinty Growth Storytelling"
+
+    if not title and not details:
+        return jsonify({"success": False, "error": "Title or details required to repurpose"}), 400
+
+    topic = f"Behind the scenes: {title or details[:60]}"
+    instructions = (
+        f"This post repurposes a real career achievement/project from Dossier ({source_type}):\n"
+        f"Context: {title}\n"
+        f"Key Evidence & Details: {details}\n"
+        f"Format as an authentic founder engineering story. Share the non-obvious architecture lessons, "
+        f"tactical trade-offs, and metrics. Strict 2026 voice rules: max 1 em-dash per 100 words, no corporate buzzwords, "
+        f"1-2 sentence paragraphs for mobile scannability, target 900-1300 characters."
+    )
+
+    gemini_res = generate_post_with_gemini(
+        topic=topic,
+        style=style,
+        instructions=instructions,
+        length_preset="long",
+        hook_preference=hook_pref,
+    )
+
+    if gemini_res:
+        content = gemini_res.get("content", "").strip()
+        hook = gemini_res.get("hook_formula", hook_pref)
+        angle = gemini_res.get("angle", f"Repurposed from {source_type}")
+    else:
+        # Fallback authentic draft without hallucination
+        content = (
+            f"Most developers treat career updates like corporate press releases.\n\n"
+            f"Here is what actually happened building and validating {title or 'this project'}:\n\n"
+            f"{details if details else 'We tackled the problem with minimal dependencies and verifiable systems.'}\n\n"
+            f"Three tactical takeaways:\n\n"
+            f"1. Keep the architecture observable from day one.\n"
+            f"2. Automate the repetitive plumbing so human review stays focused on high-leverage taste.\n"
+            f"3. Production telemetry always beats local assumptions.\n\n"
+            f"What is your team's approach to validating systems before scale?"
+        )
+        hook = hook_pref
+        angle = f"Repurposed from {source_type}"
+
+    draft = create_draft(
+        content=content,
+        topic=topic,
+        hook_formula=hook,
+        angle=angle,
+        status="pending_approval",
+    )
+    return jsonify({"success": True, "draft": draft})
 
 
 @app.route("/api/drafts/<draft_id>/approve", methods=["POST"])
@@ -220,6 +321,44 @@ def opportunities_api():
     return jsonify({"success": True, "opportunities": opps})
 
 
+@app.route("/api/opportunities/<opp_id>", methods=["PUT", "POST"])
+def update_opportunity_api(opp_id: str):
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    opps = []
+    if opps_path.exists():
+        try:
+            opps = json.loads(opps_path.read_text(encoding="utf-8"))
+        except Exception:
+            opps = []
+
+    target_idx = next((i for i, o in enumerate(opps) if o.get("id") == opp_id), -1)
+    if target_idx == -1:
+        return jsonify({"success": False, "error": f"Opportunity {opp_id} not found"}), 404
+
+    data = request.get_json() or {}
+    opps[target_idx].update(data)
+    opps_path.write_text(json.dumps(opps, indent=2), encoding="utf-8")
+    return jsonify({"success": True, "opportunity": opps[target_idx]})
+
+
+@app.route("/api/opportunities/<opp_id>", methods=["DELETE"])
+def delete_opportunity_api(opp_id: str):
+    opps_path = ROOT / "testing" / "opportunities_tracker.json"
+    opps = []
+    if opps_path.exists():
+        try:
+            opps = json.loads(opps_path.read_text(encoding="utf-8"))
+        except Exception:
+            opps = []
+
+    remaining = [o for o in opps if o.get("id") != opp_id]
+    if len(remaining) == len(opps):
+        return jsonify({"success": False, "error": f"Opportunity {opp_id} not found"}), 404
+
+    opps_path.write_text(json.dumps(remaining, indent=2), encoding="utf-8")
+    return jsonify({"success": True})
+
+
 @app.route("/api/opportunities/<opp_id>/resume", methods=["POST"])
 def generate_opportunity_resume(opp_id: str):
     opps_path = ROOT / "testing" / "opportunities_tracker.json"
@@ -250,9 +389,10 @@ def generate_opportunity_resume(opp_id: str):
 
 
 # =========================================================================
-# Dossier Career Hub & Multi-Platform Integration API
+# getHired Career Hub & Multi-Platform Integration API
 # =========================================================================
 
+@app.route("/api/gethired/status", methods=["GET"])
 @app.route("/api/dossier/status", methods=["GET"])
 def dossier_status_api():
     """Return status of all 5 connected services and opportunity pipeline."""
@@ -277,6 +417,7 @@ def dossier_status_api():
     })
 
 
+@app.route("/api/gethired/sync", methods=["POST"])
 @app.route("/api/dossier/sync", methods=["POST"])
 def dossier_sync_api():
     """Execute on-demand sync for all or specific services."""
@@ -316,6 +457,7 @@ def dossier_sync_api():
         return jsonify({"success": False, "error": f"Unknown action: {action}"}), 400
 
 
+@app.route("/api/gethired/opportunities/<opp_id>/score", methods=["POST"])
 @app.route("/api/dossier/opportunities/<opp_id>/score", methods=["POST"])
 def score_single_opportunity_api(opp_id: str):
     """Score a specific opportunity against Aryan's profile with Google Gemini."""
@@ -339,6 +481,7 @@ def score_single_opportunity_api(opp_id: str):
     return jsonify({"success": True, "opportunity": target, "score_data": res})
 
 
+@app.route("/api/gethired/export/<kind>", methods=["GET"])
 @app.route("/api/dossier/export/<kind>", methods=["GET"])
 def export_dossier_file(kind: str):
     """Download staged CSV or manifest for Google Sheets, Notion, or Drive."""
@@ -794,6 +937,7 @@ def send_opportunity_to_slack_endpoint(opp_id: str):
     return jsonify(res)
 
 
+@app.route("/api/gethired/send_digest", methods=["POST"])
 @app.route("/api/dossier/send_digest", methods=["POST"])
 def send_dossier_digest_endpoint():
     """Send full career radar digest to Slack."""

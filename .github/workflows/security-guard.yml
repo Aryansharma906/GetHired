@@ -1,0 +1,32 @@
+name: Security & Secret Leak Prevention Guard
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  secret_audit:
+    name: Verify Zero Secret Leaks & Manifest Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify No Secrets or Private Credentials in Tracked Files
+        run: |
+          python3 scripts/check_no_secrets.py
+
+      - name: Verify Open Source Manifests and Licensing
+        run: |
+          python3 -c "import json; [json.load(open(f)) for f in ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json']]"
+          echo "All plugin manifests and security rules passed!"

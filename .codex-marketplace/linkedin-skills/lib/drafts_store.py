@@ -111,3 +111,22 @@ def update_draft_status(
     if updated:
         _write_queue(drafts)
     return updated
+
+
+def update_draft(
+    draft_id: str,
+    **kwargs: Any,
+) -> Optional[dict[str, Any]]:
+    """Update draft fields (content, topic, hook, etc.)."""
+    drafts = _read_queue()
+    updated = None
+    for d in drafts:
+        if d.get("id") == draft_id:
+            if "content" in kwargs and "char_count" not in kwargs:
+                kwargs["char_count"] = len(kwargs["content"])
+            d.update(kwargs)
+            updated = d
+            break
+    if updated:
+        _write_queue(drafts)
+    return updated

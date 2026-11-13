@@ -303,21 +303,21 @@
       📋 All Posts
     </button>
     <button class="tab-item" id="tab-opportunities" onclick="switchTab('opportunities')">
-      💼 Dossier Hub & Career Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
+      💼 getHired Career Hub & Radar <span class="badge bg-info text-dark ms-1" id="tab-badge-opps">15</span>
     </button>
   </div>
 
-  <!-- Opportunities & Dossier Container -->
+  <!-- Opportunities & getHired Container -->
   <div id="opportunitiesContainer" class="d-none">
-    <!-- Dossier Unified Hub Header & Integrations Banner -->
+    <!-- getHired Unified Hub Header & Integrations Banner -->
     <div class="card p-3 mb-4 border shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
           <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">DOSSIER INTEGRATION</span>
+            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 11px;">GETHIRED INTEGRATION</span>
             <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style="font-size: 11px;">● Active Cloud Engine</span>
           </div>
-          <h4 class="fw-bold mb-1 text-dark">💼 Dossier Career & Application Command Center</h4>
+          <h4 class="fw-bold mb-1 text-dark">💼 getHired Career & Application Command Center</h4>
           <p class="text-muted small mb-0">Autonomous career intelligence connecting Google Gemini, Google Sheets, Google Drive, Gmail, and Notion.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
@@ -1180,9 +1180,9 @@ function showDossierAlert(msg, isSuccess = true) {
 function syncDossier(action = 'all') {
   const spinner = document.getElementById('syncSpinner');
   if (spinner) spinner.classList.remove('d-none');
-  showDossierAlert(`⏳ Running Dossier sync (${action})...`, true);
+  showDossierAlert(`⏳ Running getHired sync (${action})...`, true);
 
-  fetch('/api/dossier/sync', {
+  fetch('/api/gethired/sync', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: action })
@@ -1191,7 +1191,7 @@ function syncDossier(action = 'all') {
   .then(data => {
     if (spinner) spinner.classList.add('d-none');
     if (data.success) {
-      showDossierAlert(`✅ Dossier sync (${action}) completed! Updated across cloud services & Slack.`, true);
+      showDossierAlert(`✅ getHired sync (${action}) completed! Updated across cloud services & Slack.`, true);
       fetchOpportunities();
     } else {
       showDossierAlert(`❌ Sync error: ${data.error || 'Unknown error'}`, false);

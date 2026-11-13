@@ -1,12 +1,12 @@
 {
-  "name": "LinkedIn Creator & Dossier Studio",
-  "short_name": "Studio Hub",
-  "description": "Autonomous LinkedIn Content Engine, Slack Approval Hub & Dossier Career Radar",
-  "start_url": "./index.html",
+  "name": "getHired — Career Intelligence & Opportunity Radar",
+  "short_name": "getHired",
+  "description": "Career Intelligence, High-Leverage Opportunity Radar, and Autonomous Engine by Aryan Sharma",
+  "start_url": "./dossier.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f4f6f8",
-  "theme_color": "#0a66c2",
+  "background_color": "#f9f8f5",
+  "theme_color": "#4338ca",
   "icons": [
     {
       "src": "assets/icon.svg",

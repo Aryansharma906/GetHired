@@ -81,6 +81,37 @@ def _clean_json_text(raw_text: str) -> str:
     return text
 
 
+def _scrub_voice_blacklist(text: str) -> str:
+    """Post-generation scrubber ensuring strict 2026 voice and anti-slop compliance."""
+    replacements = [
+        (r"\butilize\b", "use"),
+        (r"\butilizes\b", "uses"),
+        (r"\butilizing\b", "using"),
+        (r"\bleverage\b", "use"),
+        (r"\bleverages\b", "uses"),
+        (r"\bleveraging\b", "using"),
+        (r"\bseamless\b", "frictionless"),
+        (r"\bseamlessly\b", "smoothly"),
+        (r"\bdelve\b", "dig"),
+        (r"\bdelving\b", "digging"),
+        (r"\bstreamline\b", "simplify"),
+        (r"\bstreamlines\b", "simplifies"),
+        (r"\bstreamlined\b", "simplified"),
+        (r"\bfoster\b", "build"),
+        (r"\bfosters\b", "builds"),
+        (r"\bcultivate\b", "grow"),
+        (r"\bgame-changer\b", "turning point"),
+        (r"\bdeep dive\b", "detailed breakdown"),
+        (r"\brobust\b", "resilient"),
+        (r"\btest harness\b", "test framework"),
+        (r"\bharness\b", "framework"),
+    ]
+    scrubbed = text
+    for pattern, repl in replacements:
+        scrubbed = re.sub(pattern, repl, scrubbed, flags=re.IGNORECASE)
+    return scrubbed
+
+
 def generate_post_with_gemini(
     topic: str,
     *,
@@ -151,6 +182,7 @@ def generate_post_with_gemini(
                     cleaned = _clean_json_text(raw_text)
                     parsed = json.loads(cleaned)
                     if isinstance(parsed, dict) and "content" in parsed and parsed["content"].strip():
+                        parsed["content"] = _scrub_voice_blacklist(parsed["content"])
                         return parsed
             # If 404 or 503 or other, try next model
             continue

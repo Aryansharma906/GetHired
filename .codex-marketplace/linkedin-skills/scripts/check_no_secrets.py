@@ -37,6 +37,11 @@ SECRET_PATTERNS = [
     ("GitHub token", re.compile(r"\bgh[pousr]_[A-Za-z0-9]{30,}")),
     ("OpenAI key", re.compile(r"\bsk-(proj-)?[A-Za-z0-9_-]{40,}")),
     ("AWS access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
+    ("Google Gemini key", re.compile(r"\bAIzaSy[A-Za-z0-9_-]{33}\b")),
+    ("Slack webhook URL", re.compile(r"https://hooks\.slack\.com/services/T[0-9A-Z]{8,}/B[0-9A-Z]{8,}/[0-9a-zA-Z]{20,}")),
+    ("Slack OAuth token", re.compile(r"\bxox[baprs]-[0-9a-zA-Z-]{24,}\b")),
+    ("Google OAuth secret", re.compile(r"\bGOCSPX-[A-Za-z0-9_-]{28}\b")),
+    ("Notion API secret", re.compile(r"\b(?:secret_|ntn_)[A-Za-z0-9]{36,}\b")),
     ("Private key block", re.compile(r"-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----")),
 ]
 

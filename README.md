@@ -2,37 +2,63 @@
   <img src="assets/linkedin-skills-hero.png" alt="12 Claude Code and Codex skills for LinkedIn marketing — open source, MIT licensed" width="900" />
 </p>
 
-# LinkedIn Marketing Skills for Claude Code and Codex
+# getHired & LinkedIn AI Orchestration Engine
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/sergebulaev/linkedin-skills?color=1E40AF&label=release" alt="Latest release">
+  <img src="https://img.shields.io/badge/Author-Aryan_Sharma-4338ca" alt="Author Aryan Sharma">
+  <img src="https://img.shields.io/badge/Orchestrator-getHired_2.0-10b981" alt="getHired 2.0">
+  <img src="https://img.shields.io/badge/Gemini_AI-2.5_Flash-3b82f6" alt="Gemini AI">
   <img src="https://img.shields.io/badge/Claude_Code-Compatible-D97757?logo=anthropic&logoColor=white" alt="Claude Code Compatible">
   <img src="https://img.shields.io/badge/Codex-Compatible-111827" alt="Codex Compatible">
-  <img src="https://img.shields.io/badge/Claude-Skills-8A63D2" alt="Claude Skills">
   <img src="https://img.shields.io/badge/License-MIT-22C55E.svg" alt="MIT License">
-  <img src="https://img.shields.io/github/stars/sergebulaev/linkedin-skills?style=social" alt="GitHub stars">
   <img src="https://img.shields.io/badge/PRs-welcome-F59E0B.svg" alt="PRs Welcome">
 </p>
 
-**Claude skills for LinkedIn.** 12 Claude Code and Codex skills that write LinkedIn posts, comments, and replies in your voice. They draft content, strip AI tells, and wait for your approval before anything gets published. No coding required.
+**Autonomous Career Intelligence & Thought-Leadership Orchestration by Aryan Sharma.** 
 
-> **On another platform too?** The same team ships matching marketing skill bundles for [X (Twitter)](https://github.com/sergebulaev/x-skills) · [Instagram](https://github.com/sergebulaev/instagram-skills) · [YouTube](https://github.com/sergebulaev/youtube-skills) · [TikTok](https://github.com/sergebulaev/tiktok-skills) · [Threads](https://github.com/sergebulaev/threads-skills) · [Facebook](https://github.com/sergebulaev/facebook-skills). Same voice engine, same approve-before-publish flow.
+An end-to-end multi-agent AI system combining **getHired 2.0** (autonomous high-leverage opportunity radar, live ATS resumes, interview prep, and multi-cloud sync across Google Sheets, Drive, Gmail, Notion & Slack) with **12 production-grade AI Marketing Skills** that draft high-engagement founder posts and manage professional presence without human friction.
 
-## Install
+---
 
-Pick whichever way you use Claude Code or Codex:
+## 🚀 System Architecture: getHired & AI Orchestration
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Aryan's AI Orchestration Hub                     │
+│                                                                        │
+│   ┌─────────────────────┐    ┌──────────────────┐    ┌──────────────┐  │
+│   │   getHired 2.0      │    │  Google Gemini   │    │ Slack Mobile │  │
+│   │  Career Radar PWA   │◄──►│  Content Engine  │◄──►│ Approval Hub│  │
+│   │  (Warm Ivory UI)    │    │  (2026 Formulas) │    │ (Interactive)│  │
+│   └──────────┬──────────┘    └────────┬─────────┘    └──────┬───────┘  │
+│              │                        │                     │          │
+│              ▼                        ▼                     ▼          │
+│   ┌─────────────────────────────────────────────────────────────────┐  │
+│   │  Multi-Cloud Sync: Google Sheets · Drive · Notion · Direct REST │  │
+│   └─────────────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+## Quick Install & Setup
+
+```bash
+git clone https://github.com/Aryansharma906/linkedin-automation.git
+cd linkedin-automation
+pip install -r requirements.txt
+./scripts/start_studio.sh
+```
 
 ### Codex CLI
 
 ```bash
-codex plugin marketplace add sergebulaev/linkedin-skills
+codex plugin marketplace add Aryansharma906/linkedin-automation
 codex plugin add linkedin-skills@linkedin-skills
 ```
 
-To test a local clone before publishing changes:
+To test a local clone:
 
 ```bash
-git clone https://github.com/sergebulaev/linkedin-skills.git
+git clone https://github.com/Aryansharma906/linkedin-automation.git
 cd linkedin-skills
 codex plugin marketplace add .
 codex plugin add linkedin-skills@linkedin-skills
