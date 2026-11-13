@@ -772,7 +772,7 @@
 </div>
 
 <!-- MODAL: Recruiter DM & Tactical PoW -->
-<div class="modal fade" id="dossierPitchModal" tabindex="-1" style="display:none;" aria-hidden="true">
+<div class="modal fade" id="dossierPitchModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
@@ -808,7 +808,7 @@
 </div>
 
 <!-- MODAL: Interview Prep Guide -->
-<div class="modal fade" id="dossierPrepModal" tabindex="-1" style="display:none;" aria-hidden="true">
+<div class="modal fade" id="dossierPrepModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
@@ -829,7 +829,7 @@
 </div>
 
 <!-- MODAL: Add Opportunity -->
-<div class="modal fade" id="dossierAddModal" tabindex="-1" style="display:none;" aria-hidden="true">
+<div class="modal fade" id="dossierAddModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header">
@@ -876,7 +876,7 @@
 </div>
 
 <!-- MODAL: AI Job Description (JD) Analyzer & Stack Generator -->
-<div class="modal fade" id="dossierJdModal" tabindex="-1" style="display:none;" aria-hidden="true">
+<div class="modal fade" id="dossierJdModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
@@ -1185,16 +1185,22 @@ let dossierOpps = [];
 
 // Initialize data from localStorage or seed
 function initDossierData() {
-  const local = localStorage.getItem('dossier_opportunities') || localStorage.getItem('tracked_opportunities');
-  if (local) {
-    try {
-      dossierOpps = JSON.parse(local);
-    } catch(e) {
-      dossierOpps = DOSSIER_DEFAULT_OPPORTUNITIES;
+  try {
+    const local = localStorage.getItem('dossier_opportunities') || localStorage.getItem('tracked_opportunities');
+    if (local) {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        dossierOpps = parsed;
+      } else {
+        dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
+      }
+    } else {
+      dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
+      persistDossierData();
     }
-  } else {
-    dossierOpps = DOSSIER_DEFAULT_OPPORTUNITIES;
-    persistDossierData();
+  } catch(e) {
+    console.warn('[Dossier] Resetting to default seed due to parse error:', e);
+    dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
   }
 
   // Also try live backend fetch if available
@@ -1211,7 +1217,11 @@ function initDossierData() {
       console.log('[Dossier] Operating in standalone / offline local mode.');
     });
 
-  renderAllViews();
+  try {
+    renderAllViews();
+  } catch (err) {
+    console.error('[Dossier] renderAllViews error:', err);
+  }
 }
 
 function persistDossierData() {
@@ -1231,6 +1241,7 @@ function renderAllViews() {
 }
 
 function updateFunnelStats() {
+  if (!Array.isArray(dossierOpps)) dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
   const staged = dossierOpps.filter(o => (o.status || '').includes('Ready') || (o.status || '').includes('Staged')).length;
   const applied = dossierOpps.filter(o => (o.status || '').includes('Applied')).length;
   const interviewing = dossierOpps.filter(o => (o.status || '').includes('Interviewing')).length;
@@ -1238,10 +1249,14 @@ function updateFunnelStats() {
   const scores = dossierOpps.map(o => parseInt(o.match_score) || 90);
   const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 92;
 
-  document.getElementById('funnelStaged').innerText = staged;
-  document.getElementById('funnelApplied').innerText = applied;
-  document.getElementById('funnelInterviewing').innerText = interviewing;
-  document.getElementById('funnelMatchScore').innerText = avg + '%';
+  const fStaged = document.getElementById('funnelStaged');
+  if (fStaged) fStaged.innerText = staged;
+  const fApplied = document.getElementById('funnelApplied');
+  if (fApplied) fApplied.innerText = applied;
+  const fInt = document.getElementById('funnelInterviewing');
+  if (fInt) fInt.innerText = interviewing;
+  const fScore = document.getElementById('funnelMatchScore');
+  if (fScore) fScore.innerText = avg + '%';
 
   const badgeB = document.getElementById('boardBadge');
   if (badgeB) badgeB.innerText = dossierOpps.length;
@@ -1295,6 +1310,42 @@ function renderTopPriority() {
   }).join('');
 }
 
+let draggedCardId = null;
+
+function onKanbanDragStart(e, id) {
+  draggedCardId = id;
+  e.dataTransfer.setData('text/plain', id);
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onKanbanDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onKanbanDrop(e, targetColKey) {
+  e.preventDefault();
+  const id = draggedCardId || e.dataTransfer.getData('text/plain');
+  if (!id) return;
+  const opp = dossierOpps.find(o => o.id === id);
+  if (!opp) return;
+
+  const statusMap = {
+    draft: 'Draft / Backlog',
+    staged: 'Ready to Apply / Staged',
+    applied: 'Applied',
+    interviewing: 'Interviewing',
+    offered: 'Offered / Accepted'
+  };
+
+  if (statusMap[targetColKey]) {
+    opp.status = statusMap[targetColKey];
+    persistDossierData();
+    renderAllViews();
+  }
+  draggedCardId = null;
+}
+
 function renderKanbanBoard() {
   const container = document.getElementById('kanbanBoard');
   if (!container) return;
@@ -1317,14 +1368,14 @@ function renderKanbanBoard() {
     });
 
     return `
-      <div class="kanban-col">
+      <div class="kanban-col" ondragover="onKanbanDragOver(event)" ondrop="onKanbanDrop(event, '${col.key}')">
         <div class="kanban-header">
           <span>${col.title}</span>
           <span class="badge bg-white text-dark shadow-sm">${cards.length}</span>
         </div>
         <div class="kanban-cards-wrapper">
           ${cards.map(c => `
-            <div class="kanban-card">
+            <div class="kanban-card" draggable="true" ondragstart="onKanbanDragStart(event, '${c.id}')" style="cursor: grab;">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="badge bg-success bg-opacity-10 text-success fw-bold" style="font-size: 10px;">${c.match_score || 90}% Match</span>
                 <span class="text-muted" style="font-size: 10px;">${escapeHtml(c.deadline || 'Rolling')}</span>
@@ -1427,9 +1478,107 @@ function updateResumePreview() {
   const targetId = sel ? sel.value : (dossierOpps[0]?.id);
   const opp = dossierOpps.find(o => o.id === targetId) || dossierOpps[0] || {};
   
-  const text = clientBuildFullResume(opp);
+  const isMinimal = document.getElementById('thMinimal')?.checked;
   const cont = document.getElementById('resumePreviewContainer');
-  if (cont) cont.innerText = text;
+  if (!cont) return;
+
+  if (isMinimal) {
+    cont.style.fontFamily = 'monospace';
+    cont.style.fontSize = '12px';
+    cont.style.lineHeight = '1.6';
+    cont.style.color = '#1e293b';
+    cont.style.whiteSpace = 'pre-wrap';
+    cont.innerText = clientBuildFullResume(opp);
+  } else {
+    cont.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    cont.style.fontSize = '14px';
+    cont.style.lineHeight = '1.5';
+    cont.style.color = '#0f172a';
+    cont.style.whiteSpace = 'normal';
+    cont.innerHTML = clientBuildHtmlResume(opp);
+  }
+}
+
+function clientBuildHtmlResume(opp) {
+  const title = escapeHtml(opp.title || 'AI Systems Contributor');
+  const org = escapeHtml(opp.organization || 'Target Organization');
+  return `
+    <div style="max-width: 800px; margin: 0 auto; padding: 10px;">
+      <div style="border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 16px;">
+        <h2 style="font-weight: 800; margin: 0; color: #0f172a; font-size: 24px; letter-spacing: -0.5px;">ARYAN SHARMA</h2>
+        <div style="font-weight: 600; color: #2563eb; font-size: 14px; margin-top: 4px;">AI/ML & Distributed Systems Engineer | Handshake AI Evaluation Specialist</div>
+        <div style="color: #64748b; font-size: 12px; margin-top: 4px;">
+          India • aryanaryan.9956@gmail.com • <a href="https://linkedin.com/in/aryan-sharma-engineer" target="_blank" style="color: #2563eb; text-decoration: none;">linkedin.com/in/aryan-sharma-engineer</a> • <a href="https://github.com/Aryansharma906" target="_blank" style="color: #2563eb; text-decoration: none;">github.com/Aryansharma906</a>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h6 style="font-weight: 700; text-transform: uppercase; font-size: 12px; color: #2563eb; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Executive Professional Summary</h6>
+        <p style="font-size: 13px; color: #334155; line-height: 1.6; margin: 0;">
+          AI/ML & Distributed Systems Engineer specializing in large language model evaluation, adversarial prompt security, and high-throughput systems. Proven track record evaluating complex model outputs for alignment and safety at Handshake and authoring published research on prompt injection vulnerabilities. Selected by Harvard Aspire, NASA NExScI/Caltech, McKinsey Forward, and Harvard HPAIR. Prepared to deliver high-rigor engineering contributions to <strong>${org}</strong> as <strong>${title}</strong>.
+        </p>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h6 style="font-weight: 700; text-transform: uppercase; font-size: 12px; color: #2563eb; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Core Technical Competencies</h6>
+        <div style="font-size: 13px; color: #334155; line-height: 1.6;">
+          <div><strong>Languages:</strong> Python, C, SQL, TypeScript, Bash</div>
+          <div><strong>AI & Systems:</strong> PyTorch, LLM Evaluation, RAG Guardrails, Prompt Security Benchmarking, Hugging Face, Linux Internals</div>
+          <div><strong>Tools & Infrastructure:</strong> Docker, Git / GitHub Actions CI/CD, PostgreSQL, REST APIs, FastAPI</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h6 style="font-weight: 700; text-transform: uppercase; font-size: 12px; color: #2563eb; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Professional Experience & Fellowships</h6>
+        <div style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; color: #0f172a;">
+            <span>AI Evaluation Specialist (Remote Freelance) — Handshake</span>
+            <span style="color: #64748b; font-weight: 500;">Jul 2026 – Present</span>
+          </div>
+          <ul style="margin: 4px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.5;">
+            <li>Executed systematic evaluation of large language models for reasoning accuracy, semantic coherence, and safety alignment.</li>
+            <li>Benchmarked failure modes, hallucinations, and jailbreak vectors across multi-turn conversational agents.</li>
+          </ul>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; color: #0f172a;">
+            <span>Forward Program Participant — McKinsey & Company</span>
+            <span style="color: #64748b; font-weight: 500;">Sep 2026 – Present</span>
+          </div>
+          <ul style="margin: 4px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.5;">
+            <li>Mastered structured problem-solving, digital toolkits, and executive technical communication.</li>
+          </ul>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; color: #0f172a;">
+            <span>Research Participant — NASA Exoplanet Science Institute (NExScI) / Caltech</span>
+            <span style="color: #64748b; font-weight: 500;">Jul 2026</span>
+          </div>
+          <ul style="margin: 4px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.5;">
+            <li>Conducted computational pipeline processing and exoplanet data analysis during the Sagan Summer Workshop.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h6 style="font-weight: 700; text-transform: uppercase; font-size: 12px; color: #2563eb; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Publications & Research</h6>
+        <div style="font-size: 13px; color: #334155; line-height: 1.6;">
+          <div style="font-weight: 700; color: #0f172a;">Investigating Prompt Vulnerability and Injection in Large Language Models</div>
+          <div style="color: #475569;">Investigated adversarial attack surfaces, automated defense guardrails, and jailbreak boundaries across production LLM pipelines.</div>
+        </div>
+      </div>
+
+      <div>
+        <h6 style="font-weight: 700; text-transform: uppercase; font-size: 12px; color: #2563eb; letter-spacing: 0.5px; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Education & Verified Credentials</h6>
+        <div style="font-size: 13px; color: #334155; line-height: 1.6;">
+          <div><strong>Bachelor of Technology in Computer Science (AI & ML)</strong> — IILM University (2026 – 2030)</div>
+          <div><strong>CS50x: Introduction to Computer Science</strong> — Harvard University (2026)</div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function clientBuildFullResume(opp) {
@@ -1857,6 +2006,7 @@ function resetToDefaultSeed() {
 function openDossierModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
+  m.style.removeProperty('display');
   if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
     const modalInst = bootstrap.Modal.getOrCreateInstance(m);
     modalInst.show();
@@ -1883,15 +2033,19 @@ function closeDossierModal(id) {
     const modalInst = bootstrap.Modal.getInstance(m);
     if (modalInst) {
       modalInst.hide();
-      return;
     }
   }
-  m.style.display = 'none';
   m.classList.remove('show');
+  m.style.display = 'none';
   m.setAttribute('aria-hidden', 'true');
   m.removeAttribute('aria-modal');
   const b = document.getElementById('modalBackdrop');
   if (b) b.remove();
+  const backdrops = document.querySelectorAll('.modal-backdrop');
+  backdrops.forEach(el => el.remove());
+  document.body.classList.remove('modal-open');
+  document.body.style.removeProperty('overflow');
+  document.body.style.removeProperty('padding-right');
 }
 
 function copyTextElement(id) {
