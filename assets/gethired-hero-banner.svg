@@ -1,183 +1,220 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0a0c10"/>
-      <stop offset="50%" stop-color="#12151c"/>
-      <stop offset="100%" stop-color="#0d1117"/>
+    <!-- Deep Cosmic Dark Canvas -->
+    <linearGradient id="bgCanvas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080b11"/>
+      <stop offset="45%" stop-color="#0f1420"/>
+      <stop offset="100%" stop-color="#090d14"/>
     </linearGradient>
 
-    <!-- Mesh Glow Gradients -->
-    <radialGradient id="meshIndigo" cx="20%" cy="30%" r="50%">
-      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.35"/>
+    <!-- Mesh Gradients for Ambient Lighting -->
+    <radialGradient id="glowLeft" cx="15%" cy="25%" r="55%">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.25"/>
       <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="meshViolet" cx="80%" cy="20%" r="45%">
-      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    <radialGradient id="glowRight" cx="85%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="meshEmerald" cx="50%" cy="85%" r="40%">
-      <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
+    <radialGradient id="glowBottom" cx="50%" cy="90%" r="45%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.18"/>
       <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
     </radialGradient>
 
-    <!-- Card Glass Gradient -->
-    <linearGradient id="glassCard" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    <!-- Frosted Glass Card Fill -->
+    <linearGradient id="glassFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c2333" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#111622" stop-opacity="0.95"/>
     </linearGradient>
-    <linearGradient id="glassBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
-      <stop offset="50%" stop-color="#6366f1" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    <linearGradient id="glassStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
     </linearGradient>
 
-    <!-- Animated Radar Pulse -->
-    <radialGradient id="radarPulse" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
-    </radialGradient>
+    <!-- Title Gradient -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0e7ff"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+
+    <!-- Progress Bar Gradient -->
+    <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
   </defs>
 
   <style>
-    @keyframes pulse {
-      0% { r: 12px; opacity: 0.8; }
-      50% { r: 28px; opacity: 0.2; }
-      100% { r: 12px; opacity: 0.8; }
-    }
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-    }
-    .text-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif; font-weight: 800; fill: #ffffff; }
-    .text-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif; font-weight: 400; fill: #94a3b8; }
-    .text-accent { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif; font-weight: 600; fill: #818cf8; }
-    .text-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-    .card-float-1 { animation: floatCard 6s ease-in-out infinite; }
-    .card-float-2 { animation: floatCard 7s ease-in-out 1s infinite; }
-    .radar-pulse { animation: pulse 3s ease-in-out infinite; }
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
   </style>
 
-  <!-- Deep Canvas Background -->
-  <rect width="1200" height="520" rx="16" fill="url(#bgGradient)"/>
+  <!-- Background Layer -->
+  <rect width="1200" height="540" rx="20" fill="url(#bgCanvas)"/>
+  <rect width="1200" height="540" rx="20" fill="url(#glowLeft)"/>
+  <rect width="1200" height="540" rx="20" fill="url(#glowRight)"/>
+  <rect width="1200" height="540" rx="20" fill="url(#glowBottom)"/>
 
-  <!-- Ambient Mesh Glows -->
-  <rect width="1200" height="520" rx="16" fill="url(#meshIndigo)"/>
-  <rect width="1200" height="520" rx="16" fill="url(#meshViolet)"/>
-  <rect width="1200" height="520" rx="16" fill="url(#meshEmerald)"/>
-
-  <!-- Background Grid Pattern -->
-  <g opacity="0.07">
-    <path d="M 0,65 L 1200,65 M 0,130 L 1200,130 M 0,195 L 1200,195 M 0,260 L 1200,260 M 0,325 L 1200,325 M 0,390 L 1200,390 M 0,455 L 1200,455" stroke="#ffffff" stroke-width="1"/>
-    <path d="M 100,0 L 100,520 M 200,0 L 200,520 M 300,0 L 300,520 M 400,0 L 400,520 M 500,0 L 500,520 M 600,0 L 600,520 M 700,0 L 700,520 M 800,0 L 800,520 M 900,0 L 900,520 M 1000,0 L 1000,520 M 1100,0 L 1100,520" stroke="#ffffff" stroke-width="1"/>
+  <!-- Subtle Blueprint Grid -->
+  <g opacity="0.06">
+    <path d="M 0,60 L 1200,60 M 0,120 L 1200,120 M 0,180 L 1200,180 M 0,240 L 1200,240 M 0,300 L 1200,300 M 0,360 L 1200,360 M 0,420 L 1200,420 M 0,480 L 1200,480" stroke="#ffffff" stroke-width="1"/>
+    <path d="M 120,0 L 120,540 M 240,0 L 240,540 M 360,0 L 360,540 M 480,0 L 480,540 M 600,0 L 600,540 M 720,0 L 720,540 M 840,0 L 840,540 M 960,0 L 960,540 M 1080,0 L 1080,540" stroke="#ffffff" stroke-width="1"/>
   </g>
 
-  <!-- Top Status Pill: Orbitron AI -->
+  <!-- ============================================================== -->
+  <!-- LEFT COLUMN: Typography & Actions (X: 60 to 710)               -->
+  <!-- ============================================================== -->
+
+  <!-- Status Pill -->
   <g transform="translate(60, 48)">
-    <rect width="360" height="34" rx="17" fill="#1e2230" stroke="#333b52" stroke-width="1"/>
-    <circle cx="18" cy="17" r="5" fill="#10b981">
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+    <rect width="330" height="32" rx="16" fill="#151b28" stroke="#2a3449" stroke-width="1"/>
+    <circle cx="16" cy="16" r="4.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/>
     </circle>
-    <text x="32" y="22" class="text-sub" font-size="12" font-weight="600" fill="#cbd5e1">ORBITRON AI • FRONTIERPILOT v2.0</text>
+    <text x="30" y="21" class="font-sans" font-size="11.5" font-weight="700" fill="#94a3b8" letter-spacing="0.8">ORBITRON AI • FRONTIERPILOT v2.0</text>
   </g>
 
-  <!-- Hero Header Typography -->
-  <g transform="translate(60, 140)">
-    <text x="0" y="0" class="text-title" font-size="52" letter-spacing="-1.5">
-      FrontierPilot <tspan fill="url(#meshViolet)">2.0</tspan>
+  <!-- Main Hero Titles -->
+  <g transform="translate(60, 138)">
+    <text x="0" y="0" class="font-sans" font-size="52" font-weight="800" fill="url(#titleGrad)" letter-spacing="-1.5">
+      FrontierPilot <tspan fill="#818cf8">2.0</tspan>
     </text>
-    <text x="0" y="42" class="text-title" font-size="28" font-weight="600" fill="#e2e8f0" letter-spacing="-0.5">
+    <text x="0" y="44" class="font-sans" font-size="24" font-weight="600" fill="#cbd5e1" letter-spacing="-0.5">
       Autonomous Career Radar &amp; AI Cockpit
     </text>
-    <text x="0" y="80" class="text-sub" font-size="16" fill="#94a3b8">
-      Built by Orbitron AI • Aryan Sharma • Powered by Gemini 2.5 Flash
+    <text x="0" y="78" class="font-sans" font-size="15" font-weight="400" fill="#94a3b8">
+      Engineered by Orbitron AI • Aryan Sharma • Powered by Gemini 2.5 Flash
     </text>
   </g>
 
-  <!-- Feature Metric Pills -->
-  <g transform="translate(60, 270)">
-    <g>
-      <rect width="180" height="42" rx="12" fill="#181d28" stroke="#2a3245" stroke-width="1"/>
-      <circle cx="20" cy="21" r="4" fill="#38bdf8"/>
-      <text x="34" y="26" class="text-sub" font-size="13" font-weight="600" fill="#e2e8f0">15 Active Matches</text>
+  <!-- Feature Metric Pills Row -->
+  <g transform="translate(60, 260)">
+    <!-- Pill 1: Matches -->
+    <g transform="translate(0, 0)">
+      <rect width="150" height="38" rx="10" fill="#131926" stroke="#252f44" stroke-width="1"/>
+      <circle cx="16" cy="19" r="3.5" fill="#38bdf8"/>
+      <text x="28" y="23" class="font-sans" font-size="12" font-weight="600" fill="#e2e8f0">15 Active Roles</text>
     </g>
-    <g transform="translate(195, 0)">
-      <rect width="175" height="42" rx="12" fill="#181d28" stroke="#2a3245" stroke-width="1"/>
-      <circle cx="20" cy="21" r="4" fill="#a855f7"/>
-      <text x="34" y="26" class="text-sub" font-size="13" font-weight="600" fill="#e2e8f0">Gemini 2.5 Flash</text>
+    <!-- Pill 2: Gemini -->
+    <g transform="translate(162, 0)">
+      <rect width="155" height="38" rx="10" fill="#131926" stroke="#252f44" stroke-width="1"/>
+      <circle cx="16" cy="19" r="3.5" fill="#a855f7"/>
+      <text x="28" y="23" class="font-sans" font-size="12" font-weight="600" fill="#e2e8f0">Gemini 2.5 Flash</text>
     </g>
-    <g transform="translate(385, 0)">
-      <rect width="165" height="42" rx="12" fill="#181d28" stroke="#2a3245" stroke-width="1"/>
-      <circle cx="20" cy="21" r="4" fill="#10b981"/>
-      <text x="34" y="26" class="text-sub" font-size="13" font-weight="600" fill="#e2e8f0">1-Tap Slack Hub</text>
+    <!-- Pill 3: Slack -->
+    <g transform="translate(329, 0)">
+      <rect width="150" height="38" rx="10" fill="#131926" stroke="#252f44" stroke-width="1"/>
+      <circle cx="16" cy="19" r="3.5" fill="#10b981"/>
+      <text x="28" y="23" class="font-sans" font-size="12" font-weight="600" fill="#e2e8f0">1-Tap Slack Hub</text>
     </g>
-    <g transform="translate(565, 0)">
-      <rect width="180" height="42" rx="12" fill="#181d28" stroke="#2a3245" stroke-width="1"/>
-      <circle cx="20" cy="21" r="4" fill="#f59e0b"/>
-      <text x="34" y="26" class="text-sub" font-size="13" font-weight="600" fill="#e2e8f0">Zero-Leak Guard</text>
-    </g>
-  </g>
-
-  <!-- Interactive Terminal Snippet Preview -->
-  <g transform="translate(60, 345)">
-    <rect width="685" height="115" rx="14" fill="#0c1017" stroke="#212638" stroke-width="1"/>
-    <circle cx="20" cy="18" r="5" fill="#ef4444"/>
-    <circle cx="36" cy="18" r="5" fill="#f59e0b"/>
-    <circle cx="52" cy="18" r="5" fill="#10b981"/>
-    <text x="75" y="22" class="text-mono" font-size="11" fill="#64748b">orbitron-ai - terminal</text>
-    <text x="20" y="55" class="text-mono" font-size="13" fill="#818cf8">$ git clone https://github.com/Aryansharma906/FrontierPilot.git</text>
-    <text x="20" y="80" class="text-mono" font-size="13" fill="#38bdf8">$ ./scripts/start_studio.sh</text>
-    <text x="20" y="102" class="text-mono" font-size="12" fill="#10b981">● FrontierPilot 2.0 active at http://127.0.0.1:5050/frontierpilot</text>
-  </g>
-
-  <!-- RIGHT SIDE: Framer-Style Floating Interactive Glass Cards -->
-  <g class="card-float-1" transform="translate(800, 50)">
-    <rect width="340" height="180" rx="16" fill="url(#glassCard)" stroke="url(#glassBorder)" stroke-width="1.5"/>
-    <circle cx="40" cy="40" r="18" fill="#4338ca" opacity="0.3"/>
-    <text x="33" y="46" class="text-title" font-size="16" fill="#818cf8">🎯</text>
-    <text x="70" y="36" class="text-title" font-size="15" fill="#ffffff">Sarvam AI • Model Evaluation</text>
-    <text x="70" y="54" class="text-sub" font-size="12" fill="#94a3b8">Autonomous Radar Fit</text>
-
-    <rect x="25" y="80" width="290" height="8" rx="4" fill="#1e2433"/>
-    <rect x="25" y="80" width="278" height="8" rx="4" fill="#10b981">
-      <animate attributeName="width" values="0;278" dur="1.8s" fill="freeze"/>
-    </rect>
-
-    <text x="25" y="115" class="text-title" font-size="28" fill="#ffffff">96%</text>
-    <text x="85" y="112" class="text-sub" font-size="12" fill="#94a3b8">High Conviction Match</text>
-
-    <g transform="translate(25, 135)">
-      <rect width="85" height="24" rx="6" fill="#1e2433"/>
-      <text x="10" y="16" class="text-sub" font-size="11" fill="#cbd5e1">LLM Safety</text>
-    </g>
-    <g transform="translate(118, 135)">
-      <rect width="90" height="24" rx="6" fill="#1e2433"/>
-      <text x="10" y="16" class="text-sub" font-size="11" fill="#cbd5e1">Benchmarking</text>
-    </g>
-    <g transform="translate(216, 135)">
-      <rect width="95" height="24" rx="6" fill="#1e2433"/>
-      <text x="10" y="16" class="text-sub" font-size="11" fill="#cbd5e1">₹1,00,000/mo</text>
+    <!-- Pill 4: Zero-Leak -->
+    <g transform="translate(491, 0)">
+      <rect width="155" height="38" rx="10" fill="#131926" stroke="#252f44" stroke-width="1"/>
+      <circle cx="16" cy="19" r="3.5" fill="#f59e0b"/>
+      <text x="28" y="23" class="font-sans" font-size="12" font-weight="600" fill="#e2e8f0">Zero-Leak Guard</text>
     </g>
   </g>
 
-  <g class="card-float-2" transform="translate(820, 260)">
-    <rect width="320" height="200" rx="16" fill="url(#glassCard)" stroke="url(#glassBorder)" stroke-width="1.5"/>
-    <circle cx="36" cy="36" r="16" fill="#10b981" opacity="0.2"/>
-    <text x="30" y="42" class="text-title" font-size="14" fill="#34d399">💬</text>
-    <text x="65" y="34" class="text-title" font-size="14" fill="#ffffff">Slack Career Approval Hub</text>
-    <text x="65" y="50" class="text-sub" font-size="11" fill="#94a3b8">Instant 1-Tap Mobile Review</text>
+  <!-- Interactive Terminal Mockup -->
+  <g transform="translate(60, 325)">
+    <rect width="646" height="155" rx="14" fill="#0b0f17" stroke="#1f283d" stroke-width="1.2"/>
+    
+    <!-- Window Controls -->
+    <circle cx="22" cy="20" r="5" fill="#ef4444" opacity="0.9"/>
+    <circle cx="38" cy="20" r="5" fill="#f59e0b" opacity="0.9"/>
+    <circle cx="54" cy="20" r="5" fill="#10b981" opacity="0.9"/>
+    <text x="76" y="24" class="font-mono" font-size="11.5" fill="#64748b">orbitron-ai — zsh — 80x24</text>
 
-    <rect x="20" y="70" width="280" height="52" rx="10" fill="#0d1117" stroke="#212638" stroke-width="1"/>
-    <text x="32" y="92" class="text-sub" font-size="12" fill="#e2e8f0">🚀 1-Tap Apply Pitch Ready</text>
-    <text x="32" y="108" class="text-sub" font-size="11" fill="#64748b">ATS Resume Tailored by Orbitron AI</text>
-
-    <g transform="translate(20, 136)">
-      <rect width="132" height="36" rx="8" fill="#10b981"/>
-      <text x="24" y="23" class="text-title" font-size="12" fill="#ffffff">Approve &amp; Send</text>
-    </g>
-    <g transform="translate(162, 136)">
-      <rect width="138" height="36" rx="8" fill="#262c3d" stroke="#3b4257" stroke-width="1"/>
-      <text x="34" y="23" class="text-sub" font-size="12" fill="#cbd5e1">View Pitch</text>
+    <!-- Shell Commands -->
+    <text x="24" y="60" class="font-mono" font-size="13" font-weight="500" fill="#818cf8">$ git clone https://github.com/Aryansharma906/FrontierPilot.git</text>
+    <text x="24" y="88" class="font-mono" font-size="13" font-weight="500" fill="#38bdf8">$ ./scripts/start_studio.sh</text>
+    
+    <!-- Shell Output Line with Animated Prompt -->
+    <g transform="translate(24, 118)">
+      <circle cx="4" cy="-4" r="3.5" fill="#10b981"/>
+      <text x="16" y="0" class="font-mono" font-size="12" fill="#34d399">FrontierPilot 2.0 active at http://127.0.0.1:5050/frontierpilot</text>
+      <text x="16" y="22" class="font-mono" font-size="11" fill="#64748b">[Orbitron AI Cockpit] 15 opportunities loaded • Slack &amp; Multi-Cloud connected</text>
     </g>
   </g>
+
+  <!-- ============================================================== -->
+  <!-- RIGHT COLUMN: Isolated, Non-Overlapping Glass Cards (X: 745)   -->
+  <!-- ============================================================== -->
+
+  <!-- CARD 1: Role Match Card (X: 745, Y: 48, Height: 205) -->
+  <g transform="translate(745, 48)">
+    <rect width="395" height="205" rx="16" fill="url(#glassFill)" stroke="url(#glassStroke)" stroke-width="1.2"/>
+    
+    <!-- Header -->
+    <g transform="translate(24, 22)">
+      <circle cx="16" cy="16" r="16" fill="#4338ca" opacity="0.3"/>
+      <text x="10" y="22" font-size="16">🎯</text>
+      <text x="44" y="14" class="font-sans" font-size="15" font-weight="700" fill="#ffffff">Sarvam AI • Frontier Lab</text>
+      <text x="44" y="30" class="font-sans" font-size="12" font-weight="500" fill="#94a3b8">AI Systems &amp; Model Evaluation</text>
+    </g>
+
+    <!-- Score Display & Progress Bar -->
+    <g transform="translate(24, 78)">
+      <text x="0" y="22" class="font-sans" font-size="28" font-weight="800" fill="#38bdf8">96%</text>
+      <text x="68" y="19" class="font-sans" font-size="12" font-weight="500" fill="#94a3b8">High Conviction Match</text>
+      
+      <!-- Progress Bar Track -->
+      <rect x="0" y="32" width="347" height="7" rx="3.5" fill="#131926"/>
+      <rect x="0" y="32" width="333" height="7" rx="3.5" fill="url(#progGrad)"/>
+    </g>
+
+    <!-- Role Badges -->
+    <g transform="translate(24, 150)">
+      <g>
+        <rect width="90" height="26" rx="6" fill="#161f30" stroke="#25324d" stroke-width="1"/>
+        <text x="12" y="17" class="font-sans" font-size="11" font-weight="500" fill="#cbd5e1">LLM Safety</text>
+      </g>
+      <g transform="translate(100, 0)">
+        <rect width="105" height="26" rx="6" fill="#161f30" stroke="#25324d" stroke-width="1"/>
+        <text x="12" y="17" class="font-sans" font-size="11" font-weight="500" fill="#cbd5e1">Benchmarking</text>
+      </g>
+      <g transform="translate(215, 0)">
+        <rect width="132" height="26" rx="6" fill="#161f30" stroke="#25324d" stroke-width="1"/>
+        <text x="12" y="17" class="font-sans" font-size="11" font-weight="600" fill="#34d399">₹1,00,000/mo</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- CARD 2: Slack Cockpit Card (X: 745, Y: 275, Height: 205) -->
+  <g transform="translate(745, 275)">
+    <rect width="395" height="205" rx="16" fill="url(#glassFill)" stroke="url(#glassStroke)" stroke-width="1.2"/>
+    
+    <!-- Header -->
+    <g transform="translate(24, 22)">
+      <circle cx="16" cy="16" r="16" fill="#10b981" opacity="0.2"/>
+      <text x="9" y="22" font-size="16">💬</text>
+      <text x="44" y="14" class="font-sans" font-size="15" font-weight="700" fill="#ffffff">Slack Mobile Cockpit</text>
+      <text x="44" y="30" class="font-sans" font-size="12" font-weight="500" fill="#94a3b8">Interactive 1-Tap Approval Card</text>
+    </g>
+
+    <!-- Brief Info Box -->
+    <g transform="translate(24, 74)">
+      <rect width="347" height="48" rx="8" fill="#0d121c" stroke="#1f293d" stroke-width="1"/>
+      <text x="14" y="20" class="font-sans" font-size="12" font-weight="600" fill="#e2e8f0">🚀 Frontier Pitch &amp; ATS Resume Ready</text>
+      <text x="14" y="36" class="font-sans" font-size="11" fill="#64748b">Verified against Aryan's Profile by Orbitron AI</text>
+    </g>
+
+    <!-- Action Buttons -->
+    <g transform="translate(24, 140)">
+      <!-- Approve Button -->
+      <g>
+        <rect width="168" height="38" rx="8" fill="#10b981"/>
+        <text x="24" y="24" class="font-sans" font-size="13" font-weight="700" fill="#ffffff">Approve &amp; Send</text>
+      </g>
+      <!-- View Pitch Button -->
+      <g transform="translate(178, 0)">
+        <rect width="169" height="38" rx="8" fill="#1c2538" stroke="#2d3a54" stroke-width="1"/>
+        <text x="38" y="24" class="font-sans" font-size="13" font-weight="600" fill="#cbd5e1">View Pitch</text>
+      </g>
+    </g>
+  </g>
+
 </svg>

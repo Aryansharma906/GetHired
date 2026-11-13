@@ -92,8 +92,8 @@
     <rect width="250" height="150" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5"/>
     <circle cx="36" cy="38" r="16" fill="#0ea5e9" opacity="0.3"/>
     <text x="28" y="44" font-size="16">⚡</text>
-    <text x="65" y="34" class="node-title" font-size="15">getHired 2.0 Studio</text>
-    <text x="65" y="52" class="node-sub" font-size="12">Warm Ivory &amp; Offline PWA</text>
+    <text x="65" y="34" class="node-title" font-size="15">FrontierPilot 2.0</text>
+    <text x="65" y="52" class="node-sub" font-size="12">Orbitron AI Cockpit &amp; PWA</text>
 
     <!-- Capabilities -->
     <g transform="translate(20, 75)">
