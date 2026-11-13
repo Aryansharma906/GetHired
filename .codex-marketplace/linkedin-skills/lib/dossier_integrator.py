@@ -82,6 +82,74 @@ ARYAN_PROFILE = {
 
 DEFAULT_OPPORTUNITIES: List[Dict[str, Any]] = [
     {
+        "id": "deeplearning-ai-agent-track",
+        "title": "AI Agentic Workflows & Red-Teaming Track",
+        "organization": "DeepLearning.AI",
+        "category": "⚡ Free Course & Certification",
+        "location": "Online Self-Paced",
+        "deadline": "Open Access (100% Free)",
+        "cycle": "2026 Self-Paced",
+        "stipend": "Free Certificates + Portfolio Repos",
+        "status": "In Progress",
+        "url": "https://www.deeplearning.ai/short-courses/",
+        "match_reason": "Short, high-yield courses on CrewAI, LangGraph, and Red-Teaming LLMs created by Andrew Ng and industry leaders.",
+        "match_score": 99,
+        "matching_skills": ["LangGraph", "Multi-Agent Systems", "Prompt Injection", "Evaluation"],
+        "gaps": ["Complete 3 code labs in Jupyter Notebooks"]
+    },
+
+    {
+        "id": "microsoft-student-ambassador",
+        "title": "Microsoft Learn Student Ambassador (MLSA)",
+        "organization": "Microsoft",
+        "category": "🌱 Student Program",
+        "location": "Remote / Campus",
+        "deadline": "Rolling (Quarterly Review)",
+        "cycle": "2026 Cohort",
+        "stipend": "$150/mo Azure Credits + Copilot + Global Mentorship",
+        "status": "Staged / Ready to Apply",
+        "url": "https://studentambassadors.microsoft.com/",
+        "match_reason": "Open to 1st-year undergrads; unlocks free Azure cloud credits, OpenAI models, and direct Microsoft engineer mentorship.",
+        "match_score": 96,
+        "matching_skills": ["Python", "Cloud Fundamentals", "AI/ML", "Community Leadership"],
+        "gaps": ["Record 2-minute video pitch demonstrating tech passion"]
+    },
+
+    {
+        "id": "postman-student-expert",
+        "title": "Student Expert & Campus API Leader",
+        "organization": "Postman",
+        "category": "🌱 Student Program",
+        "location": "Remote / Greater Noida",
+        "deadline": "Open Year-Round",
+        "cycle": "2026 Batch",
+        "stipend": "Free Certification + Global Community Access",
+        "status": "Staged / Ready to Complete",
+        "url": "https://www.postman.com/student-program/student-expert/",
+        "match_reason": "100% free API certification, hands-on REST/testing, and verified digital badge for LinkedIn & resume.",
+        "match_score": 95,
+        "matching_skills": ["REST APIs", "API Testing", "Automation", "Developer Tools"],
+        "gaps": ["Complete 4 Postman Student Training Collections"]
+    },
+
+    {
+        "id": "scale-ai-outlier-eval",
+        "title": "AI Reasoning Evaluator & Prompt Specialist",
+        "organization": "Scale AI / Outlier.ai",
+        "category": "💼 Paid Freelance",
+        "location": "Remote (Global / India)",
+        "deadline": "Immediate (Ongoing Intake)",
+        "cycle": "2026 Active",
+        "stipend": "$25 – $45/hr (Weekly Payout via PayPal)",
+        "status": "Ready to Apply / Active",
+        "url": "https://outlier.ai/",
+        "match_reason": "Remote hourly freelance evaluating LLM reasoning chains; directly validates your Handshake & prompt injection research.",
+        "match_score": 98,
+        "matching_skills": ["LLM Evaluation", "Prompt Security", "Python", "Reasoning Audits"],
+        "gaps": ["Complete Outlier screening assessment"]
+    },
+
+    {
         "id": "sarvam-ai-intern",
         "title": "AI Systems & Model Evaluation Intern",
         "organization": "Sarvam AI",
@@ -860,6 +928,7 @@ Evaluate the candidate and return a JSON object with:
 
         # Dispatch Slack Notification
         if self.slack_webhook:
+            base_url = os.getenv("NGROK_PUBLIC_URL") or os.getenv("STUDIO_BASE_URL", "http://127.0.0.1:5050")
             blocks = [
                 {
                     "type": "header",
@@ -876,9 +945,22 @@ Evaluate the candidate and return a JSON object with:
                             f"*☁️ Google Drive:* `{drive_res.get('mode')}` (Resume Manifest Ready)\n"
                             f"*📝 Notion:* `{notion_res.get('mode')}` ({notion_res.get('records', 0)} records)\n"
                             f"*📬 Gmail:* `{gmail_res.get('mode')}`\n"
-                            f"*Synced At:* `{summary['timestamp']}`"
+                            f"*Synced At:* `{summary['timestamp']}`\n\n"
+                            f"👉 <{base_url}/dossier|*Open Live Dossier Dashboard*>"
                         )
                     }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {"type": "plain_text", "text": "💼 Open Dossier Dashboard", "emoji": True},
+                            "style": "primary",
+                            "url": f"{base_url}/dossier",
+                            "action_id": "open_dossier_dashboard"
+                        }
+                    ]
                 }
             ]
             try:
