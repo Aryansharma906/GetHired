@@ -79,8 +79,9 @@ def send_studio_online_notification(
                 "type": "mrkdwn",
                 "text": (
                     "*Approval Studio is now active and synced.*\n\n"
-                    f"• *Mobile / Cellular URL:* <{public_url}|{public_url}>\n"
-                    f"• *Local Wi-Fi URL:* <{loc}|{loc}>\n\n"
+                    f"• *Dossier Career Radar:* <{public_url}/dossier|{public_url}/dossier>\n"
+                    f"• *Mobile / Cellular Studio:* <{public_url}|{public_url}>\n"
+                    f"• *Local Wi-Fi Studio:* <{loc}|{loc}>\n\n"
                     "_Tip: If using the public link on iPhone Safari, tap `[Visit Site]` once if prompted by ngrok._"
                 ),
             },
@@ -92,10 +93,20 @@ def send_studio_online_notification(
                     "type": "button",
                     "text": {
                         "type": "plain_text",
-                        "text": "🌐 Open Studio (Public)",
+                        "text": "💼 Dossier Dashboard",
                         "emoji": True,
                     },
                     "style": "primary",
+                    "url": f"{public_url}/dossier",
+                    "action_id": "open_dossier_public",
+                },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "🌐 Studio (Public)",
+                        "emoji": True,
+                    },
                     "url": public_url,
                     "action_id": "open_studio_public",
                 },
@@ -103,7 +114,7 @@ def send_studio_online_notification(
                     "type": "button",
                     "text": {
                         "type": "plain_text",
-                        "text": "📶 Open Studio (Local Wi-Fi)",
+                        "text": "📶 Studio (Local)",
                         "emoji": True,
                     },
                     "url": loc,
@@ -190,19 +201,19 @@ def build_slack_approval_blocks(draft: dict[str, Any]) -> list[dict[str, Any]]:
                 "alt_text": "Post Visual",
             })
 
+    base_url = get_studio_url()
     blocks.append({
         "type": "context",
         "elements": [
             {
                 "type": "mrkdwn",
-                "text": "🛡️ *2026 Algorithm Audit:* Zero banned buzzwords • Slop filter compliant • Natural cadence",
+                "text": f"🛡️ *2026 Algorithm Audit:* Zero banned buzzwords • Slop compliant | <{base_url}/dossier|💼 Dossier Dashboard>",
             }
         ],
     })
 
     # Include action buttons only if pending approval
     if status == "pending_approval":
-        base_url = get_studio_url()
         blocks.append({
             "type": "actions",
             "block_id": f"actions_{draft_id}",
@@ -211,7 +222,17 @@ def build_slack_approval_blocks(draft: dict[str, Any]) -> list[dict[str, Any]]:
                     "type": "button",
                     "text": {
                         "type": "plain_text",
-                        "text": "📱 Open Studio",
+                        "text": "💼 Dossier",
+                        "emoji": True,
+                    },
+                    "url": f"{base_url}/dossier",
+                    "action_id": "open_dossier",
+                },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "📱 Studio",
                         "emoji": True,
                     },
                     "url": base_url,
@@ -427,7 +448,7 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
             "elements": [
                 {
                     "type": "mrkdwn",
-                    "text": "🛡️ *Complete AI Job Hunt Stack:* Gemini ATS Resume • Value Cover Letter • NotebookLM Prep • Notion Board",
+                    "text": f"🛡️ *Complete AI Job Hunt Stack:* Gemini ATS Resume • Value Cover Letter • NotebookLM Prep | <{base_url}/dossier|💼 Dossier Dashboard>",
                 }
             ],
         },
@@ -436,6 +457,12 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
     # Action buttons if pending
     if "Approved" not in status and "Archived" not in status:
         elements = [
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": "💼 Dossier Hub", "emoji": True},
+                "url": f"{base_url}/dossier",
+                "action_id": "open_dossier_hub",
+            },
             {
                 "type": "button",
                 "text": {"type": "plain_text", "text": "✅ Approve & Stage", "emoji": True},
@@ -545,7 +572,7 @@ def send_job_radar_digest_to_slack(
             "text": {
                 "type": "mrkdwn",
                 "text": (
-                    f"*Radar Status:* Tracking *{total_count} active opportunities* across frontier AI labs, research fellowships, and systems internships.\n\n"
+                    f"*Radar Status:* Tracking *{total_count} active opportunities* across India on-site, remote, and freelance tracks. <{base_url}/dossier|View Live Dossier Dashboard>\n\n"
                     f"🏆 *Top Recommended Roles for Aryan Sharma:*\n\n"
                     f"{fields_text}"
                 ),
@@ -557,9 +584,9 @@ def send_job_radar_digest_to_slack(
             "elements": [
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "💼 Open Dossier Hub", "emoji": True},
+                    "text": {"type": "plain_text", "text": "💼 Open Dossier Dashboard", "emoji": True},
                     "style": "primary",
-                    "url": base_url,
+                    "url": f"{base_url}/dossier",
                     "action_id": "open_dossier_hub",
                 },
                 {

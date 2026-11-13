@@ -351,6 +351,10 @@
     </button>
 
     <div class="nav-section-title mt-4">Extensions & AI Workflows</div>
+        <button class="nav-btn text-info fw-bold mb-1" data-tab="learning" onclick="switchDossierTab('learning', this)" style="background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.25);">
+      <i class="bi bi-mortarboard-fill"></i>
+      <span>🎓 Skills, Gigs & AI Hub</span>
+    </button>
     <button class="nav-btn text-success fw-bold mb-1" data-tab="outreach" onclick="switchDossierTab('outreach', this)" style="background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25);">
       <i class="bi bi-broadcast"></i>
       <span>📢 Outreach Playbook</span>
@@ -557,6 +561,7 @@
               <option value="remote">🌐 Global Remote Fellowships</option>
               <option value="freelance">💼 Paid Freelance & Contracts</option>
               <option value="moonshot">🚀 Frontier Grants & Fellowships</option>
+              <option value="programs">🌱 Gigs & Student Programs</option>
             </select>
           </div>
         </div>
@@ -567,7 +572,9 @@
           <button class="btn btn-sm btn-outline-primary py-1 px-3 fw-bold" id="chipIndia" onclick="setRoleFilterChip('india')">🇮🇳 India On-Site & Hybrid</button>
           <button class="btn btn-sm btn-outline-info py-1 px-3 fw-bold" id="chipRemote" onclick="setRoleFilterChip('remote')">🌐 Global Remote</button>
           <button class="btn btn-sm btn-outline-success py-1 px-3 fw-bold" id="chipFreelance" onclick="setRoleFilterChip('freelance')">💼 Paid Freelance</button>
-          <button class="btn btn-sm btn-outline-warning py-1 px-3 fw-bold" id="chipMoonshot" onclick="setRoleFilterChip('moonshot')">🚀 Frontier Grants</button>
+          <button class="btn btn-sm btn-outline-warning py-1 px-3 fw-bold" id="chipMoonshot"
+          <button class="btn btn-sm btn-outline-dark py-1 px-3 fw-bold" id="chipPrograms" onclick="setRoleFilterChip('programs')">🌱 Gigs & Student Programs</button>
+ onclick="setRoleFilterChip('moonshot')">🚀 Frontier Grants</button>
         </div>
 
         <div id="allRolesList"></div>
@@ -780,11 +787,6 @@
           </div>
         </div>
       </div>
-
-    </div>
-  </main>
-</div>
-
 
       <!-- TAB 7: MULTI-PLATFORM INTERNET OUTREACH PLAYBOOK -->
       <div id="tabOutreach" class="d-none">
@@ -1023,6 +1025,401 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
 
         </div>
       </div>
+
+
+      <!-- TAB 8: SKILLS, ENTRY-LEVEL GIGS & AI KNOWLEDGEBASE HUB -->
+      <div id="tabLearning" class="d-none">
+        <div class="card p-4 border shadow-sm mb-4" style="background: white; border-radius: 12px;">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <span class="badge bg-primary bg-opacity-10 text-primary fw-bold text-uppercase" style="font-size: 11px;">1st-Year Skill & Career Engine</span>
+              <h4 class="fw-bold mb-0 text-dark mt-1">🎓 Skills, Entry-Level Gigs & AI Knowledgebase</h4>
+              <small class="text-secondary">High-yield micro-gigs ($20–$50/hr), beginner-eligible student programs, free certifications, and foundational AI orchestration architectures for Aryan Sharma.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <span class="badge bg-primary px-3 py-2 fw-bold">AI Orchestration & Security</span>
+              <span class="badge bg-success px-3 py-2 fw-bold">Proof-of-Work Focus</span>
+            </div>
+          </div>
+
+          <!-- Quick Navigation Pills -->
+          <ul class="nav nav-pills mb-4 gap-2 border-bottom pb-3" id="learningPills">
+            <li class="nav-item">
+              <button class="nav-link active fw-bold btn-sm" onclick="showLearningSubtab('ltGigs', this)">
+                <i class="bi bi-cash-stack me-1"></i> Paid Micro-Gigs ($20–$50/hr)
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold btn-sm" onclick="showLearningSubtab('ltPrograms', this)">
+                <i class="bi bi-award me-1"></i> Student Programs & Fellowships
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold btn-sm" onclick="showLearningSubtab('ltCourses', this)">
+                <i class="bi bi-book-half me-1"></i> Free Courses & Certifications
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link fw-bold btn-sm" onclick="showLearningSubtab('ltKnowledge', this)">
+                <i class="bi bi-cpu me-1"></i> AI Orchestration Knowledgebase
+              </button>
+            </li>
+          </ul>
+
+          <!-- SUB-TAB 1: PAID MICRO-GIGS -->
+          <div id="ltGigs" class="learning-subtab">
+            <div class="alert alert-info py-2 px-3 small mb-3">
+              💡 <strong>Why Micro-Gigs Work for 1st-Year Students:</strong> Unlike standard full-time SWE jobs that filter by 2030 graduation dates, freelance AI evaluation platforms care 100% about accuracy, prompt sensitivity, and technical reasoning. Your published paper on prompt injection gives you an instant hiring edge.
+            </div>
+
+            <div class="row g-3">
+              <!-- Scale AI / Outlier -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-success text-white fw-bold mb-1">Top Pick • $25–$45/hr USD</span>
+                      <h6 class="fw-bold mb-0 text-dark">Scale AI / Outlier.ai</h6>
+                      <small class="text-secondary">AI Reasoning Evaluator & Model Trainer</small>
+                    </div>
+                    <a href="https://outlier.ai/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Open Portal ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Evaluate multi-turn reasoning traces, score model truthfulness, and benchmark LLM failure modes across Python, math, and general logic. Paid weekly via PayPal.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong class="text-primary">Tactical Edge for Aryan:</strong> Emphasize your Handshake evaluation experience and your published paper on adversarial prompt vulnerabilities during the initial screening test.
+                  </div>
+                </div>
+              </div>
+
+              <!-- DataAnnotation.tech -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-primary text-white fw-bold mb-1">$20–$40/hr USD</span>
+                      <h6 class="fw-bold mb-0 text-dark">DataAnnotation.tech</h6>
+                      <small class="text-secondary">Coding Evaluator & Model Grader</small>
+                    </div>
+                    <a href="https://www.dataannotation.tech/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Open Portal ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Remote freelance tasks: fact-check generative answers, verify Python code correctness, and create adversarial test prompts. Flexible hours with zero minimum requirements.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong class="text-primary">How to Pass:</strong> Take the starter assessment calmly. Write thorough reasoning explanations in the comment boxes explaining exactly <em>why</em> one answer is better.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contra AI Contracts -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-dark text-white fw-bold mb-1">$150–$500 / Project</span>
+                      <h6 class="fw-bold mb-0 text-dark">Contra Freelance Marketplace</h6>
+                      <small class="text-secondary">Independent AI Automation & Red-Teaming</small>
+                    </div>
+                    <a href="https://contra.com/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Open Portal ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Zero-commission freelance platform. Package fixed-price services such as "Prompt Security & Red-Teaming Audit for LLM Apps" and "Automated n8n / LangChain AI Agent Setup".</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong class="text-primary">Recommended Service:</strong> Offer a "1-Week AI App Security & Prompt Robustness Audit" for early-stage YC / seed startups.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Superteam Earn & Algovera -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-warning text-dark fw-bold mb-1">$100–$1,000 / Bounty</span>
+                      <h6 class="fw-bold mb-0 text-dark">Superteam Earn & Algovera</h6>
+                      <small class="text-secondary">AI Demos, Agent Workflows & Bounties</small>
+                    </div>
+                    <a href="https://earn.superteam.fun/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Open Portal ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Global open bounties for building AI workflows, Discord bot integrations, autonomous agents, and open-source evaluation pipelines. Win cash and instant public portfolio receipts.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong class="text-primary">Tactical Advantage:</strong> Submit working GitHub prototypes with live demo videos to dominate judging panels.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 2: STUDENT PROGRAMS -->
+          <div id="ltPrograms" class="learning-subtab d-none">
+            <div class="alert alert-success py-2 px-3 small mb-3">
+              🌱 <strong>Student Leadership & Ambassador Programs:</strong> These programs are specifically designed for undergraduate students (including 1st years). They provide free cloud credits, official certifications, and direct mentorship networks.
+            </div>
+
+            <div class="row g-3">
+              <!-- Postman Student Expert -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-danger text-white fw-bold mb-1">100% Free • Verified Badge</span>
+                      <h6 class="fw-bold mb-0 text-dark">Postman Student Expert Program</h6>
+                      <small class="text-secondary">API Design, Testing & Automation</small>
+                    </div>
+                    <a href="https://www.postman.com/student-program/student-expert/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Program ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Hands-on interactive training on REST APIs, test scripts, environment variables, and automated collection runs. Earns the official Postman Student Expert certification badge for LinkedIn.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong>Time Commitment:</strong> ~2-3 hours. High credibility for demonstrating API competency to recruiters.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Microsoft Learn Student Ambassadors -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-primary text-white fw-bold mb-1">$150/mo Azure Credits + Copilot</span>
+                      <h6 class="fw-bold mb-0 text-dark">Microsoft Learn Student Ambassadors</h6>
+                      <small class="text-secondary">Global Student Leader Network</small>
+                    </div>
+                    <a href="https://studentambassadors.microsoft.com/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Apply Now ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Open to 1st-year undergraduates. Selected ambassadors receive monthly Azure cloud credits, free Copilot/OpenAI access, Microsoft 365, and direct mentorship from Microsoft engineers.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong>Application Tip:</strong> Submit a 2-minute video sharing your genuine passion for AI systems and teaching peers at IILM.
+                  </div>
+                </div>
+              </div>
+
+              <!-- GitHub Student Developer Pack & Campus Expert -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-dark text-white fw-bold mb-1">$200k+ Value in Developer Tools</span>
+                      <h6 class="fw-bold mb-0 text-dark">GitHub Student Developer Pack</h6>
+                      <small class="text-secondary">Free GitHub Copilot, JetBrains, DigitalOcean</small>
+                    </div>
+                    <a href="https://education.github.com/students" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Claim Pack ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Verify using your IILM University student ID or edu email. Unlocks free GitHub Copilot, domain registration, cloud hosting vouchers, and free JetBrains IDE licenses.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong>Next Step:</strong> Once claimed, apply for <strong>GitHub Campus Expert</strong> training to become a campus community leader.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Google Developer Groups on Campus -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-success text-white fw-bold mb-1">Global Hackathon & Mentorship</span>
+                      <h6 class="fw-bold mb-0 text-dark">GDG on Campus (Google Developer Groups)</h6>
+                      <small class="text-secondary">Google AI & Solution Challenge</small>
+                    </div>
+                    <a href="https://developers.google.com/community/gdg-on-campus" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Explore GDG ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Participate in Google's annual global Solution Challenge hackathon. Build real-world apps using Gemini API, TensorFlow, and Google Cloud with top submissions showcased globally.</p>
+                  <div class="p-2 bg-light rounded small border">
+                    <strong>Why it fits:</strong> Connect with other student developers in Delhi-NCR and build competitive open-source submissions.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 3: FREE HIGH-YIELD COURSES -->
+          <div id="ltCourses" class="learning-subtab d-none">
+            <div class="alert alert-warning py-2 px-3 small mb-3">
+              ⚡ <strong>Targeted AI Orchestration & Security Courses:</strong> 100% free, short, hands-on courses taught by the creators of CrewAI, LangChain, and LlamaIndex. Designed to take you from concept to functional code in 1-2 hours each.
+            </div>
+
+            <div class="row g-3">
+              <!-- CrewAI Course -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-primary text-white fw-bold mb-1">DeepLearning.AI • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">Multi AI Agent Systems with crewAI</h6>
+                      <small class="text-secondary">Instructor: João Moura (Founder, CrewAI)</small>
+                    </div>
+                    <a href="https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Course ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Learn to break down complex workflows into autonomous role-playing agents. Covers agent delegation, tool execution, hierarchical task distribution, and memory.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Build production-ready multi-agent research and coding teams in Python.</div>
+                </div>
+              </div>
+
+              <!-- LangGraph Course -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-primary text-white fw-bold mb-1">DeepLearning.AI • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">AI Agents in LangGraph</h6>
+                      <small class="text-secondary">Instructor: Harrison Chase & Rotem Weiss</small>
+                    </div>
+                    <a href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Course ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Master state machines and cyclic graphs for LLM agents. Covers persistent state checkpoints, retry loops, conditional routing, and human-in-the-loop approval gates.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Build robust agents that recover from failures rather than crashing.</div>
+                </div>
+              </div>
+
+              <!-- Red Teaming LLM Applications -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-danger text-white fw-bold mb-1">Core Specialization • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">Red Teaming LLM Applications</h6>
+                      <small class="text-secondary">Instructor: Amit Shekhar</small>
+                    </div>
+                    <a href="https://www.deeplearning.ai/short-courses/red-teaming-llm-applications/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Course ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Systematic red-teaming methodologies for LLM applications. Covers prompt injections, jailbreaking, data leakage, and automated semantic defense guardrails.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Directly extends your published research into production security frameworks.</div>
+                </div>
+              </div>
+
+              <!-- Agentic RAG with LlamaIndex -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-primary text-white fw-bold mb-1">DeepLearning.AI • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">Building Agentic RAG with LlamaIndex</h6>
+                      <small class="text-secondary">Instructor: Jerry Liu (Founder, LlamaIndex)</small>
+                    </div>
+                    <a href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Course ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Transform static vector search into an active agent. Covers router query engines, sub-question query planning, and multi-document synthesis.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Build RAG pipelines that reason over complex, multi-source enterprise documents.</div>
+                </div>
+              </div>
+
+              <!-- Hugging Face Free Track -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-dark text-white fw-bold mb-1">Hugging Face • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">NLP Course & Deep RL Course</h6>
+                      <small class="text-secondary">Industry Standard Open-Source Education</small>
+                    </div>
+                    <a href="https://huggingface.co/learn" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Explore Courses ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">Comprehensive deep-dive into Transformer architectures, fine-tuning, tokenization, and Reinforcement Learning (PPO, DPO, RLHF) that powers modern LLM evaluation.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Understand the foundational math and PyTorch mechanics behind modern foundation models.</div>
+                </div>
+              </div>
+
+              <!-- Fast.ai Practical Deep Learning -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge bg-info text-white fw-bold mb-1">Fast.ai • Free</span>
+                      <h6 class="fw-bold mb-0 text-dark">Practical Deep Learning for Coders</h6>
+                      <small class="text-secondary">Instructor: Jeremy Howard</small>
+                    </div>
+                    <a href="https://course.fast.ai/" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">Start Course ↗</a>
+                  </div>
+                  <p class="small text-muted mb-2">The internet's most praised hands-on deep learning curriculum. Emphasizes top-down coding intuition, rapid prototyping, and real-world deployment.</p>
+                  <div class="small text-secondary"><strong>Key Takeaway:</strong> Build end-to-end deep learning prototypes without getting bogged down in theory.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 4: AI ORCHESTRATION KNOWLEDGEBASE -->
+          <div id="ltKnowledge" class="learning-subtab d-none">
+            <div class="alert alert-dark py-2 px-3 small mb-3">
+              🧠 <strong>AI Orchestration Architecture Blueprint:</strong> Core patterns and mental models to structure enterprise agentic pipelines, defend against adversarial prompt attacks, and conduct rigorous evaluations.
+            </div>
+
+            <div class="row g-3">
+              <!-- Pattern 1: Multi-Agent Architecture -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <h6 class="fw-bold text-dark mb-2">1. Multi-Agent Orchestration Patterns</h6>
+                  <p class="small text-muted mb-2">Modern enterprise agent systems avoid monolithic prompts in favor of modular, decoupled patterns:</p>
+                  <ul class="small mb-3 ps-3">
+                    <li><strong>Router / Dispatcher:</strong> Fast lightweight LLM (e.g. Gemini 1.5 Flash) categorizes intent and routes to specialized worker agents.</li>
+                    <li><strong>Hierarchical / Supervisor:</strong> A Lead Agent breaks down complex goals into a DAG of sub-tasks, assigns to workers, and synthesizes outputs.</li>
+                    <li><strong>Cyclic State Graphs (LangGraph):</strong> Stateful execution where nodes represent tools or LLM reasoning steps, and edges define conditional routing and retry logic.</li>
+                  </ul>
+                  <div class="p-2 bg-light rounded small border font-monospace">
+                    Router -> Specialist Agent -> Tool Execution -> Verifier -> Final Output
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pattern 2: Agentic RAG Architecture -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <h6 class="fw-bold text-dark mb-2">2. Production Agentic RAG Pipeline</h6>
+                  <p class="small text-muted mb-2">Moving beyond naive vector retrieval to active, self-correcting RAG architectures:</p>
+                  <ul class="small mb-3 ps-3">
+                    <li><strong>Query Expansion:</strong> Generates multi-angle rephrasings and sub-queries to overcome vocabulary mismatch.</li>
+                    <li><strong>Hybrid Retrieval:</strong> Combines dense vector embeddings (semantic similarity) with BM25 sparse search (exact keyword match).</li>
+                    <li><strong>Cross-Encoder Reranking:</strong> Uses Cohere Rerank or BGE Reranker to score top retrieved chunks before context stuffing.</li>
+                    <li><strong>Self-Correction Evaluation:</strong> LLM evaluates if retrieved context actually answers the question before attempting generation.</li>
+                  </ul>
+                  <div class="p-2 bg-light rounded small border font-monospace">
+                    Query -> Rewrite -> Hybrid Search -> Rerank -> Grade Context -> Synthesize
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pattern 3: Prompt Vulnerability & Red-Teaming -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <h6 class="fw-bold text-danger mb-2">3. Prompt Security & Red-Teaming (Aryan's Field)</h6>
+                  <p class="small text-muted mb-2">Adversarial attack surfaces in LLM agents and production defense guardrails:</p>
+                  <ul class="small mb-3 ps-3">
+                    <li><strong>Direct Injections:</strong> Malicious user inputs attempting to leak system instructions or bypass safety rules ("Ignore instructions").</li>
+                    <li><strong>Indirect Injections:</strong> Untrusted external data (scraped web pages, incoming emails) embedding hidden commands that hijack tool calls.</li>
+                    <li><strong>Defense in Depth:</strong>
+                      <ul>
+                        <li>Strict XML separation: <code>&lt;untrusted_data&gt;...&lt;/untrusted_data&gt;</code></li>
+                        <li>Secondary classifier guard models (Llama Guard, NeMo Guardrails).</li>
+                        <li>Tool parameter bounds & human-in-the-loop approval gates for high-stakes actions.</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Pattern 4: LLM Evaluation Frameworks -->
+              <div class="col-md-6">
+                <div class="card p-3 border h-100 shadow-sm" style="border-radius: 10px;">
+                  <h6 class="fw-bold text-dark mb-2">4. Systematic LLM Evals (Evaluation Frameworks)</h6>
+                  <p class="small text-muted mb-2">How to scientifically measure model performance and guard against regressions:</p>
+                  <ul class="small mb-3 ps-3">
+                    <li><strong>LLM-as-a-Judge (G-Eval):</strong> Using a frontier model with chain-of-thought rubric scoring to grade tone, accuracy, and formatting.</li>
+                    <li><strong>The RAG Triad Metrics:</strong>
+                      <ul>
+                        <li><em>Faithfulness:</em> Is the answer grounded strictly in retrieved context without hallucination?</li>
+                        <li><em>Answer Relevance:</em> Does the output directly answer the user's prompt?</li>
+                        <li><em>Context Precision:</em> Are the retrieved chunks noise-free and relevant?</li>
+                      </ul>
+                    </li>
+                    <li><strong>Automation Tools:</strong> <code>promptfoo</code>, <code>ragas</code>, <code>deepeval</code> for CI/CD test automation.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div> <!-- end dossier-body -->
+  </main> <!-- end dossier-main -->
+</div> <!-- end dossier-wrapper -->
 
 <!-- MODAL: Recruiter DM & Tactical PoW -->
 <div class="modal fade" id="dossierPitchModal" tabindex="-1" aria-hidden="true">
@@ -1356,7 +1753,7 @@ const DOSSIER_DEFAULT_OPPORTUNITIES = [
     "deadline": "March 31 (Annual window)",
     "cycle": "Annual Summer Batch",
     "stipend": "$1,500 \u2013 $3,300+ Stipend",
-    "status": "Applied",
+    "status": "Approved / Ready to Apply",
     "url": "https://summerofcode.withgoogle.com/",
     "match_reason": "High synergy with Python, systems evaluation, and LLM prompt security research.",
     "match_score": 92,
@@ -1365,7 +1762,9 @@ const DOSSIER_DEFAULT_OPPORTUNITIES = [
       "Systems Evaluation",
       "Prompt Security",
       "Research Rigor"
-    ]
+    ],
+    "approved_by": "Aryan Test",
+    "approved_at": "2026-11-13 14:04:32 UTC"
   },
   {
     "id": "lfx-2026-term3",
@@ -1665,6 +2064,98 @@ const DOSSIER_DEFAULT_OPPORTUNITIES = [
       "Data Pipelines",
       "NASA NExScI"
     ]
+  },
+  {
+    "id": "scale-ai-outlier-eval",
+    "title": "AI Reasoning Evaluator & Prompt Specialist",
+    "organization": "Scale AI / Outlier.ai",
+    "category": "\ud83d\udcbc Paid Freelance",
+    "location": "Remote (Global / India)",
+    "deadline": "Immediate (Ongoing Intake)",
+    "cycle": "2026 Active",
+    "stipend": "$25 \u2013 $45/hr (Weekly Payout via PayPal)",
+    "status": "Ready to Apply / Active",
+    "url": "https://outlier.ai/",
+    "match_reason": "Remote hourly freelance evaluating LLM reasoning chains; directly validates your Handshake & prompt injection research.",
+    "match_score": 98,
+    "matching_skills": [
+      "LLM Evaluation",
+      "Prompt Security",
+      "Python",
+      "Reasoning Audits"
+    ],
+    "gaps": [
+      "Complete Outlier screening assessment"
+    ]
+  },
+  {
+    "id": "postman-student-expert",
+    "title": "Student Expert & Campus API Leader",
+    "organization": "Postman",
+    "category": "\ud83c\udf31 Student Program",
+    "location": "Remote / Greater Noida",
+    "deadline": "Open Year-Round",
+    "cycle": "2026 Batch",
+    "stipend": "Free Certification + Global Community Access",
+    "status": "Staged / Ready to Complete",
+    "url": "https://www.postman.com/student-program/student-expert/",
+    "match_reason": "100% free API certification, hands-on REST/testing, and verified digital badge for LinkedIn & resume.",
+    "match_score": 95,
+    "matching_skills": [
+      "REST APIs",
+      "API Testing",
+      "Automation",
+      "Developer Tools"
+    ],
+    "gaps": [
+      "Complete 4 Postman Student Training Collections"
+    ]
+  },
+  {
+    "id": "microsoft-student-ambassador",
+    "title": "Microsoft Learn Student Ambassador (MLSA)",
+    "organization": "Microsoft",
+    "category": "\ud83c\udf31 Student Program",
+    "location": "Remote / Campus",
+    "deadline": "Rolling (Quarterly Review)",
+    "cycle": "2026 Cohort",
+    "stipend": "$150/mo Azure Credits + Copilot + Global Mentorship",
+    "status": "Staged / Ready to Apply",
+    "url": "https://studentambassadors.microsoft.com/",
+    "match_reason": "Open to 1st-year undergrads; unlocks free Azure cloud credits, OpenAI models, and direct Microsoft engineer mentorship.",
+    "match_score": 96,
+    "matching_skills": [
+      "Python",
+      "Cloud Fundamentals",
+      "AI/ML",
+      "Community Leadership"
+    ],
+    "gaps": [
+      "Record 2-minute video pitch demonstrating tech passion"
+    ]
+  },
+  {
+    "id": "deeplearning-ai-agent-track",
+    "title": "AI Agentic Workflows & Red-Teaming Track",
+    "organization": "DeepLearning.AI",
+    "category": "\u26a1 Free Course & Certification",
+    "location": "Online Self-Paced",
+    "deadline": "Open Access (100% Free)",
+    "cycle": "2026 Self-Paced",
+    "stipend": "Free Certificates + Portfolio Repos",
+    "status": "In Progress",
+    "url": "https://www.deeplearning.ai/short-courses/",
+    "match_reason": "Short, high-yield courses on CrewAI, LangGraph, and Red-Teaming LLMs created by Andrew Ng and industry leaders.",
+    "match_score": 99,
+    "matching_skills": [
+      "LangGraph",
+      "Multi-Agent Systems",
+      "Prompt Injection",
+      "Evaluation"
+    ],
+    "gaps": [
+      "Complete 3 code labs in Jupyter Notebooks"
+    ]
   }
 ];
 
@@ -1916,6 +2407,7 @@ function renderAllRoles() {
     if (filter === 'remote' && !text.includes('remote')) return false;
     if (filter === 'freelance' && !text.includes('freelance') && !text.includes('contract')) return false;
     if (filter === 'moonshot' && !text.includes('grant') && !text.includes('fellowship') && !text.includes('resident')) return false;
+    if (filter === 'programs' && !text.includes('program') && !text.includes('student') && !text.includes('course') && !text.includes('freelance')) return false;
     return true;
   });
 
@@ -2227,7 +2719,7 @@ function openPrepModal(oppId) {
 }
 
 function switchDossierTab(tab, btnEl) {
-  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack', 'tabOutreach'].forEach(id => {
+  ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack', 'tabOutreach', 'tabLearning'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('d-none');
   });
@@ -2240,7 +2732,8 @@ function switchDossierTab(tab, btnEl) {
     profile: 'Master Candidate Profile (Aryan Sharma)',
     'ai-stack': '✨ 7-in-1 AI Application Stack & Video Workflows',
     sync: 'Cloud & Offline Multi-Sync Hub',
-    outreach: '📢 Multi-Platform Internet Outreach Playbook'
+    outreach: '📢 Multi-Platform Internet Outreach Playbook',
+    learning: '🎓 Skills, Entry-Level Gigs & AI Knowledgebase Hub'
   };
 
   const titleEl = document.getElementById('viewTitle');
@@ -2254,6 +2747,7 @@ function switchDossierTab(tab, btnEl) {
   if (tab === 'ai-stack') document.getElementById('tabAiStack')?.classList.remove('d-none');
   if (tab === 'sync') document.getElementById('tabSync')?.classList.remove('d-none');
   if (tab === 'outreach') document.getElementById('tabOutreach')?.classList.remove('d-none');
+  if (tab === 'learning') document.getElementById('tabLearning')?.classList.remove('d-none');
 
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const targetBtn = btnEl || document.querySelector(`.nav-btn[data-tab="${tab}"]`);
@@ -2574,6 +3068,19 @@ window.addEventListener('offline', () => {
 });
 
 
+
+function showLearningSubtab(targetId, btnEl) {
+  document.querySelectorAll('.learning-subtab').forEach(el => el.classList.add('d-none'));
+  const target = document.getElementById(targetId);
+  if (target) target.classList.remove('d-none');
+  
+  const pills = document.getElementById('learningPills');
+  if (pills) {
+    pills.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+  }
+  if (btnEl) btnEl.classList.add('active');
+}
+
 function showOutreachSubtab(targetId, btnEl) {
   document.querySelectorAll('.outreach-subtab').forEach(el => el.classList.add('d-none'));
   const target = document.getElementById(targetId);
@@ -2592,7 +3099,7 @@ function setRoleFilterChip(chipKey) {
     sel.value = chipKey;
     renderAllRoles();
   }
-  ['chipAll', 'chipIndia', 'chipRemote', 'chipFreelance', 'chipMoonshot'].forEach(id => {
+  ['chipAll', 'chipIndia', 'chipRemote', 'chipFreelance', 'chipMoonshot', 'chipPrograms'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active', 'btn-primary', 'btn-info', 'btn-success', 'btn-warning');
   });
