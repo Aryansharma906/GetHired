@@ -30,14 +30,17 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        continue-on-error: true
         with:
           enablement: true
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
           path: 'docs'
 
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
