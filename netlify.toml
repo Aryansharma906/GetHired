@@ -18,3 +18,13 @@
   for = "/manifest.json"
   [headers.values]
     Content-Type = "application/manifest+json; charset=utf-8"
+
+[[redirects]]
+  from = "/dossier"
+  to = "/dossier.html"
+  status = 200
+
+[[redirects]]
+  from = "/studio"
+  to = "/index.html"
+  status = 200
