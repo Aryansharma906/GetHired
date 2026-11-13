@@ -1,8 +1,9 @@
 // Service Worker for LinkedIn Studio & Dossier Career Radar (Offline-First PWA)
-const CACHE_NAME = 'studio-cache-v1';
+const CACHE_NAME = 'studio-cache-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './dossier.html',
   './manifest.json',
   './assets/bootstrap.min.css',
   './assets/bootstrap.bundle.min.js',
@@ -14,13 +15,14 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Pre-caching static assets for offline mode...');
+      console.log('[SW v2] Pre-caching static assets for offline mode...');
       return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('[SW] Cache addAll warning:', err);
+        console.warn('[SW v2] Cache addAll warning:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -42,40 +44,65 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for local static assets
-  if (url.origin === location.origin && (url.pathname.includes('/assets/') || url.pathname.endsWith('.html') || url.pathname.endsWith('.json') || url.pathname.endsWith('.svg'))) {
+  // Network-First for HTML pages so user always sees the freshest updates immediately
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/dossier')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => {
+          // If offline, fall back to cached version or appropriate fallback HTML
+          return caches.match(event.request).then((cached) => {
+            if (cached) return cached;
+            if (url.pathname.includes('dossier')) {
+              return caches.match('./dossier.html');
+            }
+            return caches.match('./index.html');
+          });
+        })
+    );
+    return;
+  }
+
+  // Cache-First for static assets (css, js, fonts, images)
+  if (url.origin === location.origin && (url.pathname.includes('/assets/') || url.pathname.endsWith('.json') || url.pathname.endsWith('.svg'))) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
-        return cached || fetch(event.request).then((response) => {
+        if (cached) return cached;
+        return fetch(event.request).then((response) => {
           if (response && response.status === 200) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return response;
         });
-      }).catch(() => caches.match('./index.html'))
+      })
     );
     return;
   }
 
-  // Network-first with cache fallback for everything else
+  // Default: Network with cache fallback
   event.respondWith(
-    fetch(event.request).then((response) => {
-      if (response && response.status === 200) {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-      }
-      return response;
-    }).catch(() => {
-      return caches.match(event.request).then((cached) => {
-        if (cached) return cached;
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
-        return new Response(JSON.stringify({ offline: true, error: 'Offline mode active' }), {
-          headers: { 'Content-Type': 'application/json' }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return new Response(JSON.stringify({ offline: true, error: 'Offline mode active' }), {
+            headers: { 'Content-Type': 'application/json' }
+          });
         });
-      });
-    })
+      })
   );
 });
