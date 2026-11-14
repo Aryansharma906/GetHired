@@ -7,7 +7,7 @@ export default async (req, context) => {
   const data = {
     status: "healthy",
     platform: "FrontierPilot 2.0 Autonomous Creator Studio",
-    version: "1.1.26",
+    version: "1.1.27",
     cloud: "Netlify Edge & Serverless Functions",
     uptime_mode: "24/7 Always-On (Continuous Cloud Execution)",
     timestamp: new Date().toISOString(),

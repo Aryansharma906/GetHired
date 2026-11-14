@@ -2,35 +2,9 @@
  * FrontierPilot 2.0 — Serverless LinkedIn Autonomous Creator Studio API
  */
 
-const SAMPLE_DRAFTS = [
-  {
-    id: "draft_2026_01",
-    topic: "Why small AI teams beat 50-person agencies",
-    hookFormula: "Contrarian Truth",
-    content: "Most engineering leaders think adding more developers speeds up delivery.\n\nIn reality, coordination overhead grows exponentially while individual agency drops to zero.\n\nAutonomous agent workflows don't just automate repetitive tasks. They collapse the iteration cycle between ideation and production deploy.\n\nThe real moat in 2026 isn't headcount. It's leverage per engineer.",
-    status: "published",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    characterCount: 412
-  },
-  {
-    id: "draft_2026_02",
-    topic: "Why we killed our 3-tier staging environments",
-    hookFormula: "Radical Transparency",
-    content: "We spent 3 months maintaining staging environments that never matched production.\n\nEvery time staging passed, production failed anyway on edge configurations.\n\nLast month we deleted staging entirely and moved to ephemeral preview branches with automated canary testing.\n\nTime-to-production dropped by 74%. Zero regressions reported.",
-    status: "pending_approval",
-    createdAt: new Date().toISOString(),
-    characterCount: 398
-  },
-  {
-    id: "draft_2026_03",
-    topic: "From 1st-year student to evaluating frontier LLMs at scale",
-    hookFormula: "Before vs After",
-    content: "Six months ago, I was reading benchmark papers from the outside.\n\nToday, I run automated red-teaming harnesses and prompt vulnerability checks against production foundation models.\n\nThe difference wasn't academic credentials.\n\nIt was building public proof-of-work, evaluating real failure modes, and shipping code every single week.",
-    status: "scheduled",
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    characterCount: 425
-  }
-];
+import { DRAFTS } from "./drafts_data.mjs";
+
+let liveDrafts = [...DRAFTS];
 
 export default async (req, context) => {
   const url = new URL(req.url);
@@ -49,7 +23,7 @@ export default async (req, context) => {
 
   // 1. List drafts: GET /api/drafts
   if (req.method === "GET") {
-    return new Response(JSON.stringify(SAMPLE_DRAFTS, null, 2), {
+    return new Response(JSON.stringify(liveDrafts, null, 2), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
@@ -94,11 +68,16 @@ export default async (req, context) => {
       id: `draft_${Date.now()}`,
       topic,
       hookFormula: "Direct Contrast",
+      hook_formula: "Direct Contrast",
       content: generatedText,
       status: "pending_approval",
       createdAt: new Date().toISOString(),
-      characterCount: generatedText.length
+      created_at: new Date().toISOString(),
+      characterCount: generatedText.length,
+      char_count: generatedText.length
     };
+
+    liveDrafts.unshift(newDraft);
 
     // Slack Notification
     const slackWebhook = process.env.SLACK_WEBHOOK_URL || (typeof Netlify !== 'undefined' && Netlify.env?.get('SLACK_WEBHOOK_URL'));
@@ -125,6 +104,11 @@ export default async (req, context) => {
     const parts = pathname.split("/");
     const draftId = parts[3] || "draft";
 
+    const target = liveDrafts.find(d => d.id === draftId);
+    if (target) {
+      target.status = "scheduled";
+    }
+
     const slackWebhook = process.env.SLACK_WEBHOOK_URL || (typeof Netlify !== 'undefined' && Netlify.env?.get('SLACK_WEBHOOK_URL'));
     if (slackWebhook) {
       await fetch(slackWebhook, {
@@ -147,14 +131,30 @@ export default async (req, context) => {
     const parts = pathname.split("/");
     const draftId = parts[3] || "draft";
 
+    const target = liveDrafts.find(d => d.id === draftId);
+    if (target) {
+      target.status = "rejected";
+    }
+
     return new Response(JSON.stringify({ success: true, message: `Draft ${draftId} rejected` }), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
   }
 
+  // 5. Delete draft: DELETE /api/drafts/:id
+  if (req.method === "DELETE") {
+    const parts = pathname.split("/");
+    const draftId = parts[3] || "draft";
+    liveDrafts = liveDrafts.filter(d => d.id !== draftId);
+    return new Response(JSON.stringify({ success: true, message: `Draft ${draftId} removed` }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+    });
+  }
+
   // Fallback
-  return new Response(JSON.stringify({ success: true, drafts: SAMPLE_DRAFTS }), {
+  return new Response(JSON.stringify(liveDrafts, null, 2), {
     status: 200,
     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
   });
