@@ -1,5 +1,44 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 [build]
   publish = "docs"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# API routes routed to Netlify Serverless Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Canonical redirects for FrontierPilot views
+[[redirects]]
+  from = "/frontierpilot"
+  to = "/frontierpilot.html"
+  status = 200
+
+[[redirects]]
+  from = "/dossier"
+  to = "/dossier.html"
+  status = 200
+
+[[redirects]]
+  from = "/gethired"
+  to = "/gethired.html"
+  status = 200
+
+[[redirects]]
+  from = "/studio"
+  to = "/index.html"
+  status = 200
+
+# Fallback for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 [[headers]]
   for = "/*"
@@ -18,13 +57,3 @@
   for = "/manifest.json"
   [headers.values]
     Content-Type = "application/manifest+json; charset=utf-8"
-
-[[redirects]]
-  from = "/dossier"
-  to = "/dossier.html"
-  status = 200
-
-[[redirects]]
-  from = "/studio"
-  to = "/index.html"
-  status = 200

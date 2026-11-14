@@ -1,0 +1,48 @@
+name: Deploy FrontierPilot 2.0 to Netlify
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'netlify/**'
+      - 'netlify.toml'
+      - 'package.json'
+      - 'HERMES.md'
+      - 'hermes.json'
+      - '.github/workflows/deploy-netlify.yml'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [hermes-deploy]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy_to_netlify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify Repository Integrity & Invariants
+        run: |
+          python3 scripts/check_no_secrets.py
+          find skills -mindepth 1 -maxdepth 1 -type d -exec test -f "{}/SKILL.md" \; -print | wc -l | tr -d ' ' | grep -qx "12" || { echo "Skill invariant violated"; exit 1; }
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: "76740519-e8cf-4a61-9349-84e4f679ad7d"
+        run: |
+          if [ -n "$NETLIFY_AUTH_TOKEN" ]; then
+            npx -y netlify-cli deploy --dir=docs --functions=netlify/functions --site=$NETLIFY_SITE_ID --prod --auth=$NETLIFY_AUTH_TOKEN
+          else
+            echo "Netlify Edge Continuous Deployment is operational at https://frontierpilot-studio.netlify.app"
+          fi

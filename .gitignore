@@ -29,6 +29,7 @@ build/
 .eggs/
 
 # Local testing and scratch directories
+.netlify/
 testing/
 marketing/
 .playwright-mcp/
@@ -54,6 +55,8 @@ ehthumbs.db
 *~
 
 # Next.js & Dossier
+node_modules/
+.next/
 dossier/data/
 dossier/.next/
 dossier/node_modules/

@@ -1,0 +1,27 @@
+{
+  "name": "frontierpilot-studio",
+  "version": "1.1.23",
+  "description": "FrontierPilot 2.0 Autonomous Creator Studio & Career Radar for Hermes Agent",
+  "baseUrl": "https://frontierpilot-studio.netlify.app",
+  "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "envKey": "HERMES_API_KEY"
+  },
+  "endpoints": {
+    "health": "/api/health",
+    "hermes_status": "/api/hermes/status",
+    "hermes_skills": "/api/hermes/skills",
+    "hermes_dispatch": "/api/hermes/dispatch",
+    "hermes_redeploy": "/api/hermes/redeploy",
+    "frontierpilot_status": "/api/frontierpilot/status",
+    "frontierpilot_jobs": "/api/frontierpilot/jobs",
+    "drafts": "/api/drafts"
+  },
+  "deployment": {
+    "provider": "netlify",
+    "siteId": "76740519-e8cf-4a61-9349-84e4f679ad7d",
+    "primaryUrl": "https://frontierpilot-studio.netlify.app",
+    "redeployTrigger": "git-push-main"
+  }
+}
