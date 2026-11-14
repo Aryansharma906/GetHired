@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Secret Scan & Sensitive File Verification
         run: |
@@ -36,7 +36,7 @@ jobs:
       - name: Skill Frontmatter & Bundle Verification
         run: |
           python3 scripts/check_frontmatter.py
-          ls skills/ | wc -l | grep -q "12" || { echo "Skill count invariant violated: must be 12"; exit 1; }
+          find skills -mindepth 1 -maxdepth 1 -type d -exec test -f "{}/SKILL.md" \; -print | wc -l | tr -d ' ' | grep -qx "12" || { echo "Skill count invariant violated: must be exactly 12 directories containing SKILL.md"; exit 1; }
 
       - name: Run Full Unit & Integration Test Suite
         env:
