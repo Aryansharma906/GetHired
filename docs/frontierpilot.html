@@ -12,43 +12,123 @@
   <script src="./assets/jszip.min.js"></script>
   <style>
     :root {
-      /* Restrained Editorial Surfaces */
-      --surface: #f9f8f5;
-      --paper: #f4f1ea;
-      --card: #ffffff;
-      --sidebar: #17191c;
+      /* Cosmic Framer Dark Surfaces */
+      --surface: #07090e;
+      --paper: #0c101a;
+      --card: rgba(15, 23, 42, 0.78);
+      --card-solid: #0f172a;
+      --sidebar: #05070b;
       
-      /* Graphite Typography */
-      --ink: #1f2328;
-      --ink-secondary: #2d3135;
-      --muted: #59636e;
-      --faint: #8c959f;
+      /* Crisp Contrast Typography */
+      --ink: #f8fafc;
+      --ink-secondary: #e2e8f0;
+      --muted: #94a3b8;
+      --faint: #64748b;
 
-      /* Muted Indigo Accents */
-      --primary: #4338ca;
-      --primary-hover: #3730a3;
-      --primary-subtle: rgba(67, 56, 202, 0.08);
-      --primary-border: rgba(67, 56, 202, 0.25);
-      --accent-indigo: #4f46e5;
-      --accent-emerald: #059669;
-      --accent-amber: #d97706;
-      --accent-purple: #7c3aed;
-      --accent-rose: #dc2626;
+      /* Electric Neon & Violet Accents */
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-subtle: rgba(99, 102, 241, 0.15);
+      --primary-border: rgba(99, 102, 241, 0.35);
+      --accent-indigo: #818cf8;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --accent-rose: #f43f5e;
 
-      /* Fine Borders & Radii */
-      --border: rgba(31, 35, 40, 0.1);
-      --border-subtle: rgba(31, 35, 40, 0.05);
-      --border-strong: rgba(31, 35, 40, 0.2);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      /* Glowing Borders & Radii */
+      --border: rgba(255, 255, 255, 0.09);
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
       --radius-pill: 9999px;
 
-      /* Subtle Elevation & Motion */
-      --shadow-sm: 0 1px 3px rgba(31, 35, 40, 0.04);
-      --shadow-md: 0 4px 14px rgba(31, 35, 40, 0.06);
-      --shadow-lg: 0 12px 28px rgba(31, 35, 40, 0.09);
-      --transition-fast: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      /* Framer Cosmic Shadows & Glows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px -2px rgba(99, 102, 241, 0.15);
+      --shadow-lg: 0 16px 40px -6px rgba(0, 0, 0, 0.65), 0 0 28px -2px rgba(99, 102, 241, 0.25);
+      --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #10b981;
+      margin-right: 6px;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+    /* Cosmic Dark Global & Bootstrap Overrides */
+    .card, .modal-content, .dropdown-menu {
+      background-color: var(--card) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+    }
+    .bg-light, .bg-white {
+      background-color: rgba(255, 255, 255, 0.03) !important;
+      color: var(--ink) !important;
+    }
+    .text-dark {
+      color: #f8fafc !important;
+    }
+    .text-secondary, .text-muted {
+      color: var(--muted) !important;
+    }
+    .border, .border-bottom, .border-top, .border-start, .border-end {
+      border-color: var(--border) !important;
+    }
+    .form-control, .form-select {
+      background-color: rgba(2, 6, 23, 0.7) !important;
+      border-color: var(--border) !important;
+      color: #f8fafc !important;
+    }
+    .form-control:focus, .form-select:focus {
+      background-color: rgba(2, 6, 23, 0.9) !important;
+      border-color: var(--primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3) !important;
+    }
+    .kanban-col {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 1px solid var(--border) !important;
+    }
+    .table {
+      color: var(--ink) !important;
+      border-color: var(--border) !important;
+    }
+    .table td, .table th {
+      border-color: var(--border) !important;
+      background: transparent !important;
+      color: var(--ink) !important;
+    }
+    .table-light {
+      background: rgba(255, 255, 255, 0.04) !important;
+      color: var(--ink) !important;
+    }
+    .badge.bg-light {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      color: var(--muted) !important;
+      border-color: var(--border) !important;
     }
     body {
       background-color: var(--surface);
@@ -60,13 +140,13 @@
       display: flex;
     }
     /* Layout */
-    .dossier-wrapper {
+    .frontierpilot-wrapper {
       display: flex;
       width: 100vw;
       min-height: 100vh;
     }
     /* Sidebar */
-    .dossier-sidebar {
+    .frontierpilot-sidebar {
       width: 270px;
       background: var(--sidebar);
       color: #f0ede7;
@@ -79,6 +159,48 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1050;
+    }
+    .mobile-sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1040;
+    }
+    @media (max-width: 900px) {
+      .frontierpilot-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      }
+      .frontierpilot-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .frontierpilot-sidebar.mobile-open ~ .mobile-sidebar-backdrop {
+        display: block;
+      }
+      .frontierpilot-main {
+        width: 100vw !important;
+        padding-bottom: 70px !important;
+      }
+      .frontierpilot-header {
+        padding: 12px 16px !important;
+      }
+      .frontierpilot-body {
+        padding: 16px !important;
+      }
+      .mobile-bottom-nav {
+        display: flex !important;
+      }
+      .mobile-menu-btn {
+        display: inline-flex !important;
+      }
     }
     .brand-box {
       display: flex;
@@ -158,7 +280,7 @@
       font-weight: 600;
     }
     /* Main Content */
-    .dossier-main {
+    .frontierpilot-main {
       flex: 1;
       background: var(--surface);
       overflow-y: auto;
@@ -166,7 +288,7 @@
       display: flex;
       flex-direction: column;
     }
-    .dossier-header {
+    .frontierpilot-header {
       background: var(--card);
       padding: 16px 32px;
       border-bottom: 1px solid var(--border);
@@ -177,7 +299,7 @@
       top: 0;
       z-index: 20;
     }
-    .dossier-body {
+    .frontierpilot-body {
       padding: 28px 32px 48px 32px;
       flex: 1;
     }
@@ -277,7 +399,7 @@
       border-radius: 6px;
       font-weight: 700;
     }
-    .btn-dossier {
+    .btn-frontierpilot {
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
@@ -333,7 +455,7 @@
       padding: 18px 20px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
-    /* LinkedIn Creator Studio in Dossier */
+    /* LinkedIn Creator Studio in FrontierPilot */
     .creator-kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -363,20 +485,23 @@
     }
     .creator-draft-card {
       background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
       margin-bottom: 18px;
       overflow: hidden;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .creator-draft-card:hover {
-      border-color: rgba(10, 102, 194, 0.4);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: 0 10px 28px -4px rgba(0,0,0,0.5), 0 0 20px -2px rgba(99, 102, 241, 0.25);
+      transform: translateY(-2px);
     }
     .creator-draft-header {
       padding: 14px 18px;
-      background: rgba(0, 0, 0, 0.02);
+      background: rgba(255, 255, 255, 0.02);
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -394,7 +519,7 @@
       max-height: 280px;
       overflow-y: auto;
       border-bottom: 1px solid var(--border);
-      background: #ffffff;
+      background: rgba(2, 6, 23, 0.45);
     }
     .creator-draft-footer {
       padding: 12px 18px;
@@ -466,10 +591,14 @@
       background: rgba(15, 23, 42, 0.45);
       backdrop-filter: blur(4px);
       z-index: 10500;
-      display: flex;
+      display: none;
       align-items: flex-start;
       justify-content: center;
       padding-top: 12vh;
+    }
+    .cmd-palette-backdrop.active,
+    .cmd-palette-backdrop.show {
+      display: flex !important;
     }
     .cmd-palette-modal {
       width: 100%;
@@ -543,10 +672,10 @@
 <body>
 <a href="#mainContent" class="skip-to-main">Skip to main content</a>
 
-<div class="dossier-wrapper">
+<div class="frontierpilot-wrapper">
 
   <!-- LEFT SIDEBAR -->
-  <aside class="dossier-sidebar">
+  <aside class="frontierpilot-sidebar">
     <div class="brand-box">
       <div class="brand-icon">FP</div>
       <div>
@@ -556,55 +685,51 @@
     </div>
 
     <div class="nav-section-title">Core FrontierPilot</div>
-    <button class="nav-btn active" data-tab="dashboard" onclick="switchDossierTab('dashboard', this)">
+    <button class="nav-btn active" data-tab="dashboard" onclick="switchFrontierPilotTab('dashboard', this)">
       <i class="bi bi-speedometer2"></i>
       <span>Dashboard</span>
     </button>
-    <button class="nav-btn" data-tab="kanban" onclick="switchDossierTab('kanban', this)">
+    <button class="nav-btn" data-tab="kanban" onclick="switchFrontierPilotTab('kanban', this)">
       <i class="bi bi-kanban"></i>
       <span>Applications Board</span>
       <span class="nav-badge" id="boardBadge">15</span>
     </button>
-    <button class="nav-btn" data-tab="roles" onclick="switchDossierTab('roles', this)">
+    <button class="nav-btn" data-tab="roles" onclick="switchFrontierPilotTab('roles', this)">
       <i class="bi bi-compass"></i>
       <span>Find Jobs & Radar</span>
       <span class="nav-badge" id="radarBadge">15</span>
     </button>
-    <button class="nav-btn" data-tab="resumes" onclick="switchDossierTab('resumes', this)">
+    <button class="nav-btn" data-tab="resumes" onclick="switchFrontierPilotTab('resumes', this)">
       <i class="bi bi-file-earmark-person"></i>
       <span>Resumes & Documents</span>
     </button>
-    <button class="nav-btn" data-tab="profile" onclick="switchDossierTab('profile', this)">
+    <button class="nav-btn" data-tab="profile" onclick="switchFrontierPilotTab('profile', this)">
       <i class="bi bi-person-badge"></i>
       <span>Master Profile</span>
     </button>
 
     <div class="nav-section-title mt-4">Extensions & AI Workflows</div>
-        <button class="nav-btn text-info fw-bold mb-1" data-tab="learning" onclick="switchDossierTab('learning', this)" style="background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.25);">
+        <button class="nav-btn text-info fw-bold mb-1" data-tab="learning" onclick="switchFrontierPilotTab('learning', this)" style="background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.25);">
       <i class="bi bi-mortarboard-fill"></i>
       <span>🎓 Skills, Gigs & AI Hub</span>
     </button>
-    <button class="nav-btn text-success fw-bold mb-1" data-tab="outreach" onclick="switchDossierTab('outreach', this)" style="background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25);">
+    <button class="nav-btn text-success fw-bold mb-1" data-tab="outreach" onclick="switchFrontierPilotTab('outreach', this)" style="background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25);">
       <i class="bi bi-broadcast"></i>
       <span>📢 Outreach Playbook</span>
     </button>
-    <button class="nav-btn text-warning fw-bold mb-1" data-tab="ai-stack" onclick="switchDossierTab('ai-stack', this)" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);">
+    <button class="nav-btn text-warning fw-bold mb-1" data-tab="ai-stack" onclick="switchFrontierPilotTab('ai-stack', this)" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25);">
       <i class="bi bi-magic"></i>
       <span>✨ 7-in-1 AI Video Stack</span>
     </button>
-    <button class="nav-btn" data-tab="sync" onclick="switchDossierTab('sync', this)">
+    <button class="nav-btn" data-tab="sync" onclick="switchFrontierPilotTab('sync', this)">
       <i class="bi bi-cloud-arrow-up"></i>
       <span>Cloud & Multi-Sync Hub</span>
     </button>
-    <button class="nav-btn text-info fw-bold mb-1" data-tab="creator-studio" onclick="switchDossierTab('creator-studio', this)" style="background: rgba(10, 102, 194, 0.15); border: 1px solid rgba(10, 102, 194, 0.35);">
+    <button class="nav-btn text-info fw-bold mb-1" data-tab="creator-studio" onclick="switchFrontierPilotTab('creator-studio', this)" style="background: rgba(10, 102, 194, 0.15); border: 1px solid rgba(10, 102, 194, 0.35);">
       <i class="bi bi-linkedin"></i>
       <span>LinkedIn Creator Hub</span>
       <span class="badge bg-primary ms-auto" id="creatorQueueBadge" style="font-size: 10px;">0</span>
     </button>
-    <a href="/" target="_blank" class="nav-btn text-secondary mb-1" style="font-size: 13px; opacity: 0.85;">
-      <i class="bi bi-box-arrow-up-right"></i>
-      <span>Standalone Studio ↗</span>
-    </a>
 
     <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 small text-secondary">
       <div class="d-flex align-items-center gap-2 mb-1">
@@ -614,28 +739,36 @@
       <div style="font-size: 11px;">FrontierPilot v2.0 • Orbitron AI</div>
     </div>
   </aside>
+  <div class="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()"></div>
 
   <!-- MAIN VIEWPORT -->
-  <main class="dossier-main" id="mainContent">
+  <main class="frontierpilot-main" id="mainContent">
     
     <!-- Top Header -->
-    <header class="dossier-header">
-      <div>
-        <nav aria-label="breadcrumb" class="mb-1" style="font-size: 11px;">
-          <ol class="breadcrumb mb-0 text-muted">
-            <li class="breadcrumb-item"><a href="#" onclick="switchDossierTab('dashboard'); return false;" class="text-secondary text-decoration-none">FrontierPilot 2.0</a></li>
-            <li class="breadcrumb-item active text-dark fw-semibold" id="dossierBreadcrumb">Career Radar</li>
-          </ol>
-        </nav>
-        <div class="d-flex align-items-center gap-2">
-          <h4 class="fw-bold mb-0 text-dark" id="viewTitle">Career Overview & Applications</h4>
-          <span class="badge bg-success bg-opacity-10 text-success fw-bold border border-success border-opacity-25" id="onlineBadge" style="font-size: 11px;">
-            <i class="bi bi-shield-check me-1"></i> Standalone & Offline Ready
-          </span>
+    <header class="frontierpilot-header">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary btn-sm mobile-menu-btn me-2" style="display: none; padding: 6px 10px;" onclick="toggleMobileSidebar()" title="Toggle Menu">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <div>
+          <nav aria-label="breadcrumb" class="mb-1" style="font-size: 11px;">
+            <li class="breadcrumb-item"><a href="#" onclick="switchFrontierPilotTab('dashboard'); return false;" class="text-secondary text-decoration-none">FrontierPilot 2.0</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" id="frontierpilotBreadcrumb">Career Radar</li>
+          </nav>
+          <div class="d-flex align-items-center gap-2">
+            <h4 class="fw-bold mb-0 text-dark" id="viewTitle">Career Overview & Applications</h4>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold border border-success border-opacity-25" id="onlineBadge" style="font-size: 11px;">
+              <i class="bi bi-shield-check me-1"></i> Standalone & Offline Ready
+            </span>
+            <span class="badge border border-success border-opacity-30 fw-semibold d-inline-flex align-items-center" style="background: rgba(16, 185, 129, 0.12); color: #34d399; font-size: 11px;" id="autoSyncBadge" title="Cockpit continuously auto-updates from server, Notion, and Slack">
+              <span class="pulse-dot"></span> <span id="autoSyncText">Auto-Sync: Live</span>
+            </span>
+          </div>
         </div>
       </div>
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button class="btn btn-outline-secondary btn-sm d-none d-md-inline-flex align-items-center gap-2 px-2 py-1 shadow-sm" onclick="openCommandPalette()" style="font-size: 12px; border-radius: var(--radius-sm);" title="Quick Action & Search (⌘K)">
+      <!-- Desktop Actions -->
+      <div class="frontierpilot-header-actions d-none d-lg-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2 px-2 py-1 shadow-sm" onclick="openCommandPalette()" style="font-size: 12px; border-radius: var(--radius-sm);" title="Quick Action & Search (⌘K)">
           <i class="bi bi-search"></i>
           <span>Search / Command</span>
           <kbd class="bg-light text-muted border px-1" style="font-size: 10px;">⌘K</kbd>
@@ -643,20 +776,41 @@
         <button class="btn btn-warning btn-sm fw-bold shadow-sm" onclick="openJdModal()">
           <i class="bi bi-magic me-1"></i> ✨ Paste JD (AI Stack)
         </button>
+        <button class="btn btn-outline-info btn-sm fw-semibold" onclick="pullNotionUpdates()" title="Pull changes made directly in Notion Database">
+          <i class="bi bi-arrow-down-circle me-1"></i> Pull Notion
+        </button>
+        <button class="btn btn-outline-light btn-sm fw-semibold" onclick="syncWixCms()" title="Push posts and jobs to Wix Headless CMS">
+          <i class="bi bi-globe me-1"></i> Sync Wix
+        </button>
+        <button class="btn btn-outline-warning btn-sm fw-semibold" onclick="dispatchSlackDigest()" title="Send rich interactive card to Aryan's Slack">
+          <i class="bi bi-slack me-1"></i> Slack Card
+        </button>
         <button class="btn btn-outline-dark btn-sm fw-semibold" onclick="openAddModal()">
           <i class="bi bi-plus-lg me-1"></i> Track New Role
         </button>
-        <button class="btn btn-outline-primary btn-sm fw-semibold" onclick="exportDossierJson()">
-          <i class="bi bi-download me-1"></i> Export JSON
-        </button>
-        <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="switchDossierTab('creator-studio')">
+        <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="switchFrontierPilotTab('creator-studio')">
           <i class="bi bi-linkedin me-1"></i> Creator Studio
+        </button>
+        <a href="/logout" class="btn btn-outline-danger btn-sm fw-semibold" title="Lock & sign out">
+          <i class="bi bi-box-arrow-right"></i>
+        </a>
+      </div>
+      <!-- Mobile Quick Actions -->
+      <div class="d-flex d-lg-none align-items-center gap-1">
+        <button class="btn btn-outline-secondary btn-sm p-2" onclick="openCommandPalette()" title="Search">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="btn btn-outline-warning btn-sm p-2" onclick="dispatchSlackDigest()" title="Slack Digest">
+          <i class="bi bi-slack"></i>
+        </button>
+        <button class="btn btn-primary btn-sm px-2 py-1 fw-bold" onclick="switchFrontierPilotTab('creator-studio')" style="font-size: 12px;">
+          <i class="bi bi-linkedin"></i>
         </button>
       </div>
     </header>
 
     <!-- Body Container -->
-    <div class="dossier-body">
+    <div class="frontierpilot-body">
 
       <!-- LinkedIn Studio Quick Bar -->
       <div class="studio-jump-banner">
@@ -665,17 +819,37 @@
           <span style="font-size: 13px; opacity: 0.9;">Review drafts, schedule automated posts, or approve jobs with 1 tap directly from Slack or web.</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm" onclick="switchDossierTab('creator-studio')">
+          <button class="btn btn-light btn-sm fw-bold text-primary px-3 shadow-sm" onclick="switchFrontierPilotTab('creator-studio')">
             Open Creator Hub →
           </button>
-          <a href="/" target="_blank" class="btn btn-outline-light btn-sm fw-semibold text-white px-2">
-            Standalone Studio ↗
-          </a>
         </div>
       </div>
 
       <!-- TAB 1: DASHBOARD -->
       <div id="tabDashboard">
+        <!-- Editorial Welcome Hero Card -->
+        <div class="card mb-4 p-4 border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%); border-radius: 16px; border: 1px solid rgba(99, 102, 241, 0.25) !important;">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <div class="text-uppercase tracking-wider fw-bold text-primary small mb-1" style="font-size: 11px; letter-spacing: 1.2px;">Autonomous Career Intelligence • Orbitron AI</div>
+              <h2 class="mb-1 fw-bold text-dark" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', serif; font-size: 26px;">Welcome back, Aryan</h2>
+              <p class="text-secondary mb-0 small" style="max-width: 620px; font-weight: 500;">
+                15 live opportunity matches analyzed against your verified master profile. 1-tap tailored resume synthesis, recruiter direct-message generation, and LinkedIn thought leadership ready.
+              </p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-primary btn-sm fw-bold px-3 py-2 shadow-sm" onclick="openFrontierPilotModal('frontierpilotTrackModal')">
+                <i class="bi bi-plus-lg me-1"></i> Track New Role
+              </button>
+              <button class="btn btn-info btn-sm fw-bold text-white px-3 py-2 shadow-sm" onclick="switchFrontierPilotTab('creator-studio')">
+                <i class="bi bi-linkedin me-1"></i> Creator Studio
+              </button>
+              <button class="btn btn-dark btn-sm fw-semibold px-3 py-2" onclick="triggerFrontierPilotFullSync()">
+                <i class="bi bi-cloud-arrow-up me-1"></i> 5-Way Sync
+              </button>
+            </div>
+          </div>
+        </div>
         <!-- 4 Funnel Metric Cards -->
         <div class="funnel-grid">
           <div class="funnel-card">
@@ -775,7 +949,7 @@
         <!-- Section: What's Worth a Look Next -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold mb-0 text-dark">🎯 What's Worth a Look Next (Top Synergy Roles)</h5>
-          <button class="btn btn-sm btn-outline-secondary" onclick="switchDossierTab('roles')">View All (15) →</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="switchFrontierPilotTab('roles')">View All (15) →</button>
         </div>
         <div id="topPriorityList"></div>
       </div>
@@ -917,42 +1091,96 @@
 
       <!-- TAB 6: CLOUD & OFFLINE SYNC -->
       <div id="tabSync" class="d-none">
-        <div class="card p-4 border shadow-sm mb-4" style="background: white; border-radius: 12px;">
-          <h5 class="fw-bold text-dark mb-3">☁️ Cloud Integration & Sync Status</h5>
+        <div class="card p-4 border shadow-sm mb-4" style="background: var(--card); border-radius: 16px;">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <h5 class="fw-bold text-white mb-1">☁️ Multi-Cloud Orchestration & Real-Time Sync Hub</h5>
+              <p class="small text-secondary mb-0">Bi-directional synchronization between FrontierPilot, Notion Database, Wix CMS, Slack 1-Tap Approvals, and Google Workspace.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary btn-sm fw-bold shadow-sm" onclick="triggerFrontierPilotFullSync()">
+                <i class="bi bi-arrow-repeat me-1"></i> Full Cloud Sync
+              </button>
+              <button class="btn btn-outline-warning btn-sm fw-semibold" onclick="dispatchSlackDigest()">
+                <i class="bi bi-slack me-1"></i> Send Slack Digest
+              </button>
+            </div>
+          </div>
+          
           <div class="row g-3">
-            <div class="col-md-4">
-              <div class="p-3 border rounded">
-                <div class="fw-bold small text-muted text-uppercase mb-1">Google Sheets Pipeline</div>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-success">Active</span>
-                  <span class="small text-secondary">CSV & Cloud Manifest</span>
+            <!-- Notion Card -->
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between" style="background: rgba(255, 255, 255, 0.03);">
+                <div>
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold small text-muted text-uppercase">Notion Database</span>
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25">Bi-Directional</span>
+                  </div>
+                  <div class="small text-secondary mb-3">Syncs roles, kanban stages, and notes directly with Aryan's Notion workspace.</div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-info btn-sm fw-bold w-100" onclick="pullNotionUpdates()">
+                    <i class="bi bi-arrow-down-circle me-1"></i> Pull Updates
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm fw-semibold" onclick="triggerFrontierPilotFullSync()" title="Push to Notion">
+                    <i class="bi bi-arrow-up-circle"></i>
+                  </button>
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="p-3 border rounded">
-                <div class="fw-bold small text-muted text-uppercase mb-1">Notion Database Kanban</div>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-success">Connected</span>
-                  <span class="small text-secondary">Aryan Sharma’s Space</span>
+
+            <!-- Wix Headless CMS Card -->
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between" style="background: rgba(255, 255, 255, 0.03);">
+                <div>
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold small text-muted text-uppercase">Wix Studio CMS</span>
+                    <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25">Headless API</span>
+                  </div>
+                  <div class="small text-secondary mb-3">Pushes 30 scheduled LinkedIn posts & career items to Wix live collection.</div>
                 </div>
+                <button class="btn btn-outline-light btn-sm fw-bold w-100" onclick="syncWixCms()">
+                  <i class="bi bi-globe me-1"></i> Sync to Wix CMS
+                </button>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="p-3 border rounded">
-                <div class="fw-bold small text-muted text-uppercase mb-1">Slack Approval Cards</div>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="badge bg-success">Live Webhook</span>
-                  <span class="small text-secondary">1-Tap Action Ready</span>
+
+            <!-- Slack 1-Tap Card -->
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between" style="background: rgba(255, 255, 255, 0.03);">
+                <div>
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold small text-muted text-uppercase">Slack Hub</span>
+                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25">1-Tap Live</span>
+                  </div>
+                  <div class="small text-secondary mb-3">Dispatches Block Kit approval cards to Aryan's mobile Slack channel.</div>
                 </div>
+                <button class="btn btn-outline-warning btn-sm fw-bold w-100" onclick="dispatchSlackDigest()">
+                  <i class="bi bi-send me-1"></i> Send Digest
+                </button>
+              </div>
+            </div>
+
+            <!-- Google Workspace Card -->
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between" style="background: rgba(255, 255, 255, 0.03);">
+                <div>
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold small text-muted text-uppercase">Sheets & Drive</span>
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">Auto-Staged</span>
+                  </div>
+                  <div class="small text-secondary mb-3">Exports CSV pipeline sheets and stores tailored resume packages.</div>
+                </div>
+                <button class="btn btn-outline-primary btn-sm fw-bold w-100" onclick="exportFrontierPilotJson()">
+                  <i class="bi bi-download me-1"></i> Export Manifest
+                </button>
               </div>
             </div>
           </div>
-          <div class="mt-4">
-            <button class="btn btn-primary btn-sm fw-bold me-2" onclick="triggerDossierFullSync()">
-              <i class="bi bi-arrow-repeat me-1"></i> Run Full Cloud Sync Now
-            </button>
-            <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="resetToDefaultSeed()">
+
+          <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="small text-muted">All changes are cached locally in offline-first IndexedDB / LocalStorage with cloud failover.</span>
+            <button class="btn btn-outline-secondary btn-sm fw-semibold" onclick="resetToDefaultSeed()">
               <i class="bi bi-arrow-counterclockwise me-1"></i> Reset to Default Opportunities
             </button>
           </div>
@@ -1873,74 +2101,98 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
       </div>
 
 
-    </div> <!-- end dossier-body -->
-  </main> <!-- end dossier-main -->
-</div> <!-- end dossier-wrapper -->
+    </div> <!-- end frontierpilot-body -->
+
+    <!-- Mobile Bottom Navigation Bar (Framer Style) -->
+    <nav class="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(7, 9, 14, 0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); z-index: 999; justify-content: space-around; align-items: center; padding: 0 10px;">
+      <button class="mobile-nav-btn active" onclick="switchFrontierPilotTab('dashboard')" id="mNavDash" style="background: none; border: none; color: #cbd5e1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px;">
+        <i class="bi bi-speedometer2" style="font-size: 18px;"></i>
+        <span>Overview</span>
+      </button>
+      <button class="mobile-nav-btn" onclick="switchFrontierPilotTab('roles')" id="mNavRoles" style="background: none; border: none; color: #94a3b8; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px;">
+        <i class="bi bi-compass" style="font-size: 18px;"></i>
+        <span>Radar</span>
+      </button>
+      <button class="mobile-nav-btn" onclick="switchFrontierPilotTab('creator-studio')" id="mNavCreator" style="background: none; border: none; color: #94a3b8; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px;">
+        <i class="bi bi-linkedin" style="font-size: 18px; color: #38bdf8;"></i>
+        <span>Creator</span>
+      </button>
+      <button class="mobile-nav-btn" onclick="switchFrontierPilotTab('sync')" id="mNavSync" style="background: none; border: none; color: #94a3b8; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px;">
+        <i class="bi bi-cloud-arrow-up" style="font-size: 18px;"></i>
+        <span>Sync</span>
+      </button>
+      <button class="mobile-nav-btn" onclick="openCommandPalette()" style="background: none; border: none; color: #94a3b8; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px;">
+        <i class="bi bi-search" style="font-size: 18px;"></i>
+        <span>Cmd</span>
+      </button>
+    </nav>
+  </main> <!-- end frontierpilot-main -->
+</div> <!-- end frontierpilot-wrapper -->
 
 <!-- MODAL: Recruiter DM & Tactical PoW -->
-<div class="modal fade" id="dossierPitchModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="frontierpilotPitchModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
         <div>
           <span class="badge bg-primary text-uppercase" style="font-size: 10px;">Vaibhav Sisinty Framework</span>
-          <h5 class="modal-title fs-6 fw-bold mt-1" id="dossierPitchTitle">🎯 Direct Recruiter DM & Proof-of-Work</h5>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="frontierpilotPitchTitle">🎯 Direct Recruiter DM & Proof-of-Work</h5>
         </div>
-        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierPitchModal')"></button>
+        <button type="button" class="btn-close btn-close-white" onclick="closeFrontierPilotModal('frontierpilotPitchModal')"></button>
       </div>
       <div class="modal-body p-4 bg-light">
         <div class="card p-3 mb-3 border shadow-sm">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="fw-bold small text-primary text-uppercase">💬 3-Sentence Hiring Manager DM</span>
-            <button class="btn btn-outline-primary btn-sm py-1" onclick="copyTextElement('dossierDmText')">📋 Copy DM</button>
+            <button class="btn btn-outline-primary btn-sm py-1" onclick="copyTextElement('frontierpilotDmText')">📋 Copy DM</button>
           </div>
-          <div class="p-3 bg-white border rounded font-monospace small" id="dossierDmText" style="white-space: pre-wrap; line-height: 1.6;"></div>
+          <div class="p-3 bg-white border rounded font-monospace small" id="frontierpilotDmText" style="white-space: pre-wrap; line-height: 1.6;"></div>
           <div class="text-muted small mt-2">💡 <em>Tip: Paste directly into LinkedIn DM to the engineering manager or founder.</em></div>
         </div>
         <div class="card p-3 border shadow-sm">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="fw-bold small text-success text-uppercase">🏗️ 1-Page Tactical Proof-of-Work Plan</span>
-            <button class="btn btn-outline-success btn-sm py-1" onclick="copyTextElement('dossierPowText')">📋 Copy Plan</button>
+            <button class="btn btn-outline-success btn-sm py-1" onclick="copyTextElement('frontierpilotPowText')">📋 Copy Plan</button>
           </div>
-          <pre class="p-3 bg-white border rounded small" id="dossierPowText" style="white-space: pre-wrap; font-family: monospace; line-height: 1.5; max-height: 340px;"></pre>
+          <pre class="p-3 bg-white border rounded small" id="frontierpilotPowText" style="white-space: pre-wrap; font-family: monospace; line-height: 1.5; max-height: 340px;"></pre>
         </div>
       </div>
       <div class="modal-footer bg-white">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierPitchModal')">Close</button>
-        <button type="button" class="btn btn-primary btn-sm fw-bold" id="dossierModalZipBtn">📦 Download ZIP Pack</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeFrontierPilotModal('frontierpilotPitchModal')">Close</button>
+        <button type="button" class="btn btn-primary btn-sm fw-bold" id="frontierpilotModalZipBtn">📦 Download ZIP Pack</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MODAL: Interview Prep Guide -->
-<div class="modal fade" id="dossierPrepModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="frontierpilotPrepModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
         <div>
           <span class="badge bg-info text-dark text-uppercase fw-bold" style="font-size: 10px;">NotebookLM & Gemini Stack</span>
-          <h5 class="modal-title fs-6 fw-bold mt-1" id="dossierPrepTitle">🎙️ Technical & STAR Interview Prep</h5>
+          <h5 class="modal-title fs-6 fw-bold mt-1" id="frontierpilotPrepTitle">🎙️ Technical & STAR Interview Prep</h5>
         </div>
-        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierPrepModal')"></button>
+        <button type="button" class="btn-close btn-close-white" onclick="closeFrontierPilotModal('frontierpilotPrepModal')"></button>
       </div>
-      <div class="modal-body p-4 bg-light" id="dossierPrepBody">
+      <div class="modal-body p-4 bg-light" id="frontierpilotPrepBody">
         <!-- Rendered via JS -->
       </div>
       <div class="modal-footer bg-white">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierPrepModal')">Close</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeFrontierPilotModal('frontierpilotPrepModal')">Close</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MODAL: Add Opportunity -->
-<div class="modal fade" id="dossierAddModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="frontierpilotAddModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header">
         <h5 class="modal-title fs-6 fw-bold">➕ Track New Opportunity</h5>
-        <button type="button" class="btn-close" onclick="closeDossierModal('dossierAddModal')"></button>
+        <button type="button" class="btn-close" onclick="closeFrontierPilotModal('frontierpilotAddModal')"></button>
       </div>
       <div class="modal-body">
         <div class="mb-2">
@@ -1976,7 +2228,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierAddModal')">Cancel</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeFrontierPilotModal('frontierpilotAddModal')">Cancel</button>
         <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="saveNewRole()">Add Role</button>
       </div>
     </div>
@@ -1984,7 +2236,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
 </div>
 
 <!-- GLOBAL COMMAND PALETTE (CMD+K / CTRL+K) -->
-<div id="dossierCommandPalette" class="cmd-palette-backdrop d-none" onclick="if (event.target === this) closeCommandPalette()">
+<div id="frontierpilotCommandPalette" class="cmd-palette-backdrop" style="display: none;" onclick="if (event.target === this) closeCommandPalette()">
   <div class="cmd-palette-modal" role="dialog" aria-modal="true" aria-label="Command Palette">
     <div class="cmd-palette-input-box">
       <i class="bi bi-search text-muted fs-5"></i>
@@ -1998,7 +2250,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
 </div>
 
 <!-- MODAL: AI Job Description (JD) Analyzer & Stack Generator -->
-<div class="modal fade" id="dossierJdModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="frontierpilotJdModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 14px;">
       <div class="modal-header bg-dark text-white">
@@ -2006,7 +2258,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
           <span class="badge bg-warning text-dark text-uppercase fw-bold" style="font-size: 10px;">Complete Video Stack: Vaibhav Sisinty & Mayank Joshi</span>
           <h5 class="modal-title fs-6 fw-bold mt-1">✨ AI Job Description Analyzer & 7-in-1 Stack Generator</h5>
         </div>
-        <button type="button" class="btn-close btn-close-white" onclick="closeDossierModal('dossierJdModal')"></button>
+        <button type="button" class="btn-close btn-close-white" onclick="closeFrontierPilotModal('frontierpilotJdModal')"></button>
       </div>
       <div class="modal-body p-4 bg-light">
         <p class="small text-muted mb-3">
@@ -2071,7 +2323,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
         </div>
       </div>
       <div class="modal-footer bg-white">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDossierModal('dossierJdModal')">Close</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeFrontierPilotModal('frontierpilotJdModal')">Close</button>
       </div>
     </div>
   </div>
@@ -2082,7 +2334,7 @@ Specializing in evaluating large language model outputs for reasoning accuracy, 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then((reg) => {
-      console.log('[PWA] Service Worker registered in Dossier:', reg.scope);
+      console.log('[PWA] Service Worker registered in FrontierPilot:', reg.scope);
       // Force update check to ensure browser never serves stale cached UI
       reg.update();
     }).catch((err) => {
@@ -2092,7 +2344,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // 15 Default Verified Career Radar Opportunities for Aryan Sharma
-const DOSSIER_DEFAULT_OPPORTUNITIES = [
+const FRONTIERPILOT_DEFAULT_OPPORTUNITIES = [
   {
     "id": "sarvam-ai-intern",
     "title": "AI Systems & Model Evaluation Intern",
@@ -2633,26 +2885,26 @@ const DOSSIER_DEFAULT_OPPORTUNITIES = [
   }
 ];
 
-let dossierOpps = [];
+let frontierpilotOpps = [];
 
 // Initialize data from localStorage or seed
-function initDossierData() {
+function initFrontierPilotData() {
   try {
-    const local = localStorage.getItem('dossier_opportunities') || localStorage.getItem('tracked_opportunities');
+    const local = localStorage.getItem('frontierpilot_opportunities') || localStorage.getItem('tracked_opportunities');
     if (local) {
       const parsed = JSON.parse(local);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        dossierOpps = parsed;
+        frontierpilotOpps = parsed;
       } else {
-        dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
+        frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
       }
     } else {
-      dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
-      persistDossierData();
+      frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
+      persistFrontierPilotData();
     }
   } catch(e) {
-    console.warn('[Dossier] Resetting to default seed due to parse error:', e);
-    dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
+    console.warn('[FrontierPilot] Resetting to default seed due to parse error:', e);
+    frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
   }
 
   // Also try live backend fetch if available
@@ -2660,26 +2912,26 @@ function initDossierData() {
     .then(r => r.json())
     .then(data => {
       if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
-        dossierOpps = data.opportunities;
-        persistDossierData();
+        frontierpilotOpps = data.opportunities;
+        persistFrontierPilotData();
         renderAllViews();
       }
     })
     .catch(() => {
-      console.log('[Dossier] Operating in standalone / offline local mode.');
+      console.log('[FrontierPilot] Operating in standalone / offline local mode.');
     });
 
   try {
     renderAllViews();
   } catch (err) {
-    console.error('[Dossier] renderAllViews error:', err);
+    console.error('[FrontierPilot] renderAllViews error:', err);
   }
 }
 
-function persistDossierData() {
+function persistFrontierPilotData() {
   try {
-    localStorage.setItem('dossier_opportunities', JSON.stringify(dossierOpps));
-    localStorage.setItem('tracked_opportunities', JSON.stringify(dossierOpps));
+    localStorage.setItem('frontierpilot_opportunities', JSON.stringify(frontierpilotOpps));
+    localStorage.setItem('tracked_opportunities', JSON.stringify(frontierpilotOpps));
   } catch(e) {}
 }
 
@@ -2693,12 +2945,12 @@ function renderAllViews() {
 }
 
 function updateFunnelStats() {
-  if (!Array.isArray(dossierOpps)) dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
-  const staged = dossierOpps.filter(o => (o.status || '').includes('Ready') || (o.status || '').includes('Staged')).length;
-  const applied = dossierOpps.filter(o => (o.status || '').includes('Applied')).length;
-  const interviewing = dossierOpps.filter(o => (o.status || '').includes('Interviewing')).length;
+  if (!Array.isArray(frontierpilotOpps)) frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
+  const staged = frontierpilotOpps.filter(o => (o.status || '').includes('Ready') || (o.status || '').includes('Staged')).length;
+  const applied = frontierpilotOpps.filter(o => (o.status || '').includes('Applied')).length;
+  const interviewing = frontierpilotOpps.filter(o => (o.status || '').includes('Interviewing')).length;
   
-  const scores = dossierOpps.map(o => parseInt(o.match_score) || 90);
+  const scores = frontierpilotOpps.map(o => parseInt(o.match_score) || 90);
   const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 92;
 
   const fStaged = document.getElementById('funnelStaged');
@@ -2711,16 +2963,16 @@ function updateFunnelStats() {
   if (fScore) fScore.innerText = avg + '%';
 
   const badgeB = document.getElementById('boardBadge');
-  if (badgeB) badgeB.innerText = dossierOpps.length;
+  if (badgeB) badgeB.innerText = frontierpilotOpps.length;
   const badgeR = document.getElementById('radarBadge');
-  if (badgeR) badgeR.innerText = dossierOpps.length;
+  if (badgeR) badgeR.innerText = frontierpilotOpps.length;
 }
 
 function renderTopPriority() {
   const container = document.getElementById('topPriorityList');
   if (!container) return;
 
-  const top = [...dossierOpps].sort((a, b) => (parseInt(b.match_score) || 90) - (parseInt(a.match_score) || 90)).slice(0, 4);
+  const top = [...frontierpilotOpps].sort((a, b) => (parseInt(b.match_score) || 90) - (parseInt(a.match_score) || 90)).slice(0, 4);
 
   container.innerHTML = top.map(o => {
     const score = parseInt(o.match_score) || 90;
@@ -2783,7 +3035,7 @@ function onKanbanDrop(e, targetColKey) {
   e.preventDefault();
   const id = draggedCardId || e.dataTransfer.getData('text/plain');
   if (!id) return;
-  const opp = dossierOpps.find(o => o.id === id);
+  const opp = frontierpilotOpps.find(o => o.id === id);
   if (!opp) return;
 
   const statusMap = {
@@ -2796,7 +3048,7 @@ function onKanbanDrop(e, targetColKey) {
 
   if (statusMap[targetColKey]) {
     opp.status = statusMap[targetColKey];
-    persistDossierData();
+    persistFrontierPilotData();
     renderAllViews();
     fetch(`/api/opportunities/${id}`, {
       method: 'POST',
@@ -2812,7 +3064,7 @@ function renderKanbanBoard() {
   if (!container) return;
 
   const query = (document.getElementById('kanbanSearch')?.value || '').toLowerCase();
-  const filtered = dossierOpps.filter(o => !query || (o.title || '').toLowerCase().includes(query) || (o.organization || '').toLowerCase().includes(query));
+  const filtered = frontierpilotOpps.filter(o => !query || (o.title || '').toLowerCase().includes(query) || (o.organization || '').toLowerCase().includes(query));
 
   const columns = [
     { key: 'draft', title: 'Backlog / Scouting', match: ['Draft', 'Backlog', 'Scouting'] },
@@ -2857,7 +3109,7 @@ function renderKanbanBoard() {
 }
 
 function advanceCardStatus(id) {
-  const opp = dossierOpps.find(o => o.id === id);
+  const opp = frontierpilotOpps.find(o => o.id === id);
   if (!opp) return;
 
   const current = opp.status || 'Draft / Backlog';
@@ -2871,7 +3123,7 @@ function advanceCardStatus(id) {
     opp.status = 'Offered / Accepted';
   }
 
-  persistDossierData();
+  persistFrontierPilotData();
   renderAllViews();
 
   fetch(`/api/opportunities/${id}`, {
@@ -2892,10 +3144,10 @@ function toggleOppDetails(id) {
 }
 
 function saveOppNote(id, note) {
-  const opp = dossierOpps.find(o => o.id === id);
+  const opp = frontierpilotOpps.find(o => o.id === id);
   if (!opp) return;
   opp.internal_notes = note;
-  persistDossierData();
+  persistFrontierPilotData();
   fetch(`/api/opportunities/${id}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2910,7 +3162,7 @@ function renderAllRoles() {
   const search = (document.getElementById('rolesSearch')?.value || '').toLowerCase();
   const filter = document.getElementById('rolesFilter')?.value || 'all';
 
-  const filtered = dossierOpps.filter(o => {
+  const filtered = frontierpilotOpps.filter(o => {
     const text = ((o.title || '') + ' ' + (o.organization || '') + ' ' + (o.category || '') + ' ' + (o.location || '')).toLowerCase();
     if (search && !text.includes(search)) return false;
     if (filter === 'india' && !text.includes('india') && !text.includes('delhi') && !text.includes('bengaluru') && !text.includes('gurgaon')) return false;
@@ -2923,7 +3175,7 @@ function renderAllRoles() {
 
   const countHeader = `
     <div class="d-flex justify-content-between align-items-center mb-3 px-1 text-muted small">
-      <span>Showing <strong>${filtered.length}</strong> of <strong>${dossierOpps.length}</strong> opportunities</span>
+      <span>Showing <strong>${filtered.length}</strong> of <strong>${frontierpilotOpps.length}</strong> opportunities</span>
       <span>${filter !== 'all' ? `Filtered by: <span class="badge bg-secondary">${filter}</span>` : 'All Categories Active'}</span>
     </div>
   `;
@@ -2991,13 +3243,13 @@ function renderAllRoles() {
 function populateResumeDropdown() {
   const sel = document.getElementById('resumeRoleSelector');
   if (!sel) return;
-  sel.innerHTML = dossierOpps.map(o => `<option value="${o.id}">${escapeHtml(o.organization)} — ${escapeHtml(o.title)}</option>`).join('');
+  sel.innerHTML = frontierpilotOpps.map(o => `<option value="${o.id}">${escapeHtml(o.organization)} — ${escapeHtml(o.title)}</option>`).join('');
 }
 
 function updateResumePreview() {
   const sel = document.getElementById('resumeRoleSelector');
-  const targetId = sel ? sel.value : (dossierOpps[0]?.id);
-  const opp = dossierOpps.find(o => o.id === targetId) || dossierOpps[0] || {};
+  const targetId = sel ? sel.value : (frontierpilotOpps[0]?.id);
+  const opp = frontierpilotOpps.find(o => o.id === targetId) || frontierpilotOpps[0] || {};
   
   const isMinimal = document.getElementById('thMinimal')?.checked;
   const cont = document.getElementById('resumePreviewContainer');
@@ -3142,7 +3394,7 @@ CS50x: Introduction to Computer Science | Harvard University (2026)`;
 
 // 100% Offline Client-Side ZIP Generation using JSZip
 function downloadApplicationPackageZip(oppId) {
-  const opp = dossierOpps.find(o => o.id === oppId) || {};
+  const opp = frontierpilotOpps.find(o => o.id === oppId) || {};
   const org = (opp.organization || 'Company').replace(/[^a-zA-Z0-9]/g, '_');
   const role = opp.title || 'Role';
 
@@ -3203,36 +3455,36 @@ function saveBlobAsFile(blob, filename) {
 }
 
 function openPitchModal(oppId) {
-  const opp = dossierOpps.find(o => o.id === oppId) || {};
-  document.getElementById('dossierPitchTitle').innerText = '🎯 Recruiter DM & Tactical PoW: ' + (opp.organization || 'Role');
+  const opp = frontierpilotOpps.find(o => o.id === oppId) || {};
+  document.getElementById('frontierpilotPitchTitle').innerText = '🎯 Recruiter DM & Tactical PoW: ' + (opp.organization || 'Role');
 
   const defaultDm = `Hi [Name], loved ${opp.organization}'s recent engineering work. I specialize in LLM evaluation and prompt security research, recently publishing on adversarial attack surfaces while benchmarking models at Handshake. I’d love to share a brief 1-page tactical architecture breakdown on how this applies to ${opp.organization}'s ${opp.title} roadmap if helpful.`;
 
   const defaultPow = `# Tactical Engineering Proposal: ${opp.organization} — ${opp.title}\n**Prepared by:** Aryan Sharma | AI/ML & Distributed Systems Engineer\n\n## 1. Challenge Overview\nModern production pipelines at ${opp.organization} require high throughput and bulletproof semantic reliability.\n\n## 2. 90-Day Technical Roadmap\n- Phase 1 (Days 1–30): Baseline Benchmark & Guardrail Audit\n- Phase 2 (Days 31–60): Pipeline Optimization & Tooling in Python/FastAPI\n- Phase 3 (Days 61–90): Production Hardening & Documentation\n\n## 3. Immediate Value Add\nWith published research in prompt vulnerabilities and Handshake evaluation experience, I deliver production results from Day 1.`;
 
-  document.getElementById('dossierDmText').innerText = defaultDm;
-  document.getElementById('dossierPowText').innerText = defaultPow;
-  document.getElementById('dossierModalZipBtn').onclick = () => downloadApplicationPackageZip(oppId);
+  document.getElementById('frontierpilotDmText').innerText = defaultDm;
+  document.getElementById('frontierpilotPowText').innerText = defaultPow;
+  document.getElementById('frontierpilotModalZipBtn').onclick = () => downloadApplicationPackageZip(oppId);
 
   // Try live fetch if online
   fetch(`/api/opportunities/${oppId}/pitch`)
     .then(r => r.json())
     .then(d => {
       if (d.success) {
-        if (d.recruiter_dm) document.getElementById('dossierDmText').innerText = d.recruiter_dm;
-        if (d.proof_of_work_plan) document.getElementById('dossierPowText').innerText = d.proof_of_work_plan;
+        if (d.recruiter_dm) document.getElementById('frontierpilotDmText').innerText = d.recruiter_dm;
+        if (d.proof_of_work_plan) document.getElementById('frontierpilotPowText').innerText = d.proof_of_work_plan;
       }
     })
     .catch(() => {});
 
-  openDossierModal('dossierPitchModal');
+  openFrontierPilotModal('frontierpilotPitchModal');
 }
 
 function openPrepModal(oppId) {
-  const opp = dossierOpps.find(o => o.id === oppId) || {};
-  document.getElementById('dossierPrepTitle').innerText = `🎙️ Interview Prep: ${opp.organization} — ${opp.title}`;
+  const opp = frontierpilotOpps.find(o => o.id === oppId) || {};
+  document.getElementById('frontierpilotPrepTitle').innerText = `🎙️ Interview Prep: ${opp.organization} — ${opp.title}`;
 
-  const body = document.getElementById('dossierPrepBody');
+  const body = document.getElementById('frontierpilotPrepBody');
   body.innerHTML = `
     <div class="card p-3 mb-3 border shadow-sm">
       <h6 class="fw-bold text-primary mb-1">🎙️ 1-Click Simulation Prompt for NotebookLM / Gemini Live</h6>
@@ -3255,10 +3507,19 @@ function openPrepModal(oppId) {
     </div>
   `;
 
-  openDossierModal('dossierPrepModal');
+  openFrontierPilotModal('frontierpilotPrepModal');
 }
 
-function switchDossierTab(tab, btnEl) {
+function toggleMobileSidebar() {
+  const sb = document.querySelector('.frontierpilot-sidebar');
+  if (sb) sb.classList.toggle('mobile-open');
+}
+
+function switchFrontierPilotTab(tab, btnEl) {
+  // Auto-close mobile drawer on selection
+  const sb = document.querySelector('.frontierpilot-sidebar');
+  if (sb) sb.classList.remove('mobile-open');
+
   ['tabDashboard', 'tabKanban', 'tabRoles', 'tabResumes', 'tabProfile', 'tabSync', 'tabAiStack', 'tabOutreach', 'tabLearning', 'tabCreatorStudio'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('d-none');
@@ -3278,7 +3539,7 @@ function switchDossierTab(tab, btnEl) {
   };
 
   const titleEl = document.getElementById('viewTitle');
-  if (titleEl) titleEl.innerText = titles[tab] || 'getHired';
+  if (titleEl) titleEl.innerText = titles[tab] || 'FrontierPilot';
 
   const breadcrumbMap = {
     dashboard: 'Overview & Pipeline',
@@ -3292,7 +3553,7 @@ function switchDossierTab(tab, btnEl) {
     learning: 'Skills & Knowledge Hub',
     'creator-studio': 'LinkedIn Creator Studio'
   };
-  const breadcrumbEl = document.getElementById('dossierBreadcrumb');
+  const breadcrumbEl = document.getElementById('frontierpilotBreadcrumb');
   if (breadcrumbEl) breadcrumbEl.innerText = breadcrumbMap[tab] || 'Career Radar';
 
   if (tab === 'dashboard') document.getElementById('tabDashboard')?.classList.remove('d-none');
@@ -3312,6 +3573,17 @@ function switchDossierTab(tab, btnEl) {
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const targetBtn = btnEl || document.querySelector(`.nav-btn[data-tab="${tab}"]`);
   if (targetBtn) targetBtn.classList.add('active');
+
+  // Update mobile bottom bar active state
+  document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+    btn.style.color = '#94a3b8';
+    btn.classList.remove('active');
+  });
+  const mBtn = document.getElementById(tab === 'dashboard' ? 'mNavDash' : (tab === 'roles' ? 'mNavRoles' : (tab === 'creator-studio' ? 'mNavCreator' : (tab === 'sync' ? 'mNavSync' : ''))));
+  if (mBtn) {
+    mBtn.style.color = '#38bdf8';
+    mBtn.classList.add('active');
+  }
 }
 
 function fillSampleJd() {
@@ -3399,15 +3671,15 @@ With published research in prompt vulnerabilities and Handshake evaluation exper
     match_reason: `High synergy with ${atsKeywords.slice(0, 3).join(', ')} extracted from JD.`,
     matching_skills: atsKeywords
   };
-  dossierOpps.unshift(newOpp);
-  persistDossierData();
+  frontierpilotOpps.unshift(newOpp);
+  persistFrontierPilotData();
   renderAllViews();
 
   document.getElementById('inlineJdDownloadZipBtn').onclick = () => downloadApplicationPackageZip(newId);
 }
 
 function openJdModal() {
-  openDossierModal('dossierJdModal');
+  openFrontierPilotModal('frontierpilotJdModal');
 }
 
 function runAiJdAnalysis() {
@@ -3482,15 +3754,15 @@ With published research in LLM prompt vulnerabilities and practical experience b
     match_reason: `High synergy with ${atsKeywords.slice(0, 3).join(', ')} extracted from JD.`,
     matching_skills: atsKeywords
   };
-  dossierOpps.unshift(newOpp);
-  persistDossierData();
+  frontierpilotOpps.unshift(newOpp);
+  persistFrontierPilotData();
   renderAllViews();
 
   // Wire ZIP download
   document.getElementById('jdDownloadZipBtn').onclick = () => downloadApplicationPackageZip(newId);
 }
 
-function openAddModal() { openDossierModal('dossierAddModal'); }
+function openAddModal() { openFrontierPilotModal('frontierpilotAddModal'); }
 
 async function saveNewRole() {
   const titleEl = document.getElementById('addRoleTitle');
@@ -3529,9 +3801,9 @@ async function saveNewRole() {
     matching_skills: ['AI/ML', 'Engineering', 'Systems']
   };
 
-  dossierOpps.unshift(newOpp);
-  persistDossierData();
-  closeDossierModal('dossierAddModal');
+  frontierpilotOpps.unshift(newOpp);
+  persistFrontierPilotData();
+  closeFrontierPilotModal('frontierpilotAddModal');
   renderAllViews();
 
   if (titleEl) titleEl.value = '';
@@ -3546,45 +3818,133 @@ async function saveNewRole() {
     const data = await res.json();
     if (data && data.success && data.opportunity) {
       newOpp.id = data.opportunity.id;
-      persistDossierData();
+      persistFrontierPilotData();
     }
   } catch (err) {
     console.warn('[getHired] Opportunity saved locally; server sync deferred:', err);
   }
 }
 
-function exportDossierJson() {
-  const blob = new Blob([JSON.stringify(dossierOpps, null, 2)], { type: 'application/json' });
-  saveBlobAsFile(blob, `getHired_Career_Radar_Backup_${new Date().toISOString().slice(0,10)}.json`);
+function showNotification(msg, type = 'info') {
+  let box = document.getElementById('frontierpilotToastBox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'frontierpilotToastBox';
+    box.style.position = 'fixed';
+    box.style.top = '20px';
+    box.style.right = '24px';
+    box.style.zIndex = '99999';
+    box.style.display = 'flex';
+    box.style.flexDirection = 'column';
+    box.style.gap = '10px';
+    document.body.appendChild(box);
+  }
+  const el = document.createElement('div');
+  const bg = type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : (type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #6366f1, #4f46e5)');
+  el.style.background = bg;
+  el.style.color = '#ffffff';
+  el.style.padding = '12px 20px';
+  el.style.borderRadius = '12px';
+  el.style.fontSize = '13.5px';
+  el.style.fontWeight = '600';
+  el.style.boxShadow = '0 10px 30px rgba(0,0,0,0.45)';
+  el.style.border = '1px solid rgba(255,255,255,0.2)';
+  el.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(-10px)';
+  el.innerHTML = msg;
+  box.appendChild(el);
+  setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 20);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-10px)';
+    setTimeout(() => el.remove(), 300);
+  }, 4000);
 }
 
-function triggerDossierFullSync() {
-  alert('🔄 Synchronizing getHired across Google Sheets, Drive, Notion, and Slack...');
-  fetch('/api/dossier/sync', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'all' })
-  })
-  .then(r => r.json())
-  .then(d => {
-    if (d.success) alert('✅ Cloud synchronization complete!');
-    else alert('Cloud notice: ' + (d.error || 'Saved locally in browser'));
-  })
-  .catch(() => {
-    alert('⚡ Running in local standalone mode. All data is saved in your browser localStorage!');
-  });
+function exportFrontierPilotJson() {
+  const blob = new Blob([JSON.stringify(frontierpilotOpps, null, 2)], { type: 'application/json' });
+  saveBlobAsFile(blob, `FrontierPilot_Career_Radar_Backup_${new Date().toISOString().slice(0,10)}.json`);
+  showNotification('💾 Complete JSON manifest exported successfully!', 'success');
 }
 
-function resetToDefaultSeed() {
-  if (confirm('Reset to the 15 verified default opportunities?')) {
-    dossierOpps = [...DOSSIER_DEFAULT_OPPORTUNITIES];
-    persistDossierData();
-    renderAllViews();
-    alert('✅ Reset complete.');
+async function pullNotionUpdates() {
+  showNotification('🔄 Querying Notion Database for latest updates...', 'info');
+  try {
+    const res = await fetch('/api/frontierpilot/notion-pull', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showNotification(`✅ Notion Sync Complete: ${data.updated || 0} updated, ${data.added || 0} added!`, 'success');
+      await initFrontierPilotData();
+    } else {
+      showNotification('⚠️ Notion pull note: ' + (data.error || 'Using local staged database'), 'info');
+    }
+  } catch (err) {
+    showNotification('Error syncing from Notion: ' + err.message, 'error');
   }
 }
 
-function openDossierModal(id) {
+async function syncWixCms() {
+  showNotification('⚡ Pushing scheduled posts & opportunities to Wix Headless CMS...', 'info');
+  try {
+    const res = await fetch('/api/frontierpilot/wix-sync', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showNotification('✅ Wix CMS collection staged & synchronized!', 'success');
+    } else {
+      showNotification('Wix sync notice: ' + (data.error || 'Staged in collection JSON'), 'info');
+    }
+  } catch (err) {
+    showNotification('Error syncing to Wix: ' + err.message, 'error');
+  }
+}
+
+async function dispatchSlackDigest() {
+  showNotification('📱 Sending executive digest to Aryan\'s mobile Slack...', 'info');
+  try {
+    const res = await fetch('/api/frontierpilot/send_digest', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showNotification('✅ Live Block Kit card delivered to mobile Slack!', 'success');
+    } else {
+      showNotification('Slack dispatch notice: ' + (data.error || 'Webhook offline'), 'info');
+    }
+  } catch (err) {
+    showNotification('Error dispatching Slack digest: ' + err.message, 'error');
+  }
+}
+
+async function triggerFrontierPilotFullSync() {
+  showNotification('☁️ Executing unified 5-way sync (Sheets, Drive, Notion, Wix, Slack)...', 'info');
+  try {
+    const res = await fetch('/api/frontierpilot/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'all' })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      showNotification('✅ Multi-cloud sync completed successfully across all pipelines!', 'success');
+      await initFrontierPilotData();
+      await loadCreatorStudio();
+    } else {
+      showNotification('Cloud notice: ' + (data.error || 'Updated local storage'), 'info');
+    }
+  } catch (err) {
+    showNotification('Sync notice: Running in offline/staged mode: ' + err.message, 'info');
+  }
+}
+
+function resetToDefaultSeed() {
+  if (confirm('Reset to verified default opportunities?')) {
+    frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
+    persistFrontierPilotData();
+    renderAllViews();
+    showNotification('✅ Reset to default verified opportunities completed.', 'success');
+  }
+}
+
+function openFrontierPilotModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
   m.style.removeProperty('display');
@@ -3602,12 +3962,12 @@ function openDossierModal(id) {
     b = document.createElement('div');
     b.id = 'modalBackdrop';
     b.className = 'modal-backdrop fade show';
-    b.onclick = () => closeDossierModal(id);
+    b.onclick = () => closeFrontierPilotModal(id);
     document.body.appendChild(b);
   }
 }
 
-function closeDossierModal(id) {
+function closeFrontierPilotModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
   if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
@@ -3813,19 +4173,26 @@ function renderCreatorDraftsList() {
         <div class="creator-draft-header">
           <div class="d-flex align-items-center gap-2 flex-wrap">
             <span class="badge ${statusBadgeClass} fw-bold" style="font-size: 11px;">${statusLabel}</span>
-            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 11px;">
+            ${d.scheduled_time ? `
+              <span class="badge border border-info border-opacity-50 fw-semibold" style="font-size: 11px; background: rgba(56, 189, 248, 0.15); color: #38bdf8 !important;">
+                <i class="bi bi-clock me-1"></i>${new Date(d.scheduled_time).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </span>
+            ` : ''}
+            <span class="badge border border-primary border-opacity-50 fw-bold" style="font-size: 11px; background: rgba(99, 102, 241, 0.2); color: #c7d2fe !important;">
               <i class="bi bi-lightning-charge me-1"></i>${escapeHtml(d.hook_formula || 'Proven Hook')}
             </span>
-            ${d.angle ? `<span class="badge bg-secondary bg-opacity-10 text-secondary fw-semibold" style="font-size: 11px;">${escapeHtml(d.angle)}</span>` : ''}
-            <span class="badge bg-light text-muted border" style="font-size: 11px;">${charCount} chars • ${wordCount} words</span>
+            ${d.angle ? `<span class="badge border border-secondary border-opacity-50 fw-semibold" style="font-size: 11px; background: rgba(148, 163, 184, 0.15); color: #e2e8f0 !important;">${escapeHtml(d.angle)}</span>` : ''}
+            ${d.notion_synced ? `<span class="badge border border-success border-opacity-50" style="font-size: 10px; background: rgba(16, 185, 129, 0.15); color: #6ee7b7 !important;"><i class="bi bi-check2-all me-1"></i>Notion Synced</span>` : ''}
+            <span class="badge border" style="font-size: 11px; background: rgba(255, 255, 255, 0.05); color: #94a3b8 !important;">${charCount} chars • ${wordCount} words</span>
           </div>
           <div class="small text-secondary fw-semibold">
             ${d.created_at ? new Date(d.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
           </div>
         </div>
 
-        <div class="p-2 px-3 bg-light border-bottom small fw-bold text-dark">
-          📌 Topic: ${escapeHtml(d.topic || 'Untitled Post')}
+        <div class="p-2 px-3 border-bottom small fw-bold text-white d-flex align-items-center justify-content-between" style="background: rgba(255, 255, 255, 0.03);">
+          <span>📌 Topic: ${escapeHtml(d.topic || 'Untitled Post')}</span>
+          <span class="badge bg-dark border text-muted" style="font-size: 10px;">Aryan Sharma • 2026 Feed Standard</span>
         </div>
 
         <div class="creator-draft-body" id="draft_text_${d.id}">${escapeHtml(d.content || '')}</div>
@@ -3867,8 +4234,8 @@ function populateRepurposeDropdown() {
   let options = '<option value="">Select Opportunity, Publication or Project...</option>';
   
   options += '<optgroup label="Active Opportunities & Roles">';
-  if (Array.isArray(dossierOpps)) {
-    dossierOpps.forEach(o => {
+  if (Array.isArray(frontierpilotOpps)) {
+    frontierpilotOpps.forEach(o => {
       options += `<option value="opp:${o.id}">${escapeHtml(o.organization)} — ${escapeHtml(o.title)}</option>`;
     });
   }
@@ -4107,7 +4474,7 @@ async function repurposeSelectedCareerItem() {
 
   if (val.startsWith('opp:')) {
     const oppId = val.replace('opp:', '');
-    const opp = (dossierOpps || []).find(o => o.id === oppId);
+    const opp = (frontierpilotOpps || []).find(o => o.id === oppId);
     if (opp) {
       title = `${opp.organization} — ${opp.title}`;
       details = `Role at ${opp.organization}. Alignment: ${opp.match_reason || ''}. Key skills: AI systems, verification, tactical execution.`;
@@ -4170,7 +4537,7 @@ async function repurposeSelectedCareerItem() {
 }
 
 function draftPostFromOpportunity(oppId) {
-  switchDossierTab('creator-studio');
+  switchFrontierPilotTab('creator-studio');
   const sel = document.getElementById('repurposeSourceSelect');
   if (sel) {
     sel.value = `opp:${oppId}`;
@@ -4179,7 +4546,7 @@ function draftPostFromOpportunity(oppId) {
 }
 
 function draftPostFromProfileMilestone(milestoneKey) {
-  switchDossierTab('creator-studio');
+  switchFrontierPilotTab('creator-studio');
   const sel = document.getElementById('repurposeSourceSelect');
   if (sel) {
     if (milestoneKey === 'prompt_vulnerability_paper') sel.value = 'res:prompt_vulnerability';
@@ -4233,9 +4600,9 @@ function copyDraftText(draftId) {
   const el = document.getElementById(`draft_text_${draftId}`);
   if (!el) return;
   navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
-    alert('📋 Post copied to clipboard!');
+    showNotification('📋 Post copied to clipboard!', 'success');
   }).catch(() => {
-    alert('Could not copy to clipboard.');
+    showNotification('Could not copy to clipboard.', 'error');
   });
 }
 
@@ -4256,39 +4623,43 @@ async function dispatchComposerToSlack() {
    GLOBAL COMMAND PALETTE (CMD+K / CTRL+K)
    ========================================================================= */
 const COMMANDS = [
-  { group: 'Views & Navigation', title: 'Dashboard & Overview', icon: 'bi-speedometer2', action: () => switchDossierTab('dashboard'), shortcut: 'G D' },
-  { group: 'Views & Navigation', title: 'Applications Funnel Board', icon: 'bi-kanban', action: () => switchDossierTab('kanban'), shortcut: 'G B' },
-  { group: 'Views & Navigation', title: 'Find Jobs & Career Radar', icon: 'bi-compass', action: () => switchDossierTab('roles'), shortcut: 'G R' },
-  { group: 'Views & Navigation', title: 'Resumes & Documents', icon: 'bi-file-earmark-person', action: () => switchDossierTab('resumes'), shortcut: 'G M' },
-  { group: 'Views & Navigation', title: 'Master Candidate Profile', icon: 'bi-person-badge', action: () => switchDossierTab('profile'), shortcut: 'G P' },
-  { group: 'Views & Navigation', title: 'LinkedIn Creator Studio', icon: 'bi-linkedin', action: () => switchDossierTab('creator-studio'), shortcut: 'G L' },
-  { group: 'Views & Navigation', title: '7-in-1 AI Video Stack', icon: 'bi-magic', action: () => switchDossierTab('ai-stack'), shortcut: 'G A' },
-  { group: 'Views & Navigation', title: 'Outreach Playbook', icon: 'bi-broadcast', action: () => switchDossierTab('outreach'), shortcut: 'G O' },
-  { group: 'Views & Navigation', title: 'Multi-Sync Hub', icon: 'bi-cloud-arrow-up', action: () => switchDossierTab('sync'), shortcut: 'G S' },
+  { group: 'Views & Navigation', title: 'Dashboard & Overview', icon: 'bi-speedometer2', action: () => switchFrontierPilotTab('dashboard'), shortcut: 'G D' },
+  { group: 'Views & Navigation', title: 'Applications Funnel Board', icon: 'bi-kanban', action: () => switchFrontierPilotTab('kanban'), shortcut: 'G B' },
+  { group: 'Views & Navigation', title: 'Find Jobs & Career Radar', icon: 'bi-compass', action: () => switchFrontierPilotTab('roles'), shortcut: 'G R' },
+  { group: 'Views & Navigation', title: 'Resumes & Documents', icon: 'bi-file-earmark-person', action: () => switchFrontierPilotTab('resumes'), shortcut: 'G M' },
+  { group: 'Views & Navigation', title: 'Master Candidate Profile', icon: 'bi-person-badge', action: () => switchFrontierPilotTab('profile'), shortcut: 'G P' },
+  { group: 'Views & Navigation', title: 'LinkedIn Creator Studio', icon: 'bi-linkedin', action: () => switchFrontierPilotTab('creator-studio'), shortcut: 'G L' },
+  { group: 'Views & Navigation', title: '7-in-1 AI Video Stack', icon: 'bi-magic', action: () => switchFrontierPilotTab('ai-stack'), shortcut: 'G A' },
+  { group: 'Views & Navigation', title: 'Outreach Playbook', icon: 'bi-broadcast', action: () => switchFrontierPilotTab('outreach'), shortcut: 'G O' },
+  { group: 'Views & Navigation', title: 'Multi-Sync Hub', icon: 'bi-cloud-arrow-up', action: () => switchFrontierPilotTab('sync'), shortcut: 'G S' },
   { group: 'Quick Actions', title: 'Track New Role Opportunity', icon: 'bi-plus-circle', action: () => openAddModal(), shortcut: 'N' },
   { group: 'Quick Actions', title: 'Paste & Analyze Job Description (AI)', icon: 'bi-stars', action: () => openJdModal(), shortcut: 'J' },
-  { group: 'Quick Actions', title: 'Export Complete JSON Manifest', icon: 'bi-download', action: () => exportDossierJson(), shortcut: 'E' },
-  { group: 'Quick Actions', title: 'Run Full Multi-Platform Cloud Sync', icon: 'bi-arrow-repeat', action: () => triggerDossierFullSync(), shortcut: 'S' }
+  { group: 'Quick Actions', title: 'Export Complete JSON Manifest', icon: 'bi-download', action: () => exportFrontierPilotJson(), shortcut: 'E' },
+  { group: 'Quick Actions', title: 'Run Full Multi-Platform Cloud Sync', icon: 'bi-arrow-repeat', action: () => triggerFrontierPilotFullSync(), shortcut: 'S' }
 ];
 
 let selectedCmdIndex = 0;
 let filteredCommands = [];
 
 function openCommandPalette() {
-  const modal = document.getElementById('dossierCommandPalette');
+  const modal = document.getElementById('frontierpilotCommandPalette');
   if (!modal) return;
-  modal.classList.remove('d-none');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
   const input = document.getElementById('cmdPaletteInput');
   if (input) {
     input.value = '';
-    input.focus();
+    setTimeout(() => input.focus(), 50);
   }
   filterCommandPalette();
 }
 
 function closeCommandPalette() {
-  const modal = document.getElementById('dossierCommandPalette');
-  if (modal) modal.classList.add('d-none');
+  const modal = document.getElementById('frontierpilotCommandPalette');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 }
 
 function filterCommandPalette() {
@@ -4302,8 +4673,8 @@ function filterCommandPalette() {
   const cmdMatches = COMMANDS.filter(c => c.title.toLowerCase().includes(query) || c.group.toLowerCase().includes(query));
   cmdMatches.forEach(c => filteredCommands.push({ type: 'command', ...c }));
 
-  if (query && Array.isArray(dossierOpps)) {
-    const oppMatches = dossierOpps.filter(o => 
+  if (query && Array.isArray(frontierpilotOpps)) {
+    const oppMatches = frontierpilotOpps.filter(o => 
       (o.title || '').toLowerCase().includes(query) || 
       (o.organization || '').toLowerCase().includes(query)
     ).slice(0, 5);
@@ -4315,7 +4686,7 @@ function filterCommandPalette() {
         title: `${o.organization} — ${o.title}`,
         icon: 'bi-briefcase',
         action: () => {
-          switchDossierTab('roles');
+          switchFrontierPilotTab('roles');
           const searchInput = document.getElementById('rolesSearch');
           if (searchInput) {
             searchInput.value = o.title;
@@ -4400,8 +4771,122 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-initDossierData();
+
+// Compatibility aliases for legacy calls
+window.switchDossierTab = window.switchFrontierPilotTab;
+window.closeDossierModal = window.closeFrontierPilotModal;
+window.openDossierModal = window.openFrontierPilotModal;
+window.exportDossierJson = window.exportFrontierPilotJson;
+window.triggerDossierFullSync = window.triggerFrontierPilotFullSync;
+
+initFrontierPilotData();
 loadCreatorStudio();
+
+/* =========================================================================
+   REAL-TIME CONTINUOUS AUTO-UPDATE & SYNC ENGINE
+   ========================================================================= */
+let lastDraftsHash = '';
+let lastOppsCount = 0;
+let autoUpdateTimer = null;
+let notionAutoPullTimer = null;
+
+function computeSimpleHash(obj) {
+  try {
+    return JSON.stringify(obj).length + '_' + (obj[0]?.id || '') + '_' + (obj[0]?.updated_at || obj[0]?.status || '');
+  } catch(e) {
+    return '';
+  }
+}
+
+async function performAutoUpdateCheck(silent = true) {
+  const badgeText = document.getElementById('autoSyncText');
+  
+  try {
+    // 1. Check for drafts / queue updates
+    const draftsRes = await fetch('/api/drafts');
+    if (draftsRes.ok) {
+      const freshDrafts = await draftsRes.json();
+      const currentHash = computeSimpleHash(freshDrafts);
+      
+      if (currentHash !== lastDraftsHash && lastDraftsHash !== '') {
+        creatorDrafts = freshDrafts;
+        updateCreatorKpis();
+        populateRepurposeDropdown();
+        // Only re-render feed if user is not actively typing in composer
+        const activeEl = document.activeElement;
+        const isEditing = activeEl && (activeEl.id === 'customPostText' || activeEl.id === 'composerTopicInput');
+        if (!isEditing) {
+          renderCreatorDraftsList();
+        }
+        if (!silent) showNotification('🔄 Live Queue updated: ' + freshDrafts.length + ' drafts synced', 'info');
+      } else if (lastDraftsHash === '') {
+        creatorDrafts = freshDrafts;
+        updateCreatorKpis();
+      }
+      lastDraftsHash = currentHash;
+    }
+
+    // 2. Check for opportunity / radar updates
+    const oppsRes = await fetch('/api/opportunities');
+    if (oppsRes.ok) {
+      const data = await oppsRes.json();
+      const freshOpps = Array.isArray(data) ? data : (data.opportunities || []);
+      if (freshOpps.length > 0 && freshOpps.length !== lastOppsCount && lastOppsCount !== 0) {
+        frontierpilotOpps = freshOpps;
+        persistFrontierPilotData();
+        renderAllViews();
+        if (!silent) showNotification('⚡ Radar updated: ' + freshOpps.length + ' active opportunities', 'info');
+      }
+      lastOppsCount = freshOpps.length;
+    }
+
+    if (badgeText) {
+      badgeText.innerText = 'Auto-Sync: Live';
+    }
+  } catch (err) {
+    if (badgeText) {
+      badgeText.innerText = 'Auto-Sync: Standalone';
+    }
+    console.debug('[AutoSync] Background check in offline mode');
+  }
+}
+
+function startAutoUpdateEngine() {
+  performAutoUpdateCheck(true);
+
+  // Poll server for live queue & radar changes every 20 seconds
+  if (autoUpdateTimer) clearInterval(autoUpdateTimer);
+  autoUpdateTimer = setInterval(() => {
+    performAutoUpdateCheck(true);
+  }, 20000);
+
+  // Poll Notion bi-directional sync every 90 seconds
+  if (notionAutoPullTimer) clearInterval(notionAutoPullTimer);
+  notionAutoPullTimer = setInterval(async () => {
+    try {
+      const res = await fetch('/api/frontierpilot/notion-pull', { method: 'POST' });
+      if (res.ok) {
+        const d = await res.json();
+        if (d.updated > 0 || d.added > 0) {
+          await initFrontierPilotData();
+          showNotification(`🔄 Notion Auto-Sync: ${d.updated || 0} updated, ${d.added || 0} added!`, 'info');
+        }
+      }
+    } catch(e) {}
+  }, 90000);
+
+  // Instant refresh when user returns to window or unlocks phone
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      performAutoUpdateCheck(false);
+    }
+  });
+  window.addEventListener('focus', () => {
+    performAutoUpdateCheck(false);
+  });
+}
+
+startAutoUpdateEngine();
 </script>
 </body>
 </html>

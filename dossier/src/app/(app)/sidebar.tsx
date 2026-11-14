@@ -2,6 +2,7 @@ import { LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 
 import { BrandMark } from "@/components/brand-mark";
+import { WorkspaceSearch } from "@/components/workspace-search";
 import { signOut } from "@/lib/auth/actions";
 import type { Release } from "@/lib/releases";
 import type { ColorScheme } from "@/lib/ui-preferences";
@@ -51,18 +52,19 @@ export function Sidebar({
         <>
           <BrandMark />
           <div className="flex min-w-0 flex-col group-data-collapsed/sidebar:hidden">
-            <span className="font-serif text-2xl leading-none font-medium tracking-[-0.01em]">Dossier</span>
-            <span className="truncate text-xs text-muted">Your job search, on your server</span>
+            <span className="font-serif text-2xl leading-none font-medium tracking-[-0.01em]">FrontierPilot</span>
+            <span className="mt-1 truncate text-[11px] text-muted">Your next chapter starts here</span>
           </div>
         </>
       }
     >
-      <div className="flex flex-1 flex-col gap-1 p-2 group-data-collapsed/sidebar:px-1">
+      <div className="flex flex-1 flex-col gap-1 px-3 py-5 group-data-collapsed/sidebar:px-1">
+        <WorkspaceSearch />
         {/* Always a fresh start, whatever an open draft holds (E7-7). */}
         <Link
           href="/new?fresh=1"
           title="New application"
-          className="mb-2 flex min-h-[34px] items-center gap-1.5 rounded-control bg-primary px-3 text-sm font-semibold text-on-primary shadow-cta hover:bg-primary-hover hover:text-on-primary motion-safe:transition-colors group-data-collapsed/sidebar:justify-center group-data-collapsed/sidebar:px-1.5"
+          className="mb-4 flex min-h-11 items-center justify-center gap-2 rounded-control bg-primary px-3 text-sm font-medium text-on-primary shadow-cta hover:bg-primary-hover hover:text-on-primary motion-safe:transition-colors group-data-collapsed/sidebar:px-1.5"
         >
           <Plus size={16} aria-hidden="true" className="shrink-0" />
           {/* Hidden while collapsed, but still the link's name. */}

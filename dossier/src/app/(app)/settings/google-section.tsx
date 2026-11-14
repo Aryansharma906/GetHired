@@ -69,7 +69,7 @@ export const CALLBACK_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Settings → Google (E15-1): connect Gmail and Calendar, choose what Dossier
+ * Settings → Google (E15-1): connect Gmail and Calendar, choose what FrontierPilot
  * reads, and set the working hours that interview times are offered in.
  * Every field saves on its own. Nothing is ever sent without asking.
  */
@@ -125,7 +125,7 @@ export function GoogleSection({
     <>
       <SettingsSectionIntro title="Google">
         Send applications from your Gmail, see employers&apos; replies next to each application, and offer interview times from your
-        calendar. Dossier always asks before it sends anything.
+        calendar. FrontierPilot always asks before it sends anything.
       </SettingsSectionIntro>
 
       <Card className="flex flex-col gap-4">
@@ -143,7 +143,7 @@ export function GoogleSection({
             {connection.signInProblem && (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-line px-4 py-3">
                 <p role="alert" className="text-control text-error">
-                  {connection.signInProblem} Until then, Dossier doesn&apos;t check your mail or calendar.
+                  {connection.signInProblem} Until then, FrontierPilot doesn&apos;t check your mail or calendar.
                 </p>
                 <a href="/api/google/connect" className={buttonClassName("secondary", "sm")}>
                   Connect again
@@ -159,7 +159,7 @@ export function GoogleSection({
         ) : (
           <div className="flex flex-col items-start gap-3">
             <p className="text-sm text-muted">
-              You&apos;ll sign in on Google&apos;s own page and choose what Dossier may do. Tokens are stored encrypted on your server and
+              You&apos;ll sign in on Google&apos;s own page and choose what FrontierPilot may do. Tokens are stored encrypted on your server and
               never leave it, except to talk to Google.
             </p>
             <a href="/api/google/connect" className={buttonClassName("primary", "md", "hover:text-on-primary")}>
@@ -320,7 +320,7 @@ export function GoogleSection({
         open={confirming}
         onOpenChange={setConfirming}
         title="Disconnect Google?"
-        description="Dossier's access is revoked at Google. Mail already in Dossier stays; nothing new comes in until you connect again."
+        description="FrontierPilot's access is revoked at Google. Mail already in FrontierPilot stays; nothing new comes in until you connect again."
         confirmLabel="Disconnect"
         onConfirm={() => void disconnect()}
       />

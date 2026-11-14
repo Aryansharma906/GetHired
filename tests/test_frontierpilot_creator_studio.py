@@ -1,24 +1,36 @@
-"""Tests for Dossier 2.0 LinkedIn Creator Studio Native Integration."""
+"""Tests for FrontierPilot 2.0 LinkedIn Creator Studio Native Integration."""
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
+import lib.drafts_store
 from studio.app import app
 from lib.drafts_store import _read_queue, _write_queue, create_draft, get_draft, list_drafts, update_draft
 
 ROOT = Path(__file__).resolve().parents[1]
+TEMP_TEST_FILE = Path(tempfile.mktemp(suffix=".json"))
+ORIG_QUEUE_FILE = lib.drafts_store.QUEUE_FILE
 
 
-class TestDossierCreatorStudio(unittest.TestCase):
+def setUpModule():
+    lib.drafts_store.QUEUE_FILE = TEMP_TEST_FILE
+
+
+def tearDownModule():
+    lib.drafts_store.QUEUE_FILE = ORIG_QUEUE_FILE
+    if TEMP_TEST_FILE.exists():
+        TEMP_TEST_FILE.unlink()
+
+
+class TestFrontierPilotCreatorStudio(unittest.TestCase):
     def setUp(self):
+        app.config["TESTING"] = True
+        app.testing = True
         self.app = app.test_client()
         self.app.testing = True
-        self.original_queue = _read_queue()
-
-    def tearDown(self):
-        _write_queue(self.original_queue)
 
     def test_legacy_index_redirect(self):
         """Verify that /index.html cleanly redirects to / without throwing 404."""
@@ -26,9 +38,9 @@ class TestDossierCreatorStudio(unittest.TestCase):
         self.assertEqual(res.status_code, 302)
         self.assertTrue(res.headers["Location"].endswith("/"))
 
-    def test_dossier_page_renders_creator_studio(self):
-        """Verify that /dossier contains the native Creator Studio tab and elements."""
-        res = self.app.get("/dossier")
+    def test_frontierpilot_page_renders_creator_studio(self):
+        """Verify that /frontierpilot contains the native Creator Studio tab and elements."""
+        res = self.app.get("/frontierpilot")
         self.assertEqual(res.status_code, 200)
         html = res.data.decode("utf-8")
         # Invariant checks
@@ -121,21 +133,21 @@ class TestDossierCreatorStudio(unittest.TestCase):
             ratio = em_dash_count / (len(words) / 100)
             self.assertLessEqual(ratio, 2.0, "Too many em-dashes in copy")
 
-    def test_dossier_editorial_design_and_command_palette(self):
+    def test_frontierpilot_editorial_design_and_command_palette(self):
         """Verify editorial design tokens, accessibility skip-link, breadcrumbs, and command palette."""
-        res = self.app.get("/dossier")
+        res = self.app.get("/frontierpilot")
         self.assertEqual(res.status_code, 200)
         html = res.data.decode("utf-8")
 
-        # Design tokens
-        self.assertIn("--surface: #f9f8f5;", html)
-        self.assertIn("--ink: #1f2328;", html)
-        self.assertIn("--primary: #4338ca;", html)
+        # Design tokens (Cosmic Framer Dark)
+        self.assertIn("--surface: #07090e;", html)
+        self.assertIn("--ink: #f8fafc;", html)
+        self.assertIn("--primary: #6366f1;", html)
 
         # Accessibility and App Shell
         self.assertIn('class="skip-to-main"', html)
-        self.assertIn('id="dossierBreadcrumb"', html)
-        self.assertIn('id="dossierCommandPalette"', html)
+        self.assertIn('id="frontierpilotBreadcrumb"', html)
+        self.assertIn('id="frontierpilotCommandPalette"', html)
         self.assertIn('openCommandPalette()', html)
 
         # Progressive disclosure & inline validation
@@ -190,6 +202,32 @@ class TestDossierCreatorStudio(unittest.TestCase):
         # Verify not found on subsequent delete
         res_del_again = self.app.delete(f"/api/opportunities/{opp_id}")
         self.assertEqual(res_del_again.status_code, 404)
+
+    def test_auth_login_endpoint(self):
+        """Verify authentication gatekeeper PIN verification."""
+        # Wrong PIN
+        res_bad = self.app.post("/api/auth/login", json={"pin": "wrongpass"})
+        self.assertEqual(res_bad.status_code, 401)
+        self.assertFalse(res_bad.get_json().get("success"))
+
+        # Correct PIN
+        res_good = self.app.post("/api/auth/login", json={"pin": "frontier-orbitron-2026"})
+        self.assertEqual(res_good.status_code, 200)
+        self.assertTrue(res_good.get_json().get("success"))
+
+    def test_notion_bi_directional_pull_endpoint(self):
+        """Verify Notion pull endpoint updates state without crashing."""
+        res = self.app.get("/api/frontierpilot/notion-pull")
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data.get("success"))
+
+    def test_wix_sync_endpoint(self):
+        """Verify Wix Studio collection staging and webhook dispatch endpoint."""
+        res = self.app.get("/api/frontierpilot/wix-sync")
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data.get("success"))
 
 
 if __name__ == "__main__":

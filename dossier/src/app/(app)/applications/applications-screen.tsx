@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useOptimistic, useRef, useState, useTransition, type ReactNode } from "react";
+import { Search } from "lucide-react";
+import { useEffect, useOptimistic, useRef, useState, useTransition, type ReactNode } from "react";
 
 import { changeStatus } from "@/components/change-status";
 
@@ -56,6 +57,17 @@ export function ApplicationsScreen({ params, rows, counts, summary, empty, archi
     if (params.q !== query.trim()) setQuery(params.q);
   }
   const typing = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const searchInput = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const shortcut = (event: KeyboardEvent) => {
+      const element = event.target instanceof HTMLElement ? event.target : null;
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey || element?.closest("input, textarea, select, [contenteditable=true], [role=dialog]")) return;
+      event.preventDefault();
+      searchInput.current?.focus();
+    };
+    window.addEventListener("keydown", shortcut);
+    return () => { clearTimeout(typing.current); window.removeEventListener("keydown", shortcut); };
+  }, []);
 
   // A moved or reordered card shows in its new place at once; if the
   // change fails, it goes back (LST-4).
@@ -138,16 +150,20 @@ export function ApplicationsScreen({ params, rows, counts, summary, empty, archi
         <FirstApplication />
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-3 px-10 pb-[18px]">
+          <div className="applications-controls flex flex-wrap items-center gap-3 px-10 pb-[18px]">
+            <div className="relative min-w-[180px] flex-[0_1_300px]">
+            <Search size={16} aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted" />
             <input
+              ref={searchInput}
               type="search"
               aria-label="Search applications"
               placeholder="Search company or role"
               value={query}
               onChange={(event) => search(event.target.value)}
               onKeyDown={(event) => event.key === "Enter" && go({ q: query.trim() }, { replace: true })}
-              className="min-w-[180px] flex-[0_1_300px] rounded-control border border-line-input bg-input px-3 py-2.5 text-sm placeholder:text-muted focus-visible:border-primary focus-visible:outline-offset-0"
+              className="w-full rounded-control border border-line-input bg-input py-2.5 pr-3 pl-10 text-sm placeholder:text-muted focus-visible:border-primary focus-visible:outline-offset-0"
             />
+            </div>
             <div role="group" aria-label="Show" className="flex flex-wrap gap-1.5">
               {FILTERS.map(({ value, label }) => (
                 <button
@@ -176,8 +192,9 @@ export function ApplicationsScreen({ params, rows, counts, summary, empty, archi
                 <span className="text-xs opacity-65">{archivedCount}</span>
               </button>
             )}
-            <span className="ml-auto text-meta text-muted">{HINTS[params.view]}</span>
+            <span className="ml-auto text-xs text-muted" role="status" aria-live="polite">{rows.length} {rows.length === 1 ? "application" : "applications"}{pending ? " · Updating…" : ""}</span>
           </div>
+          <p className="applications-controls px-10 pb-4 text-xs text-muted">{HINTS[params.view]} · Press / to search</p>
 
           <div className={cn("flex min-h-0 flex-1 flex-col motion-safe:transition-opacity", pending && "opacity-60")} aria-busy={pending || undefined}>
             {rows.length === 0 ? (
@@ -197,14 +214,14 @@ export function ApplicationsScreen({ params, rows, counts, summary, empty, archi
 /** When the search or filter leaves nothing to show. */
 function Nothing({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-10 mb-16 rounded-panel border border-line-card bg-card px-5 py-9 text-center text-sm text-muted">{children}</div>
+    <div className="applications-empty mx-10 mb-16 rounded-panel border border-line-card bg-card px-5 py-9 text-center text-sm text-muted">{children}</div>
   );
 }
 
 /** Before the first application: where to start. */
 function FirstApplication() {
   return (
-    <div className="mx-10 mb-16 flex max-w-[640px] flex-col items-start gap-3 rounded-panel border border-line-card bg-card px-7 py-7">
+    <div className="applications-empty mx-10 mb-16 flex max-w-[640px] flex-col items-start gap-3 rounded-panel border border-line-card bg-card px-7 py-7">
       <h2 className="font-serif text-section">Your first application</h2>
       <p className="text-sm text-muted">
         Paste a job posting and I&apos;ll read it, check it against your profile and draft a tailored resume and cover letter. Your

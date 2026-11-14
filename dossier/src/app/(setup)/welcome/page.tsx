@@ -39,7 +39,7 @@ export default async function WelcomePage({ searchParams }: PageProps<"/welcome"
     return (
       <SetupFrame
         step="start"
-        title="Welcome to Dossier"
+        title="Welcome to FrontierPilot"
         complete
         lead={
           <>

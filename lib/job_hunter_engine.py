@@ -21,13 +21,16 @@ from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from lib._env import load_env
-from lib.dossier_integrator import ARYAN_PROFILE, DossierIntegrator
+from lib.frontierpilot_integrator import ARYAN_PROFILE, FrontierPilotIntegrator
+DossierIntegrator = FrontierPilotIntegrator
 
 load_env()
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class JobHunterEngine:
+    _MODELS = ["gemini-4-hydrogen", "gemini-3.5-flash-lite"]
+
     def __init__(self):
         load_env()
         self.gemini_key = os.getenv("GEMINI_API_KEY")
@@ -36,42 +39,44 @@ class JobHunterEngine:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def _call_gemini_json(self, prompt: str, fallback: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute a prompt against Google Gemini expecting structured JSON."""
+        """Execute a prompt against Google Gemini expecting structured JSON with model cascade."""
         if not self.gemini_key:
             return fallback
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={self.gemini_key}"
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.25, "responseMimeType": "application/json"}
-        }
-        try:
-            r = requests.post(url, json=payload, timeout=6)
-            if r.status_code == 200:
-                data = r.json()
-                text = data["candidates"][0]["content"]["parts"][0]["text"]
-                return json.loads(text)
-        except Exception as e:
-            print(f"Gemini call fallback: {e}")
+        for model in self._MODELS:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}"
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.25, "responseMimeType": "application/json"}
+            }
+            try:
+                r = requests.post(url, json=payload, timeout=6)
+                if r.status_code == 200:
+                    data = r.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    return json.loads(text)
+            except Exception as e:
+                print(f"Gemini call fallback ({model}): {e}")
         return fallback
 
     def _call_gemini_text(self, prompt: str, fallback: str) -> str:
-        """Execute a prompt against Google Gemini expecting formatted markdown/prose."""
+        """Execute a prompt against Google Gemini expecting formatted markdown/prose with model cascade."""
         if not self.gemini_key:
             return fallback
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={self.gemini_key}"
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0.3}
-        }
-        try:
-            r = requests.post(url, json=payload, timeout=6)
-            if r.status_code == 200:
-                data = r.json()
-                return data["candidates"][0]["content"]["parts"][0]["text"].strip()
-        except Exception as e:
-            print(f"Gemini text fallback: {e}")
+        for model in self._MODELS:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}"
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.3}
+            }
+            try:
+                r = requests.post(url, json=payload, timeout=6)
+                if r.status_code == 200:
+                    data = r.json()
+                    return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            except Exception as e:
+                print(f"Gemini text fallback ({model}): {e}")
         return fallback
 
     # =========================================================================

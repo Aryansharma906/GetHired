@@ -1,4 +1,4 @@
-"""Tests for Dossier Unified Integration Bridge."""
+"""Tests for FrontierPilot Unified Integration Bridge."""
 from __future__ import annotations
 
 import csv
@@ -8,13 +8,13 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-from lib.dossier_integrator import DossierIntegrator, ARYAN_PROFILE
+from lib.frontierpilot_integrator import FrontierPilotIntegrator, ARYAN_PROFILE
 
 
-class TestDossierIntegrator(unittest.TestCase):
+class TestFrontierPilotIntegrator(unittest.TestCase):
     def setUp(self):
         self.temp_dir = Path(tempfile.mkdtemp())
-        self.integrator = DossierIntegrator()
+        self.integrator = FrontierPilotIntegrator()
         self.integrator.opps_path = self.temp_dir / "opportunities_test.json"
         self.integrator.staging_dir = self.temp_dir / "exports"
         self.integrator.staging_dir.mkdir(parents=True, exist_ok=True)
@@ -86,9 +86,9 @@ class TestDossierIntegrator(unittest.TestCase):
         self.assertIn("mode", res)
 
     @patch("requests.post")
-    def test_run_full_dossier_sync(self, mock_post):
+    def test_run_full_frontierpilot_sync(self, mock_post):
         mock_post.return_value.status_code = 200
-        summary = self.integrator.run_full_dossier_sync()
+        summary = self.integrator.run_full_frontierpilot_sync()
         self.assertIn("total_tracked_opportunities", summary)
         self.assertIn("google_sheets", summary)
         self.assertIn("google_drive", summary)

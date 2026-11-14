@@ -1,20 +1,22 @@
-name: Security & Secret Leak Prevention Guard
+name: Security & Quality Guard
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  secret_audit:
-    name: Verify Zero Secret Leaks & Manifest Integrity
+  verify:
+    name: Repository Integrity, Security & Test Suite
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -22,11 +24,28 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Verify No Secrets or Private Credentials in Tracked Files
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Secret Scan & Sensitive File Verification
         run: |
           python3 scripts/check_no_secrets.py
 
-      - name: Verify Open Source Manifests and Licensing
+      - name: Skill Frontmatter & Bundle Verification
         run: |
-          python3 -c "import json; [json.load(open(f)) for f in ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json']]"
-          echo "All plugin manifests and security rules passed!"
+          python3 scripts/check_frontmatter.py
+          ls skills/ | wc -l | grep -q "12" || { echo "Skill count invariant violated: must be 12"; exit 1; }
+
+      - name: Run Full Unit & Integration Test Suite
+        env:
+          GEMINI_API_KEY: "test-ci-key"
+          SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/T00/B00/mock"
+        run: |
+          python3 -m unittest discover -s tests
+
+      - name: Verify Marketplace Synchronization
+        run: |
+          python3 scripts/sync_codex_marketplace.py
+          git diff --exit-code .codex-marketplace/ || { echo "Codex marketplace mirror is out of sync. Run python3 scripts/sync_codex_marketplace.py"; exit 1; }

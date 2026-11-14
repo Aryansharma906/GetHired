@@ -42,20 +42,20 @@ To process live button clicks (`Approve & Schedule` / `Reject`) from Slack:
 python3 scripts/slack_listener.py --port 5050
 ```
 
-### Dossier Career Radar & Slack Job Approvals
+### FrontierPilot Career Radar & Slack Job Approvals
 To trigger career radar updates, job evaluations, and send interactive approval cards to Slack:
 ```bash
 # Check connectivity across Google Gemini, Sheets, Drive, Gmail, Notion, Slack
-python3 scripts/sync_dossier.py --status
+python3 scripts/sync_frontierpilot.py --status
 
 # Dispatch top priority job approval card to Slack for 1-tap approval
-python3 scripts/sync_dossier.py --dispatch-jobs
+python3 scripts/sync_frontierpilot.py --dispatch-jobs
 
 # Send executive Career Radar digest to Slack
-python3 scripts/sync_dossier.py --digest
+python3 scripts/sync_frontierpilot.py --digest
 
 # Run full unified sync (scoring, sheets, drive, gmail, notion) + Slack cards
-python3 scripts/sync_dossier.py --all
+python3 scripts/sync_frontierpilot.py --all
 ```
 
 ---
@@ -145,7 +145,7 @@ To maximize velocity and eliminate cognitive load:
 ## 8. Frontend & PWA Integrity Guardrails
 
 ### Service Worker Caching Policy
-- **Network-First for HTML**: Navigational requests (`/`, `/dossier`, `*.html`) must always fetch from the network first to guarantee instant deployment visibility, falling back to cache only when offline.
+- **Network-First for HTML**: Navigational requests (`/`, `/frontierpilot`, `*.html`) must always fetch from the network first to guarantee instant deployment visibility, falling back to cache only when offline.
 - **Cache-First for Static Assets**: Only immutable vendor libraries (Bootstrap, JSZip) and static icon fonts may use Cache-First resolution.
 - **Version Bumping**: Any structural JavaScript or HTML change must increment the Service Worker cache identifier (`CACHE_NAME = 'studio-cache-v...'`) to invalidate stale clients.
 

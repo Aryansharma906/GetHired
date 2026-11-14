@@ -1,9 +1,9 @@
-// Service Worker for LinkedIn Studio & Dossier Career Radar (Offline-First PWA)
-const CACHE_NAME = 'studio-cache-v3';
+// Service Worker for LinkedIn Studio & FrontierPilot Career Radar (Offline-First PWA)
+const CACHE_NAME = 'frontierpilot-v2.1-redesign';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './dossier.html',
+  './frontierpilot.html',
   './manifest.json',
   './assets/bootstrap.min.css',
   './assets/bootstrap.bundle.min.js',
@@ -18,9 +18,9 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW v2] Pre-caching static assets for offline mode...');
+      console.log('[SW v6] Pre-caching static assets for offline mode...');
       return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('[SW v2] Cache addAll warning:', err);
+        console.warn('[SW v6] Cache addAll warning:', err);
       });
     })
   );
@@ -45,7 +45,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Network-First for HTML pages so user always sees the freshest updates immediately
-  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/dossier')) {
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/frontierpilot') || url.pathname.endsWith('/dossier')) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
@@ -59,8 +59,8 @@ self.addEventListener('fetch', (event) => {
           // If offline, fall back to cached version or appropriate fallback HTML
           return caches.match(event.request).then((cached) => {
             if (cached) return cached;
-            if (url.pathname.includes('dossier')) {
-              return caches.match('./dossier.html');
+            if (url.pathname.includes('frontierpilot') || url.pathname.includes('dossier')) {
+              return caches.match('./frontierpilot.html');
             }
             return caches.match('./index.html');
           });

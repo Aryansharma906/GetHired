@@ -27,7 +27,7 @@ export function NavLinks({ counts }: { counts?: Record<string, number> } = {}) {
               // Holds the label's place, so the groups stay apart with the labels hidden.
               <div aria-hidden="true" className="mx-2 my-[15px] h-px bg-line-card" />
             ) : (
-              <div className="mt-1.5 mb-1 px-3 py-1 text-xs font-medium text-muted">{label}</div>
+              <div className="sidebar-group-label mt-5 mb-1.5 px-3 py-1 text-muted">{label}</div>
             ))}
           {items.map((item) => {
             const { href, label, icon: Icon } = item;
@@ -39,7 +39,7 @@ export function NavLinks({ counts }: { counts?: Record<string, number> } = {}) {
                 aria-current={active ? "page" : undefined}
                 title={collapsed ? label : undefined}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm motion-safe:transition-colors",
+                  "sidebar-nav-item flex min-h-10 items-center gap-3 rounded-control px-3 py-2 text-sm motion-safe:transition-colors",
                   collapsed && "relative justify-center px-1.5",
                   // One or the other: cn() doesn't merge, so both would leave the CSS order to pick.
                   // The current page keeps its look under the pointer, as in Profile's and Settings' lists.

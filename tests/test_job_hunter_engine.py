@@ -45,11 +45,12 @@ class TestJobHunterEngine(unittest.TestCase):
             self.assertIn("Anthropic", letter)
 
     def test_generate_recruiter_outreach_dm(self):
-        dm_data = self.engine.generate_recruiter_outreach_dm(self.opp)
-        self.assertIn("linkedin_dm_3_sentences", dm_data)
-        self.assertIn("cold_email_subject", dm_data)
-        # Check that it includes Aryan's work or Anthropic
-        self.assertTrue("Anthropic" in dm_data["linkedin_dm_3_sentences"] or "Handshake" in dm_data["linkedin_dm_3_sentences"])
+        with patch.object(self.engine, "_call_gemini_text", return_value="Hi team at Anthropic, loved your work. Benchmarked models at Handshake."):
+            dm_data = self.engine.generate_recruiter_outreach_dm(self.opp)
+            self.assertIn("linkedin_dm_3_sentences", dm_data)
+            self.assertIn("cold_email_subject", dm_data)
+            # Check that it includes Aryan's work or Anthropic
+            self.assertTrue("Anthropic" in dm_data["linkedin_dm_3_sentences"] or "Handshake" in dm_data["linkedin_dm_3_sentences"])
 
     def test_generate_proof_of_work_plan(self):
         plan = self.engine.generate_proof_of_work_plan(self.opp)

@@ -9,8 +9,8 @@ import { COLOR_SCHEME_COOKIE, parseColorScheme } from "@/lib/ui-preferences";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "Dossier", template: "%s · Dossier" },
-  description: "Your job search, on your server.",
+  title: { default: "FrontierPilot", template: "%s · FrontierPilot" },
+  description: "Autonomous Career Radar & AI Cockpit by Orbitron AI • Aryan Sharma.",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

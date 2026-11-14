@@ -52,6 +52,23 @@ def get_studio_url() -> str:
     return f"http://{ip}:5050"
 
 
+def send_raw_slack_alert(text: str, webhook_url: Optional[str] = None) -> bool:
+    """Send an immediate markdown alert message to Slack."""
+    load_env()
+    webhook_url = webhook_url or os.getenv("SLACK_WEBHOOK_URL")
+    if not webhook_url:
+        print("[Slack Alert] No SLACK_WEBHOOK_URL configured, skipping.")
+        return False
+    try:
+        import requests
+        payload = {"text": text}
+        res = requests.post(webhook_url, json=payload, timeout=8)
+        return res.status_code == 200
+    except Exception as e:
+        print(f"[Slack Alert Error] {e}")
+        return False
+
+
 def send_studio_online_notification(
     public_url: str,
     local_url: Optional[str] = None,
@@ -79,7 +96,7 @@ def send_studio_online_notification(
                 "type": "mrkdwn",
                 "text": (
                     "*Approval Studio is now active and synced.*\n\n"
-                    f"• *Dossier Career Radar:* <{public_url}/dossier|{public_url}/dossier>\n"
+                    f"• *FrontierPilot Career Radar:* <{public_url}/frontierpilot|{public_url}/frontierpilot>\n"
                     f"• *Mobile / Cellular Studio:* <{public_url}|{public_url}>\n"
                     f"• *Local Wi-Fi Studio:* <{loc}|{loc}>\n\n"
                     "_Tip: If using the public link on iPhone Safari, tap `[Visit Site]` once if prompted by ngrok._"
@@ -93,12 +110,12 @@ def send_studio_online_notification(
                     "type": "button",
                     "text": {
                         "type": "plain_text",
-                        "text": "💼 Dossier Dashboard",
+                        "text": "💼 FrontierPilot Cockpit",
                         "emoji": True,
                     },
                     "style": "primary",
-                    "url": f"{public_url}/dossier",
-                    "action_id": "open_dossier_public",
+                    "url": f"{public_url}/frontierpilot",
+                    "action_id": "open_frontierpilot_public",
                 },
                 {
                     "type": "button",
@@ -207,7 +224,7 @@ def build_slack_approval_blocks(draft: dict[str, Any]) -> list[dict[str, Any]]:
         "elements": [
             {
                 "type": "mrkdwn",
-                "text": f"🛡️ *2026 Algorithm Audit:* Zero banned buzzwords • Slop compliant | <{base_url}/dossier|💼 Dossier Dashboard>",
+                "text": f"🛡️ *2026 Algorithm Audit:* Zero banned buzzwords • Slop compliant | <{base_url}/frontierpilot|💼 FrontierPilot Cockpit>",
             }
         ],
     })
@@ -222,11 +239,11 @@ def build_slack_approval_blocks(draft: dict[str, Any]) -> list[dict[str, Any]]:
                     "type": "button",
                     "text": {
                         "type": "plain_text",
-                        "text": "💼 Dossier",
+                        "text": "💼 FrontierPilot",
                         "emoji": True,
                     },
-                    "url": f"{base_url}/dossier",
-                    "action_id": "open_dossier",
+                    "url": f"{base_url}/frontierpilot",
+                    "action_id": "open_frontierpilot",
                 },
                 {
                     "type": "button",
@@ -362,7 +379,7 @@ def send_published_notification(
 
 
 # =========================================================================
-# Dossier Career Radar & Job Opportunities Approval in Slack
+# FrontierPilot Career Radar & Job Opportunities Approval in Slack
 # =========================================================================
 
 def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
@@ -448,7 +465,7 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
             "elements": [
                 {
                     "type": "mrkdwn",
-                    "text": f"🛡️ *Complete AI Job Hunt Stack:* Gemini ATS Resume • Value Cover Letter • NotebookLM Prep | <{base_url}/dossier|💼 Dossier Dashboard>",
+                    "text": f"🛡️ *Complete AI Job Hunt Stack:* Gemini ATS Resume • Value Cover Letter • NotebookLM Prep | <{base_url}/frontierpilot|💼 FrontierPilot Cockpit>",
                 }
             ],
         },
@@ -459,9 +476,9 @@ def build_job_approval_blocks(opp: dict[str, Any]) -> list[dict[str, Any]]:
         elements = [
             {
                 "type": "button",
-                "text": {"type": "plain_text", "text": "💼 Dossier Hub", "emoji": True},
-                "url": f"{base_url}/dossier",
-                "action_id": "open_dossier_hub",
+                "text": {"type": "plain_text", "text": "💼 FrontierPilot Hub", "emoji": True},
+                "url": f"{base_url}/frontierpilot",
+                "action_id": "open_frontierpilot_hub",
             },
             {
                 "type": "button",
@@ -563,7 +580,7 @@ def send_job_radar_digest_to_slack(
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": "📡 Dossier Career Radar: Active Opportunities Digest",
+                "text": "📡 FrontierPilot Career Radar: Active Opportunities Digest",
                 "emoji": True,
             },
         },
@@ -572,7 +589,7 @@ def send_job_radar_digest_to_slack(
             "text": {
                 "type": "mrkdwn",
                 "text": (
-                    f"*Radar Status:* Tracking *{total_count} active opportunities* across India on-site, remote, and freelance tracks. <{base_url}/dossier|View Live Dossier Dashboard>\n\n"
+                    f"*Radar Status:* Tracking *{total_count} active opportunities* across India on-site, remote, and freelance tracks. <{base_url}/frontierpilot|View Live FrontierPilot Cockpit>\n\n"
                     f"🏆 *Top Recommended Roles for Aryan Sharma:*\n\n"
                     f"{fields_text}"
                 ),
@@ -584,15 +601,15 @@ def send_job_radar_digest_to_slack(
             "elements": [
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "💼 Open Dossier Dashboard", "emoji": True},
+                    "text": {"type": "plain_text", "text": "💼 Open FrontierPilot Cockpit", "emoji": True},
                     "style": "primary",
-                    "url": f"{base_url}/dossier",
-                    "action_id": "open_dossier_hub",
+                    "url": f"{base_url}/frontierpilot",
+                    "action_id": "open_frontierpilot_hub",
                 },
                 {
                     "type": "button",
                     "text": {"type": "plain_text", "text": "📊 View Google Sheets", "emoji": True},
-                    "url": f"{base_url}/api/dossier/export/sheets",
+                    "url": f"{base_url}/api/frontierpilot/export/sheets",
                     "action_id": "view_sheets_csv",
                 },
                 {
@@ -606,7 +623,7 @@ def send_job_radar_digest_to_slack(
     ]
 
     payload = {
-        "text": f"📡 Dossier Career Radar: {total_count} Active Opportunities Tracked",
+        "text": f"📡 FrontierPilot Career Radar: {total_count} Active Opportunities Tracked",
         "blocks": blocks,
     }
     try:
@@ -618,8 +635,8 @@ def send_job_radar_digest_to_slack(
 
 def process_job_slack_action(action_type: str, opp_id: str, user_name: str = "Aryan") -> dict[str, Any]:
     """Handle 1-tap or interactive button action on a job opportunity."""
-    from lib.dossier_integrator import DossierIntegrator
-    integrator = DossierIntegrator()
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
     opps = integrator.load_opportunities()
 
     target = next((o for o in opps if o.get("id") == opp_id), None)
@@ -643,8 +660,8 @@ def process_job_slack_action(action_type: str, opp_id: str, user_name: str = "Ar
             pass
 
         # Update Google Sheets & Notion exports
-        from lib.dossier_integrator import DossierIntegrator
-        integrator = DossierIntegrator()
+        from lib.frontierpilot_integrator import FrontierPilotIntegrator
+        integrator = FrontierPilotIntegrator()
         integrator.save_opportunities(opps)
         integrator.sync_to_google_sheets(opps)
         integrator.sync_resumes_to_google_drive()
@@ -687,8 +704,8 @@ def process_job_slack_action(action_type: str, opp_id: str, user_name: str = "Ar
         target["rejected_by"] = user_name
         target["rejected_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-        from lib.dossier_integrator import DossierIntegrator
-        integrator = DossierIntegrator()
+        from lib.frontierpilot_integrator import FrontierPilotIntegrator
+        integrator = FrontierPilotIntegrator()
         integrator.save_opportunities(opps)
         integrator.sync_to_google_sheets(opps)
         integrator.sync_to_notion(opps)

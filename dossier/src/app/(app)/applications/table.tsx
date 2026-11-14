@@ -49,10 +49,10 @@ export function Table({
   const router = useRouter();
   return (
     // Relative, so screen-reader-only text is clipped with the table.
-    <div className="relative mx-10 mb-16 overflow-x-auto rounded-panel border border-line-card bg-card">
+    <div role="region" aria-label="Applications table" tabIndex={0} className="applications-empty relative mx-10 mb-16 overflow-x-auto rounded-panel border border-line-card bg-card shadow-card">
       <table className="w-full min-w-[820px] table-fixed border-collapse text-left">
         <thead>
-          <tr className="border-b border-line">
+          <tr className="border-b border-line bg-paper/40">
             {COLUMNS.map((column) => {
               const active = sort.key === column.key;
               return (

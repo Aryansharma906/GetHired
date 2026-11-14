@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ArrowUpRight, BriefcaseBusiness, CheckCheck, MessagesSquare, Search, Sparkles } from "lucide-react";
 
+import { CareerArt } from "@/components/career-art";
+import { Reveal, WorkspaceMotion } from "@/components/workspace-motion";
 import { PageHeader } from "@/components/page-header";
 import { buttonClassName } from "@/components/ui/button";
 import { StatusDot } from "@/components/ui/status-dot";
@@ -15,7 +18,7 @@ import { Greeting } from "./greeting";
 import { PeriodFilter, PeriodScoped } from "./period-filter";
 import { QuietDays } from "./quiet-days";
 
-const card = "flex flex-col rounded-panel border border-line-card bg-card";
+const card = "dashboard-card flex flex-col rounded-panel border border-line-card bg-card";
 const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
 /** The dashboard (DSH-1 to DSH-6): the funnel, where things stand, what's worth a look, and the calendar. */
@@ -44,7 +47,7 @@ export function Dashboard({
   // The summary follows the time filter, so it says which period it covers.
   const within = range === "all" ? null : DASHBOARD_PERIODS.find((entry) => entry.value === range)?.label.toLowerCase();
   return (
-    <>
+    <WorkspaceMotion className="flex min-w-0 flex-1 flex-col">
       <PageHeader
         title={<Greeting name={firstName} serverPeriod={period} />}
         description={
@@ -69,6 +72,18 @@ export function Dashboard({
         <PeriodFilter period={range}>
           <Columns calendar={calendar}>
             <PeriodScoped className="grid max-w-[1200px] grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-5">
+              <Reveal className="col-span-full">
+                <section className="dashboard-hero flex items-center justify-between rounded-panel px-8 py-7" aria-labelledby="next-move-heading">
+                  <div className="max-w-[500px]">
+                    <p className="workspace-eyebrow mb-3 flex items-center gap-2"><Sparkles size={14} aria-hidden="true" /> Your career, with intention</p>
+                    <h2 id="next-move-heading" className="font-serif text-[clamp(28px,3vw,38px)] leading-[1.15] tracking-tight">Make your next move count.</h2>
+                    <p className="mt-3 max-w-[380px] text-sm leading-relaxed text-muted">Find a role that fits. Bring your experience to life. Keep every opportunity moving, all in one place.</p>
+                    <Link href="/jobs" className={buttonClassName("primary", "md", "mt-5 min-h-10 hover:text-on-primary")}><Search size={15} aria-hidden="true" /> Explore opportunities <ArrowUpRight size={15} aria-hidden="true" /></Link>
+                  </div>
+                  <CareerArt className="w-[32%] max-w-[310px] shrink-0" />
+                </section>
+              </Reveal>
+              <Metrics figures={figures} range={range} />
               <Funnel figures={figures} />
               <ActivityChart weeks={figures.weeks} />
               <WhereThingsStand byStatus={figures.byStatus} />
@@ -77,7 +92,7 @@ export function Dashboard({
           </Columns>
         </PeriodFilter>
       )}
-    </>
+    </WorkspaceMotion>
   );
 }
 
@@ -87,12 +102,33 @@ export function Dashboard({
  */
 function Columns({ calendar, children }: { calendar?: ReactNode; children: ReactNode }) {
   return (
-    <div className="@container px-10 pb-[72px]">
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 @min-[1240px]:grid-cols-[minmax(0,1200px)_400px]">
+    <div className="dashboard-columns @container px-10 pb-[72px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 @min-[1100px]:grid-cols-[minmax(0,1200px)_340px]">
         {children}
-        {calendar && <div className="min-w-0 @min-[780px]:max-w-[calc(50%-10px)] @min-[1240px]:max-w-none">{calendar}</div>}
+        {calendar && <div className="min-w-0 @min-[780px]:max-w-[calc(50%-10px)] @min-[1100px]:max-w-none">{calendar}</div>}
       </div>
     </div>
+  );
+}
+
+/** All figures use the same server-calculated period as the funnel. */
+function Metrics({ figures, range }: { figures: DashboardFigures; range: DashboardPeriod }) {
+  const count = Object.values(figures.byStatus).reduce((sum, value) => sum + value, 0);
+  const entries = [
+    { label: "Applications in view", value: count, detail: range === "all" ? "Across your entire search" : DASHBOARD_PERIODS.find((entry) => entry.value === range)?.label, icon: BriefcaseBusiness },
+    { label: "Response rate", value: figures.heardBackPercent === null ? "—" : `${figures.heardBackPercent}%`, detail: `${plural(figures.heardBack, "response", "responses")} from ${figures.sent} sent`, icon: MessagesSquare },
+    { label: "Interviews reached", value: figures.reachedInterview, detail: "Including completed applications", icon: CheckCheck },
+  ];
+  return (
+    <dl className="col-span-full grid grid-cols-1 gap-4 min-[620px]:grid-cols-3" aria-label="Search overview">
+      {entries.map(({ label, value, detail, icon: Icon }) => (
+        <div key={label} className="metric-card rounded-panel border border-line-card bg-card p-5">
+          <dt className="flex items-center justify-between gap-2 text-meta text-muted">{label}<span className="grid size-8 place-items-center rounded-control bg-accent-soft text-accent"><Icon size={16} aria-hidden="true" /></span></dt>
+          <dd className="mt-2 font-serif text-[36px] leading-tight tabular-nums">{value}</dd>
+          <div className="mt-1 text-xs text-muted">{detail}</div>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -200,11 +236,13 @@ function WorthALook({ items, quietDays }: { items: DashboardFigures["attention"]
 function Welcome() {
   return (
     <Panel>
-      <h2 className="font-serif text-section">Welcome to Dossier</h2>
+      <p className="workspace-eyebrow">Your next chapter</p>
+      <h2 className="font-serif text-section">Welcome to FrontierPilot</h2>
       <p className="text-sm text-muted">
         Start with your profile: your roles, skills and education are what every tailored resume and cover letter is built from.
         Then paste a job posting, and your funnel and next steps will show up here.
       </p>
+      <CareerArt className="self-center w-full max-w-[300px]" />
       <div className="flex flex-wrap items-center gap-4 pt-1">
         <Link href="/profile" className={buttonClassName("secondary")}>
           Fill in your profile
@@ -221,5 +259,5 @@ function Welcome() {
 }
 
 function Panel({ children }: { children: ReactNode }) {
-  return <div className={`${card} max-w-[640px] items-start gap-3 p-7`}>{children}</div>;
+  return <div className={`${card} dashboard-hero max-w-[760px] items-start gap-3 p-8`}>{children}</div>;
 }

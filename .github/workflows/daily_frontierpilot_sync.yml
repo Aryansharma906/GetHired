@@ -1,4 +1,4 @@
-name: Dossier Daily Cloud Synchronization
+name: FrontierPilot Daily Cloud Synchronization
 
 on:
   schedule:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  sync_dossier_pipeline:
+  sync_frontierpilot_pipeline:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Execute Unified Dossier Sync (Gemini, Sheets, Drive, Gmail, Notion, Slack)
+      - name: Execute Unified FrontierPilot Sync (Gemini, Sheets, Drive, Gmail, Notion, Slack)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -36,4 +36,4 @@ jobs:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: |
-          python3 scripts/sync_dossier.py --all --dispatch-jobs
+          python3 scripts/sync_frontierpilot.py --all --dispatch-jobs

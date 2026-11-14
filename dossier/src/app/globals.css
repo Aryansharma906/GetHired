@@ -14,32 +14,35 @@
    */
 
   /* Surfaces: a beige shell, like the sidebar, around the screen's panel. */
-  --color-paper: light-dark(#eeebe4, #1a1917); /* shell around the panel, side columns, disabled fields */
-  --color-sidebar: light-dark(#eeebe4, #1a1917);
-  --color-surface: light-dark(#f4f2ed, #22201d); /* the panel each screen sits in */
-  --color-card: light-dark(#fbfaf7, #2a2825);
+  --color-paper: light-dark(#f2f1ec, #181a21);
+  --color-sidebar: light-dark(#f8f7f3, #1d1f28);
+  --color-surface: light-dark(#faf9f6, #20222c);
+  --color-card: light-dark(#ffffff, #282b36);
+  --color-accent: light-dark(#5359a4, #b7bbff);
+  --color-accent-soft: light-dark(#eeedf8, #32354e);
+  --color-accent-line: light-dark(#d9d9ef, #4b4e70);
   --color-canvas: light-dark(#e8e5de, #141311); /* behind document previews */
   --color-input: light-dark(#ffffff, #1e1c1a); /* inputs */
 
   /* Text */
-  --color-ink: light-dark(#1d1c1a, #f0ede7);
+  --color-ink: light-dark(#292c38, #f0f0f7);
   --color-document: light-dark(#2b2a27, #e5e1d9); /* posting text, set like a document */
   /* Secondary text: hints, labels, metadata. It passes on every surface
      and on the hover tints, but not on a selected item over the shell
      (4.3:1 in the light scheme): use ink there. */
-  --color-muted: light-dark(#69655d, #aaa59c);
+  --color-muted: light-dark(#686b77, #b1b4c5);
   /* Disabled and decorative only: never for text people need to read. */
   --color-faint: light-dark(#a29d94, #6e6961);
 
   /* Primary actions: near-black, and near-white in the dark scheme, with
      on-primary text at 4.5:1 or more. primary-text is for text and icons
      marking a choice, e.g. a selected chip's label. */
-  --color-primary: light-dark(#222222, #ebe7df);
-  --color-primary-hover: light-dark(#3a3936, #ffffff);
-  --color-on-primary: light-dark(#fbfaf7, #1d1c1a);
-  --color-primary-text: light-dark(#1d1c1a, #f0ede7);
+  --color-primary: light-dark(#5359a4, #b7bbff);
+  --color-primary-hover: light-dark(#454b91, #ced0ff);
+  --color-on-primary: light-dark(#ffffff, #24263f);
+  --color-primary-text: light-dark(#454b91, #ced0ff);
   /* Focus rings: 3:1 against every surface. */
-  --color-focus: light-dark(#1d1c1a, #f0ede7);
+  --color-focus: light-dark(#5359a4, #b7bbff);
 
   /* Toasts and tooltips: a dark chip, a little raised in the dark scheme. */
   --color-inverse: light-dark(#222222, #3b3834);
@@ -61,7 +64,7 @@
 
   /* Tints for hover, selection and tracks */
   --color-hover: light-dark(rgb(29 28 26 / 0.05), rgb(240 237 231 / 0.07));
-  --color-selected: light-dark(rgb(29 28 26 / 0.07), rgb(240 237 231 / 0.1));
+  --color-selected: light-dark(#eeedf8, #32354e);
   --color-track: light-dark(rgb(29 28 26 / 0.06), rgb(240 237 231 / 0.08));
   --color-toggle-off: light-dark(rgb(29 28 26 / 0.5), rgb(240 237 231 / 0.42)); /* 3:1, like text fields */
 
@@ -92,11 +95,12 @@
   --color-status-declined: light-dark(#6f6a62, #958f86);
 
   /* Radii */
-  --radius-control: 8px; /* buttons, inputs, nav items */
+  --radius-control: 10px; /* buttons, inputs, nav items */
   --radius-toast: 12px;
-  --radius-card: 12px;
-  --radius-panel: 12px; /* large cards and panels */
-  --radius-dialog: 16px;
+  --radius-card: 16px;
+  --radius-panel: 18px; /* large cards and panels */
+  --radius-dialog: 20px;
+  --shadow-card: 0 2px 6px rgb(25 28 50 / 0.025), 0 8px 24px rgb(25 28 50 / 0.035);
 
   /* Shadows: warm in the light scheme, deeper in the dark one, where a faint one wouldn't show. */
   --shadow-page: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 40px light-dark(rgb(40 35 25 / 0.1), rgb(0 0 0 / 0.5));
@@ -214,6 +218,7 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 14px;
+    line-height: 1.55;
   }
 
   a {
@@ -246,5 +251,50 @@
    panel's bottom border and the shell's 8px margin under it), for screens
    that keep to the window. */
 @utility h-panel {
-  height: calc(100dvh - 9px);
+  height: calc(100dvh - 13px);
+}
+
+/* Shared interface details. The document and PDF layouts keep their own styles. */
+.workspace-panel { box-shadow: var(--shadow-card); }
+.page-bar-inner { backdrop-filter: blur(16px); }
+.dashboard-card { box-shadow: var(--shadow-card); min-width: 0; }
+.dashboard-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: light-dark(#efedf8, #2d3047);
+  border: 1px solid var(--color-accent-line);
+}
+.dashboard-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 90% 20%, light-dark(#dcdcf2, #424766), transparent 65%);
+}
+.hero-art { color: var(--color-accent); }
+.workspace-eyebrow { font-size: 11px; letter-spacing: .13em; font-weight: 600; text-transform: uppercase; color: var(--color-accent); }
+.metric-card { transition: border-color 180ms, box-shadow 180ms; }
+.metric-card:hover { border-color: var(--color-accent-line); box-shadow: var(--shadow-card); }
+.sidebar-nav-item[aria-current="page"] { color: var(--color-primary-text); box-shadow: inset 3px 0 0 var(--color-accent); }
+.sidebar-group-label { letter-spacing: .1em; text-transform: uppercase; font-size: 10px; font-weight: 600; }
+
+@media (max-width: 767px) {
+  .workspace-content { padding: 0 8px 8px; }
+  .workspace-panel { border-radius: 16px; border-top: 1px solid var(--color-line-card); }
+  .page-bar-inner { padding: 20px 18px 12px; gap: 12px; }
+  .page-description { padding: 0 18px 24px; }
+  .page-bar-inner h1 { font-size: 30px; }
+  .page-bar-inner > * { min-width: 0; }
+  .page-bar-inner > :last-child { flex-wrap: wrap; flex-shrink: 1; }
+  .dashboard-columns, .period-controls, .applications-controls { padding-left: 18px; padding-right: 18px; }
+  .dashboard-card { padding: 20px; }
+  .dashboard-hero { padding: 24px; }
+  .hero-art { display: none; }
+  .applications-empty { margin-left: 18px; margin-right: 18px; }
+  .h-panel { height: calc(100dvh - 73px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card { transition: none; }
 }

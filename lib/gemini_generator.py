@@ -9,9 +9,12 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import re
+import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 import requests
 
@@ -19,13 +22,24 @@ from ._env import load_env
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Models to attempt in order of reliability and speed
+# Circuit breaker state: tracks temporarily disabled models (timestamp when opened)
+_CIRCUIT_OPEN_MODELS: dict[str, float] = {}
+CIRCUIT_COOLDOWN_SECONDS = 180  # 3 minutes cooldown for exhausted models
+
+# Models to attempt in order of capability (Pro subscription - latest 2026 models)
 CANDIDATE_MODELS = [
-    "gemini-flash-latest",
-    "gemini-flash-lite-latest",
-    "gemini-3.1-flash-lite",
-    "gemini-3.5-flash",
+    "gemini-4-hydrogen",
+    "gemini-3.5-flash-lite",
+    "gemini-4-carbon",
 ]
+
+
+@dataclass
+class GeminiModelFailure:
+    model: str
+    kind: Literal["rate_limit_transient", "quota_exhausted", "overloaded", "timeout", "auth_error", "unknown"]
+    message: str
+    retryable: bool = False
 
 GEMINI_SYSTEM_PROMPT = """You are an elite ghostwriter and technical thinker for Aryan Sharma (Senior Software Engineer & AI Systems Architect) on LinkedIn.
 You operate with the cognitive competence, analytical depth, and prose precision of Claude 3.7 Sonnet / Fable 5.1.
@@ -103,8 +117,13 @@ def _scrub_voice_blacklist(text: str) -> str:
         (r"\bgame-changer\b", "turning point"),
         (r"\bdeep dive\b", "detailed breakdown"),
         (r"\brobust\b", "resilient"),
-        (r"\btest harness\b", "test framework"),
-        (r"\bharness\b", "framework"),
+        (r"\b(test|evaluation|red-teaming|eval)\s+harness\b", r"\1 suite"),
+        (r"\bharness\b", "use"),
+        (r"\bfundamentally\b", "at its core"),
+        (r"\bessentially\b", "in practice"),
+        (r"\bultimately\b", "in the end"),
+        (r"\bparadigm\b", "model"),
+        (r"\bin today's fast-paced world\b", "today"),
     ]
     scrubbed = text
     for pattern, repl in replacements:
@@ -153,7 +172,14 @@ def generate_post_with_gemini(
         if m not in models_to_try:
             models_to_try.append(m)
 
+    now = time.time()
     for model_name in models_to_try:
+        # Check circuit breaker
+        if model_name in _CIRCUIT_OPEN_MODELS:
+            if now - _CIRCUIT_OPEN_MODELS[model_name] < CIRCUIT_COOLDOWN_SECONDS:
+                continue
+            del _CIRCUIT_OPEN_MODELS[model_name]
+
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={key}"
         payload = {
             "contents": [
@@ -171,23 +197,47 @@ def generate_post_with_gemini(
             },
         }
 
-        try:
-            resp = requests.post(url, json=payload, timeout=15)
-            if resp.status_code == 200:
-                data = resp.json()
-                candidates = data.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    raw_text = parts[0].get("text", "") if parts else ""
-                    cleaned = _clean_json_text(raw_text)
-                    parsed = json.loads(cleaned)
-                    if isinstance(parsed, dict) and "content" in parsed and parsed["content"].strip():
-                        parsed["content"] = _scrub_voice_blacklist(parsed["content"])
-                        return parsed
-            # If 404 or 503 or other, try next model
-            continue
-        except Exception:
-            continue
+        # Bounded attempt loop for transient errors
+        for attempt in range(2):
+            try:
+                resp = requests.post(url, json=payload, timeout=12)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        raw_text = parts[0].get("text", "") if parts else ""
+                        cleaned = _clean_json_text(raw_text)
+                        parsed = json.loads(cleaned)
+                        if isinstance(parsed, dict) and "content" in parsed and parsed["content"].strip():
+                            parsed["content"] = _scrub_voice_blacklist(parsed["content"])
+                            return parsed
+
+                if resp.status_code == 429:
+                    err_msg = resp.text.lower()
+                    if "quota" in err_msg or "exhausted" in err_msg:
+                        # Daily or allocation quota exhausted: open circuit immediately
+                        _CIRCUIT_OPEN_MODELS[model_name] = time.time()
+                        break
+                    # Transient RPM rate limit: short backoff with jitter on first attempt
+                    if attempt == 0:
+                        delay = 0.5 + random.uniform(0.1, 0.4)
+                        time.sleep(delay)
+                        continue
+                    break
+
+                if resp.status_code == 503 and attempt == 0:
+                    # Model overloaded: brief retry
+                    time.sleep(0.5 + random.uniform(0.1, 0.3))
+                    continue
+
+                # 404 or other non-retryable status
+                break
+            except requests.exceptions.Timeout:
+                # Socket timeout: do not re-attempt expensive model, break to fallback
+                break
+            except Exception:
+                break
 
     return None
 

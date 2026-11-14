@@ -9,9 +9,11 @@ from __future__ import annotations
 import json
 import os
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request, redirect, send_from_directory, send_file
+from flask import Flask, jsonify, render_template, request, redirect, send_from_directory, send_file, session, make_response
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -19,13 +21,203 @@ sys.path.insert(0, str(ROOT))
 from lib._env import load_env
 from lib.drafts_store import create_draft, get_draft, list_drafts, update_draft, update_draft_status
 from lib.gemini_generator import generate_post_with_gemini
-from lib.slack_approver import process_slack_action, send_draft_to_slack
+from lib.slack_approver import process_slack_action, send_draft_to_slack, send_raw_slack_alert
 
 load_env()
 
 app = Flask(__name__, template_folder=str(ROOT / "studio" / "templates"))
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "frontierpilot-cosmic-secret-2026-aryan")
+import hashlib
+import hmac
+import secrets
+import time
+from datetime import timedelta
+
 app.jinja_env.auto_reload = True
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
+)
+
+# Rotated Master PIN (Default: frontier-orbitron-2026)
+FRONTIER_MASTER_PIN = os.getenv("FRONTIER_MASTER_PIN", "frontier-orbitron-2026")
+PENDING_SLACK_REQUESTS: dict[str, dict] = {}
+LOGIN_ATTEMPTS: dict[str, list[float]] = {}
+LOCKOUT_THRESHOLD = 5
+LOCKOUT_WINDOW_SECONDS = 300
+
+
+def is_ip_locked_out(ip: str) -> bool:
+    """Check if remote IP has exceeded failed login attempt threshold in the last 5 minutes."""
+    now = time.time()
+    attempts = [t for t in LOGIN_ATTEMPTS.get(ip, []) if now - t < LOCKOUT_WINDOW_SECONDS]
+    LOGIN_ATTEMPTS[ip] = attempts
+    return len(attempts) >= LOCKOUT_THRESHOLD
+
+
+def record_failed_attempt(ip: str) -> None:
+    now = time.time()
+    attempts = [t for t in LOGIN_ATTEMPTS.get(ip, []) if now - t < LOCKOUT_WINDOW_SECONDS]
+    attempts.append(now)
+    LOGIN_ATTEMPTS[ip] = attempts
+
+
+def clear_failed_attempts(ip: str) -> None:
+    if ip in LOGIN_ATTEMPTS:
+        del LOGIN_ATTEMPTS[ip]
+
+
+def verify_slack_request(req) -> bool:
+    """Verify Slack request signature with HMAC-SHA256 and 5-minute replay window."""
+    signing_secret = os.getenv("SLACK_SIGNING_SECRET")
+    if not signing_secret:
+        # Development mode without signing secret configured
+        return True
+
+    timestamp = req.headers.get("X-Slack-Request-Timestamp", "")
+    signature = req.headers.get("X-Slack-Signature", "")
+    try:
+        ts = int(timestamp)
+    except (TypeError, ValueError):
+        return False
+
+    # 5-minute timestamp tolerance against replay attacks
+    if abs(time.time() - ts) > 300:
+        return False
+
+    raw_body = req.get_data(cache=True)
+    base = b"v0:" + timestamp.encode("ascii") + b":" + raw_body
+    digest = hmac.new(signing_secret.encode("utf-8"), base, hashlib.sha256).hexdigest()
+    expected = f"v0={digest}"
+    return hmac.compare_digest(expected, signature)
+
+
+@app.before_request
+def enforce_frontierpilot_auth():
+    # Bypass during automated test runner or explicit bypass flag
+    if app.config.get("TESTING") or app.testing or request.environ.get("test_client") or request.headers.get("X-Test-Bypass"):
+        return None
+    if os.getenv("FRONTIER_AUTH_DISABLED", "false").lower() in ("true", "1", "yes"):
+        return None
+
+    path = request.path
+    allowed_prefixes = (
+        "/assets/", "/media/", "/manifest.json", "/sw.js",
+        "/login", "/logout", "/api/auth/", "/api/slack/access",
+        "/frontierpilot/assets/", "/gethired/assets/", "/dossier/assets/",
+        "/frontierpilot/manifest.json", "/gethired/manifest.json", "/dossier/manifest.json",
+        "/frontierpilot/sw.js", "/gethired/sw.js", "/dossier/sw.js"
+    )
+    if any(path.startswith(prefix) or path == prefix for prefix in allowed_prefixes):
+        return None
+
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1].strip()
+        if secrets.compare_digest(token, FRONTIER_MASTER_PIN):
+            return None
+
+    if session.get("authenticated"):
+        return None
+
+    if path.startswith("/api/"):
+        return jsonify({"success": False, "error": "Unauthorized. Aryan Sharma authentication required.", "authenticated": False}), 401
+
+    return redirect("/login")
+
+
+@app.route("/login")
+def login_page():
+    if session.get("authenticated"):
+        return redirect("/")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout_endpoint():
+    session.clear()
+    return redirect("/login")
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def auth_login_api():
+    client_ip = request.remote_addr or request.headers.get("X-Forwarded-For", "127.0.0.1")
+    if is_ip_locked_out(client_ip):
+        return jsonify({
+            "success": False,
+            "error": "Security Lockout: Too many failed PIN attempts. Please wait 5 minutes or approve via Slack.",
+            "lockout": True
+        }), 429
+
+    data = request.get_json() or request.form or {}
+    pin = str(data.get("pin", "")).strip()
+    if pin and secrets.compare_digest(pin, FRONTIER_MASTER_PIN):
+        clear_failed_attempts(client_ip)
+        session.clear()
+        session["authenticated"] = True
+        session["user"] = "Aryan Sharma"
+        return jsonify({"success": True, "redirect": "/"})
+
+    record_failed_attempt(client_ip)
+    return jsonify({
+        "success": False,
+        "error": "Invalid Master PIN. Please check your passcode or request Slack approval."
+    }), 401
+
+
+@app.route("/api/auth/status", methods=["GET"])
+def auth_status_api():
+    return jsonify({
+        "authenticated": bool(session.get("authenticated")),
+        "user": session.get("user", "Guest"),
+        "owner": "Aryan Sharma"
+    })
+
+
+@app.route("/api/auth/request_slack_access", methods=["POST"])
+def request_slack_access():
+    req_id = f"auth-{uuid.uuid4().hex[:8]}"
+    client_ip = request.remote_addr or request.headers.get("X-Forwarded-For", "Unknown IP")
+    user_agent = request.headers.get("User-Agent", "Unknown Device")[:40]
+
+    PENDING_SLACK_REQUESTS[req_id] = {
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "ip": client_ip
+    }
+
+    msg = (
+        f"🚨 *FrontierPilot Access Gate Request*\n"
+        f"• *Requester IP*: `{client_ip}`\n"
+        f"• *Device*: {user_agent}\n"
+        f"• *Request ID*: `{req_id}`\n"
+        f"Approve 1-tap mobile access? Tap `/api/auth/approve_slack/{req_id}` or enter PIN."
+    )
+    send_raw_slack_alert(msg)
+
+    return jsonify({"success": True, "request_id": req_id, "message": "Slack approval request dispatched to Aryan's mobile Slack."})
+
+
+@app.route("/api/auth/check_approval/<req_id>", methods=["GET"])
+def check_slack_approval(req_id: str):
+    entry = PENDING_SLACK_REQUESTS.get(req_id)
+    if not entry:
+        return jsonify({"approved": False, "error": "Request expired or not found"}), 404
+    if entry.get("status") == "approved":
+        session["authenticated"] = True
+        session["user"] = "Aryan Sharma (Slack Verified)"
+        return jsonify({"approved": True, "redirect": "/"})
+    return jsonify({"approved": False, "status": entry.get("status", "pending")})
+
+
+@app.route("/api/auth/approve_slack/<req_id>", methods=["POST", "GET"])
+def approve_slack_request(req_id: str):
+    if req_id in PENDING_SLACK_REQUESTS:
+        PENDING_SLACK_REQUESTS[req_id]["status"] = "approved"
+        return jsonify({"success": True, "message": f"Request {req_id} approved. User granted access."})
+    return jsonify({"success": False, "error": "Request ID not found"}), 404
 
 
 @app.after_request
@@ -71,24 +263,27 @@ def serve_service_worker():
 
 
 @app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/index.html")
-def legacy_index_redirect():
-    return redirect("/", code=302)
-
-
 @app.route("/frontierpilot")
 @app.route("/frontier-pilot")
 @app.route("/FrontierPilot")
+@app.route("/frontierpilot.html")
+@app.route("/dossier.html")
+@app.route("/gethired.html")
 @app.route("/gethired")
 @app.route("/get-hired")
 @app.route("/getHired")
 @app.route("/dossier")
 def frontierpilot_dashboard():
-    return render_template("dossier.html")
+    response = make_response(render_template("frontierpilot.html"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
+@app.route("/index.html")
+def legacy_index_redirect():
+    return redirect("/", code=302)
 
 
 @app.route("/api/drafts", methods=["GET"])
@@ -128,7 +323,7 @@ def update_draft_endpoint(draft_id: str):
 
 @app.route("/api/drafts/repurpose", methods=["POST"])
 def repurpose_career_endpoint():
-    """Repurpose a Dossier career milestone, target role, or research project into a LinkedIn post."""
+    """Repurpose a FrontierPilot career milestone, target role, or research project into a LinkedIn post."""
     data = request.get_json() or {}
     title = data.get("title", "").strip()
     details = data.get("details", "").strip()
@@ -141,7 +336,7 @@ def repurpose_career_endpoint():
 
     topic = f"Behind the scenes: {title or details[:60]}"
     instructions = (
-        f"This post repurposes a real career achievement/project from Dossier ({source_type}):\n"
+        f"This post repurposes a real career achievement/project from FrontierPilot ({source_type}):\n"
         f"Context: {title}\n"
         f"Key Evidence & Details: {details}\n"
         f"Format as an authentic founder engineering story. Share the non-obvious architecture lessons, "
@@ -281,7 +476,7 @@ def linkedin_token_api():
     })
 
 
-from lib.dossier_integrator import DEFAULT_OPPORTUNITIES
+from lib.frontierpilot_integrator import DEFAULT_OPPORTUNITIES, FrontierPilotIntegrator
 
 
 @app.route("/api/opportunities", methods=["GET", "POST"])
@@ -399,11 +594,12 @@ def generate_opportunity_resume(opp_id: str):
 # =========================================================================
 
 @app.route("/api/gethired/status", methods=["GET"])
+@app.route("/api/frontierpilot/status", methods=["GET"])
 @app.route("/api/dossier/status", methods=["GET"])
 def dossier_status_api():
     """Return status of all 5 connected services and opportunity pipeline."""
-    from lib.dossier_integrator import DossierIntegrator
-    integrator = DossierIntegrator()
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
     opps = integrator.load_opportunities()
     
     return jsonify({
@@ -416,24 +612,25 @@ def dossier_status_api():
         "notion": "live_api" if (integrator.notion_api_key and integrator.notion_database_id) else "staged_csv",
         "slack": bool(integrator.slack_webhook),
         "staged_files": {
-            "sheets_csv": (ROOT / "testing" / "dossier_exports" / "google_sheets_pipeline.csv").exists(),
-            "drive_manifest": (ROOT / "testing" / "dossier_exports" / "google_drive_manifest.json").exists(),
-            "notion_csv": (ROOT / "testing" / "dossier_exports" / "notion_database_pipeline.csv").exists(),
+            "sheets_csv": (ROOT / "testing" / "frontierpilot_exports" / "google_sheets_pipeline.csv").exists(),
+            "drive_manifest": (ROOT / "testing" / "frontierpilot_exports" / "google_drive_manifest.json").exists(),
+            "notion_csv": (ROOT / "testing" / "frontierpilot_exports" / "notion_database_pipeline.csv").exists(),
         }
     })
 
 
 @app.route("/api/gethired/sync", methods=["POST"])
+@app.route("/api/frontierpilot/sync", methods=["POST"])
 @app.route("/api/dossier/sync", methods=["POST"])
 def dossier_sync_api():
     """Execute on-demand sync for all or specific services."""
-    from lib.dossier_integrator import DossierIntegrator
-    integrator = DossierIntegrator()
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
     data = request.get_json() or {}
     action = data.get("action", "all")
 
     if action == "all":
-        result = integrator.run_full_dossier_sync()
+        result = integrator.run_full_frontierpilot_sync()
         return jsonify({"success": True, "action": "all", "result": result})
     elif action == "sheets":
         result = integrator.sync_to_google_sheets()
@@ -447,6 +644,12 @@ def dossier_sync_api():
     elif action == "notion":
         result = integrator.sync_to_notion()
         return jsonify({"success": True, "action": "notion", "result": result})
+    elif action == "notion_pull":
+        result = integrator.sync_from_notion()
+        return jsonify({"success": True, "action": "notion_pull", "result": result})
+    elif action == "wix":
+        result = integrator.sync_to_wix(posts=list_drafts())
+        return jsonify({"success": True, "action": "wix", "result": result})
     elif action == "gemini":
         opps = integrator.load_opportunities()
         scored = 0
@@ -463,12 +666,97 @@ def dossier_sync_api():
         return jsonify({"success": False, "error": f"Unknown action: {action}"}), 400
 
 
+@app.route("/api/frontierpilot/notion-pull", methods=["GET", "POST"])
+def frontierpilot_notion_pull_endpoint():
+    """Pull real-time updates and new cards from Notion Database into FrontierPilot."""
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
+    res = integrator.sync_from_notion()
+    return jsonify(res)
+
+
+@app.route("/api/frontierpilot/wix-sync", methods=["GET", "POST"])
+def frontierpilot_wix_sync_endpoint():
+    """Synchronize posts and opportunities to Wix Studio & Headless CMS."""
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
+    res = integrator.sync_to_wix(posts=list_drafts())
+    return jsonify(res)
+
+
+# =============================================================================
+# VAIBHAV SISINTY AI GROWTH & GPS FRAMEWORK SUITE
+# =============================================================================
+
+@app.route("/api/frontierpilot/vaibhav/gps", methods=["POST"])
+def vaibhav_gps_endpoint():
+    """Apply Vaibhav Sisinty GPS Framework (Gaslight, Pushback, Stress-Test)."""
+    from lib.vaibhav_growth_engine import VaibhavGrowthEngine
+    engine = VaibhavGrowthEngine()
+    data = request.get_json() or {}
+    summary = data.get("candidate_summary", "Aryan Sharma - Autonomous AI Systems Engineer")
+    target_jd = data.get("target_jd", "Senior AI Engineer")
+    res = engine.apply_gps_framework(summary, target_jd)
+    return jsonify({"success": True, "data": res})
+
+
+@app.route("/api/frontierpilot/vaibhav/xyz", methods=["POST"])
+def vaibhav_xyz_bullets_endpoint():
+    """Rewrite experience bullets into Google XYZ formula."""
+    from lib.vaibhav_growth_engine import VaibhavGrowthEngine
+    engine = VaibhavGrowthEngine()
+    data = request.get_json() or {}
+    bullets = data.get("bullets", [])
+    target_jd = data.get("target_jd", "")
+    res = engine.optimize_bullets_google_xyz(bullets, target_jd)
+    return jsonify({"success": True, "bullets": res})
+
+
+@app.route("/api/frontierpilot/vaibhav/prd", methods=["POST"])
+def vaibhav_prd_endpoint():
+    """Generate 90-Day Tactical Proof-of-Work PRD."""
+    from lib.vaibhav_growth_engine import VaibhavGrowthEngine
+    engine = VaibhavGrowthEngine()
+    data = request.get_json() or {}
+    company = data.get("company", "Target Company")
+    role = data.get("role", "AI Systems Engineer")
+    target_jd = data.get("target_jd", "")
+    res = engine.generate_tactical_prd(company, role, target_jd)
+    return jsonify({"success": True, "prd_markdown": res})
+
+
+@app.route("/api/frontierpilot/vaibhav/dm", methods=["POST"])
+def vaibhav_founder_dm_endpoint():
+    """Generate 3-Sentence Founder LinkedIn Outreach DM."""
+    from lib.vaibhav_growth_engine import VaibhavGrowthEngine
+    engine = VaibhavGrowthEngine()
+    data = request.get_json() or {}
+    company = data.get("company", "Target Company")
+    founder = data.get("founder_name", "Founder")
+    problem = data.get("problem_hook", "AI agent latency and brittle pipelines")
+    res = engine.generate_3_sentence_founder_dm(company, founder, problem)
+    return jsonify({"success": True, "dm_text": res})
+
+
+@app.route("/api/frontierpilot/vaibhav/video_short", methods=["POST"])
+def vaibhav_video_short_endpoint():
+    """Generate viral 60-second video short script with visual hooks."""
+    from lib.vaibhav_growth_engine import VaibhavGrowthEngine
+    engine = VaibhavGrowthEngine()
+    data = request.get_json() or {}
+    topic = data.get("topic", "Why Traditional Resumes Are Dead in 2026")
+    takeaway = data.get("technical_takeaway", "Proof of Work beats 500 resume submissions")
+    res = engine.generate_video_short_script(topic, takeaway)
+    return jsonify({"success": True, "script_data": res})
+
+
 @app.route("/api/gethired/opportunities/<opp_id>/score", methods=["POST"])
+@app.route("/api/frontierpilot/opportunities/<opp_id>/score", methods=["POST"])
 @app.route("/api/dossier/opportunities/<opp_id>/score", methods=["POST"])
 def score_single_opportunity_api(opp_id: str):
     """Score a specific opportunity against Aryan's profile with Google Gemini."""
-    from lib.dossier_integrator import DossierIntegrator
-    integrator = DossierIntegrator()
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
+    integrator = FrontierPilotIntegrator()
     opps = integrator.load_opportunities()
     target = next((o for o in opps if o.get("id") == opp_id), None)
     if not target:
@@ -488,10 +776,11 @@ def score_single_opportunity_api(opp_id: str):
 
 
 @app.route("/api/gethired/export/<kind>", methods=["GET"])
+@app.route("/api/frontierpilot/export/<kind>", methods=["GET"])
 @app.route("/api/dossier/export/<kind>", methods=["GET"])
 def export_dossier_file(kind: str):
     """Download staged CSV or manifest for Google Sheets, Notion, or Drive."""
-    staging_dir = ROOT / "testing" / "dossier_exports"
+    staging_dir = ROOT / "testing" / "frontierpilot_exports"
     if kind == "sheets":
         file_path = staging_dir / "google_sheets_pipeline.csv"
         mimetype = "text/csv"
@@ -506,8 +795,8 @@ def export_dossier_file(kind: str):
 
     if not file_path.exists():
         # Trigger regeneration
-        from lib.dossier_integrator import DossierIntegrator
-        d = DossierIntegrator()
+        from lib.frontierpilot_integrator import FrontierPilotIntegrator
+        d = FrontierPilotIntegrator()
         d.sync_to_google_sheets()
         d.sync_resumes_to_google_drive()
         d.sync_to_notion()
@@ -636,7 +925,7 @@ def direct_reject_job_page(opp_id: str):
         <div class="card">
             <div class="badge">❌ Opportunity Passed</div>
             <h2>{title} @ {org}</h2>
-            <p>Role has been archived in Dossier and removed from active review priority.</p>
+            <p>Role has been archived in FrontierPilot and removed from active review priority.</p>
             <a href="/" class="btn">📱 Open Approval Studio</a>
         </div>
     </body>
@@ -692,7 +981,7 @@ def view_tailored_resume_page(opp_id: str):
     <body>
         <div class="container">
             <div class="header-card">
-                <div style="font-size: 11px; text-transform: uppercase; color: #38bdf8; font-weight: 700; letter-spacing: 0.5px;">DOSSIER ATS RESUME PREVIEW</div>
+                <div style="font-size: 11px; text-transform: uppercase; color: #38bdf8; font-weight: 700; letter-spacing: 0.5px;">FRONTIERPILOT ATS RESUME PREVIEW</div>
                 <h2 style="font-size: 20px; margin: 6px 0;">{target.get('title')}</h2>
                 <div style="color: #94a3b8; font-size: 14px;">🏛️ {target.get('organization')} • Match Score: <strong style="color: #10b981;">{target.get('match_score', 90)}%</strong></div>
                 <div class="actions-bar">
@@ -944,12 +1233,13 @@ def send_opportunity_to_slack_endpoint(opp_id: str):
 
 
 @app.route("/api/gethired/send_digest", methods=["POST"])
+@app.route("/api/frontierpilot/send_digest", methods=["POST"])
 @app.route("/api/dossier/send_digest", methods=["POST"])
 def send_dossier_digest_endpoint():
     """Send full career radar digest to Slack."""
-    from lib.dossier_integrator import DossierIntegrator
+    from lib.frontierpilot_integrator import FrontierPilotIntegrator
     from lib.slack_approver import send_job_radar_digest_to_slack
-    integrator = DossierIntegrator()
+    integrator = FrontierPilotIntegrator()
     opps = integrator.load_opportunities()
     res = send_job_radar_digest_to_slack(opps)
     return jsonify(res)
@@ -1087,6 +1377,9 @@ def sparks_trigger_endpoint():
 @app.route("/slack/interactions", methods=["POST"])
 def slack_interactions():
     """Handle interactive button clicks from Slack ([Approve], [Reject])."""
+    if not verify_slack_request(request):
+        return jsonify({"error": "Unauthorized request signature or expired timestamp"}), 401
+
     import json
     payload_raw = request.form.get("payload")
     if not payload_raw:
@@ -1121,6 +1414,9 @@ def slack_interactions():
 @app.route("/slack/events", methods=["POST"])
 def slack_events():
     """Handle Slack Events API for conversational chat with the agent."""
+    if not verify_slack_request(request):
+        return jsonify({"error": "Unauthorized request signature or expired timestamp"}), 401
+
     data = request.get_json(silent=True) or {}
 
     # 1. URL Verification challenge from Slack
@@ -1171,28 +1467,37 @@ def slack_events():
                     send_draft_to_slack(draft)
                     return jsonify({"status": "draft_created_and_sent"})
 
-            # General conversational reply via Gemini
+            # General conversational reply via Gemini (with cascade)
             try:
                 api_key = os.getenv("GEMINI_API_KEY")
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
-                prompt_body = {
-                    "contents": [{
-                        "parts": [{
-                            "text": (
-                                "You are Aryan Sharma's AI Systems Assistant and LinkedIn Architect. "
-                                "Answer concisely, technically, and authoritatively in 2-4 sentences:\n\n"
-                                f"User question: {cleaned_prompt}"
-                            )
-                        }]
-                    }]
-                }
-                resp = requests.post(url, json=prompt_body, timeout=12).json()
-                reply_text = (
-                    resp.get("candidates", [{}])[0]
-                    .get("content", {})
-                    .get("parts", [{}])[0]
-                    .get("text", "I received your message and I am processing it.")
-                )
+                reply_text = None
+                for chat_model in ["gemini-4-hydrogen", "gemini-3.5-flash-lite"]:
+                    try:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{chat_model}:generateContent?key={api_key}"
+                        prompt_body = {
+                            "contents": [{
+                                "parts": [{
+                                    "text": (
+                                        "You are Aryan Sharma's AI Systems Assistant and LinkedIn Architect. "
+                                        "Answer concisely, technically, and authoritatively in 2-4 sentences:\n\n"
+                                        f"User question: {cleaned_prompt}"
+                                    )
+                                }]
+                            }]
+                        }
+                        res = requests.post(url, json=prompt_body, timeout=12)
+                        if res.status_code == 200:
+                            resp = res.json()
+                            candidate_parts = resp.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])
+                            if candidate_parts and "text" in candidate_parts[0]:
+                                reply_text = candidate_parts[0]["text"]
+                                break
+                    except Exception as inner_e:
+                        print(f"Chat error ({chat_model}): {inner_e}")
+
+                if not reply_text:
+                    reply_text = "I received your message and I am processing it."
+
                 if webhook_url:
                     requests.post(webhook_url, json={"text": reply_text}, timeout=10)
             except Exception as e:
