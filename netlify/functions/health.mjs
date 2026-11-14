@@ -7,7 +7,7 @@ export default async (req, context) => {
   const data = {
     status: "healthy",
     platform: "FrontierPilot 2.0 Autonomous Creator Studio",
-    version: "1.1.22",
+    version: "1.1.25",
     cloud: "Netlify Edge & Serverless Functions",
     uptime_mode: "24/7 Always-On (Continuous Cloud Execution)",
     timestamp: new Date().toISOString(),
@@ -15,7 +15,8 @@ export default async (req, context) => {
       gemini_generator: geminiKey ? "connected" : "missing_key",
       slack_approval_hub: slackUrl ? "connected" : "missing_key",
       publora_publishing: publoraKey ? "connected" : "missing_key",
-      hermes_agent_bridge: hermesKey ? "ready" : "ready (unrestricted)"
+      hermes_agent_bridge: hermesKey ? "ready" : "ready (unrestricted)",
+      firebase_auth: "integrated"
     },
     endpoints: {
       health: "/api/health",

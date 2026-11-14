@@ -1,10 +1,13 @@
 // Service Worker for LinkedIn Studio & FrontierPilot Career Radar (Offline-First PWA)
-const CACHE_NAME = 'frontierpilot-v2.1-redesign';
+const CACHE_NAME = 'frontierpilot-v2.3-firebase-auth';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './frontierpilot.html',
+  './gethired.html',
+  './dossier.html',
   './manifest.json',
+  './assets/js/firebase-auth.js',
   './assets/bootstrap.min.css',
   './assets/bootstrap.bundle.min.js',
   './assets/bootstrap-icons.min.css',
