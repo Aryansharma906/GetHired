@@ -8,6 +8,12 @@ This file is the configuration and operations manual for **Google Antigravity** 
 
 This repository contains:
 - **12 LinkedIn Marketing Skills** (`skills/*/SKILL.md`): Post Writer, Comment Drafter, Reply Handler, Post Audit, Humanizer, Hook Extractor, Content Planner, Engagement Monitor, Profile Optimizer, Employee Advocacy, Repurposer, and Interviewer.
+- **24/7 Netlify Cloud Platform** (`https://frontierpilot-studio.netlify.app`): Always-on global edge deployment with Serverless Functions (`netlify/functions/`), running continuously without requiring a local machine.
+- **Hermes Agent Autonomous Gateway** (`/api/hermes/*`, `HERMES.md`, `hermes.json`): Serverless bridge for Nous Research's Hermes Agent to discover skills, dispatch tasks, and trigger instant CI/CD redeployments.
+- **Database & Cloud Architecture Mandate**:
+  - Persistence is managed via **Google Sheets, Notion, Slack Block Kit, and local SQLite WAL**.
+  - **Do NOT provision Firebase Data Connect or Google Cloud SQL**: Avoid paid relational database instances (\$15–\$60/mo) and GraphQL schema compilation.
+  - **Firebase Scope**: If Firebase is used, restrict strictly to client-side **Firebase Authentication (Google Sign-In)** for `docs/index.html`.
 - **Gemini Content Engine** (`lib/gemini_generator.py`): Leverages Google Gemini models to craft authentic, algorithm-compliant founder posts using 2026 hook formulas.
 - **Slack Approval Hub** (`lib/slack_approver.py`, `scripts/run_slack_pipeline.py`): Posts rich Block Kit cards to a Slack channel with interactive `[Approve & Schedule]` and `[Reject]` actions.
 - **Draft Queue & Storage** (`lib/drafts_store.py`): Persistent state in `testing/drafts_queue.json`.
