@@ -2895,10 +2895,11 @@ function initFrontierPilotData() {
     const local = localStorage.getItem('frontierpilot_opportunities') || localStorage.getItem('tracked_opportunities');
     if (local) {
       const parsed = JSON.parse(local);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed) && parsed.length >= 10 && parsed[0]?.title && parsed[0]?.organization) {
         frontierpilotOpps = parsed;
       } else {
         frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
+        persistFrontierPilotData();
       }
     } else {
       frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
@@ -2913,8 +2914,15 @@ function initFrontierPilotData() {
   fetch('/api/opportunities')
     .then(r => r.json())
     .then(data => {
-      if (data && data.success && Array.isArray(data.opportunities) && data.opportunities.length > 0) {
-        frontierpilotOpps = data.opportunities;
+      const opps = Array.isArray(data) ? data : (data && data.opportunities);
+      if (Array.isArray(opps) && opps.length > 0) {
+        frontierpilotOpps = opps.map(o => ({
+          ...o,
+          title: o.title || o.role || 'Opportunity',
+          organization: o.organization || o.company || 'Organization',
+          match_score: parseInt(o.match_score || o.matchScore) || 90,
+          match_reason: o.match_reason || (Array.isArray(o.matchReasons) ? o.matchReasons.join('; ') : '')
+        }));
         persistFrontierPilotData();
         renderAllViews();
       }
@@ -2947,10 +2955,30 @@ function renderAllViews() {
 }
 
 function updateFunnelStats() {
-  if (!Array.isArray(frontierpilotOpps)) frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
-  const staged = frontierpilotOpps.filter(o => (o.status || '').includes('Ready') || (o.status || '').includes('Staged')).length;
-  const applied = frontierpilotOpps.filter(o => (o.status || '').includes('Applied')).length;
-  const interviewing = frontierpilotOpps.filter(o => (o.status || '').includes('Interviewing')).length;
+  if (!Array.isArray(frontierpilotOpps) || frontierpilotOpps.length === 0) {
+    frontierpilotOpps = [...FRONTIERPILOT_DEFAULT_OPPORTUNITIES];
+  }
+
+  frontierpilotOpps.forEach(o => {
+    if (!o.title && o.role) o.title = o.role;
+    if (!o.organization && o.company) o.organization = o.company;
+    if (!o.match_score && o.matchScore) o.match_score = o.matchScore;
+  });
+
+  const staged = frontierpilotOpps.filter(o => {
+    const s = (o.status || '').toLowerCase();
+    return s.includes('ready') || s.includes('staged') || s.includes('approved') || s.includes('active');
+  }).length;
+
+  const applied = frontierpilotOpps.filter(o => {
+    const s = (o.status || '').toLowerCase();
+    return s.includes('applied') || s.includes('submitted') || s.includes('review');
+  }).length;
+
+  const interviewing = frontierpilotOpps.filter(o => {
+    const s = (o.status || '').toLowerCase();
+    return s.includes('interview') || s.includes('in process') || s.includes('progress');
+  }).length;
   
   const scores = frontierpilotOpps.map(o => parseInt(o.match_score) || 90);
   const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 92;
@@ -3069,16 +3097,16 @@ function renderKanbanBoard() {
   const filtered = frontierpilotOpps.filter(o => !query || (o.title || '').toLowerCase().includes(query) || (o.organization || '').toLowerCase().includes(query));
 
   const columns = [
-    { key: 'draft', title: 'Backlog / Scouting', match: ['Draft', 'Backlog', 'Scouting'] },
-    { key: 'staged', title: 'Ready to Apply', match: ['Ready', 'Staged', 'Prepared'] },
-    { key: 'applied', title: 'Applied / In Review', match: ['Applied', 'Submitted'] },
-    { key: 'interviewing', title: 'Interviewing', match: ['Interviewing', 'Interview', 'Evaluation'] },
-    { key: 'offered', title: 'Offered / Accepted', match: ['Offered', 'Accepted', 'Delegate'] }
+    { key: 'draft', title: 'Backlog / Scouting', match: ['draft', 'backlog', 'scouting'] },
+    { key: 'staged', title: 'Ready to Apply', match: ['ready', 'staged', 'prepared', 'approved', 'active'] },
+    { key: 'applied', title: 'Applied / In Review', match: ['applied', 'submitted', 'review'] },
+    { key: 'interviewing', title: 'Interviewing', match: ['interview', 'evaluation', 'progress'] },
+    { key: 'offered', title: 'Offered / Accepted', match: ['offered', 'accepted', 'delegate'] }
   ];
 
   container.innerHTML = columns.map(col => {
     const cards = filtered.filter(o => {
-      const st = o.status || 'Draft / Backlog';
+      const st = (o.status || 'Draft / Backlog').toLowerCase();
       return col.match.some(m => st.includes(m));
     });
 
@@ -4073,7 +4101,8 @@ async function loadCreatorStudio() {
   try {
     const res = await fetch('/api/drafts');
     if (res.ok) {
-      creatorDrafts = await res.json();
+      const data = await res.json();
+      creatorDrafts = Array.isArray(data) ? data : (data.drafts || []);
     }
   } catch (err) {
     console.warn('[CreatorStudio] Could not fetch drafts from server:', err);
@@ -4807,7 +4836,8 @@ async function performAutoUpdateCheck(silent = true) {
     // 1. Check for drafts / queue updates
     const draftsRes = await fetch('/api/drafts');
     if (draftsRes.ok) {
-      const freshDrafts = await draftsRes.json();
+      const rawDrafts = await draftsRes.json();
+      const freshDrafts = Array.isArray(rawDrafts) ? rawDrafts : (rawDrafts.drafts || []);
       const currentHash = computeSimpleHash(freshDrafts);
       
       if (currentHash !== lastDraftsHash && lastDraftsHash !== '') {

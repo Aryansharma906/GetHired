@@ -1,6 +1,6 @@
 {
   "name": "frontierpilot-studio",
-  "version": "1.1.25",
+  "version": "1.1.26",
   "description": "FrontierPilot 2.0 Autonomous Creator Studio & Career Radar for Hermes Agent",
   "baseUrl": "https://frontierpilot-studio.netlify.app",
   "auth": {

@@ -2,51 +2,7 @@
  * FrontierPilot 2.0 — Serverless Career & Radar Gateway
  */
 
-const DEMO_JOBS = [
-  {
-    id: "opp_anthropic_systems",
-    company: "Anthropic",
-    role: "Member of Technical Staff, Systems Engineering",
-    matchScore: 98,
-    status: "interview",
-    tier: "Tier 1 Priority",
-    location: "San Francisco, CA (Hybrid / Remote)",
-    matchReasons: [
-      "Deep expertise in autonomous multi-agent orchestration",
-      "Direct experience building resilient high-throughput LLM tooling",
-      "Strong alignment with safe agentic workflows and human-in-the-loop systems"
-    ],
-    contacts: [{ name: "Alexandre Passos", role: "Engineering Lead" }]
-  },
-  {
-    id: "opp_cohere_platform",
-    company: "Cohere",
-    role: "Staff Infrastructure Engineer, Agents & Tooling",
-    matchScore: 94,
-    status: "applied",
-    tier: "Tier 1 Priority",
-    location: "Remote / Toronto / SF",
-    matchReasons: [
-      "Track record architecting production tool harnesses and MCP connectors",
-      "Systems-level Python, TypeScript, and serverless edge deployment expertise"
-    ],
-    contacts: [{ name: "Sarah Chen", role: "Talent Partner" }]
-  },
-  {
-    id: "opp_perplexity_founder",
-    company: "Perplexity AI",
-    role: "AI Systems & Product Engineer",
-    matchScore: 91,
-    status: "outreach",
-    tier: "Tier 2 Strategic",
-    location: "San Francisco, CA",
-    matchReasons: [
-      "Demonstrated ability to ship full-stack consumer-facing AI interfaces",
-      "Speed of execution and autonomous engineering discipline"
-    ],
-    contacts: [{ name: "Denis Yarats", role: "CTO" }]
-  }
-];
+import { OPPORTUNITIES } from "./opportunities_data.mjs";
 
 export default async (req, context) => {
   const url = new URL(req.url);
@@ -71,7 +27,7 @@ export default async (req, context) => {
 
     return new Response(JSON.stringify({
       status: "operational",
-      version: "1.1.22",
+      version: "1.1.26",
       cloud_edge: "Netlify 24/7 Always-On",
       integrations: {
         gemini: geminiKey ? "healthy" : "offline",
@@ -81,7 +37,7 @@ export default async (req, context) => {
         drive: "connected",
         notion: "connected"
       },
-      activeOpportunities: DEMO_JOBS.length,
+      activeOpportunities: OPPORTUNITIES.length,
       lastSync: new Date().toISOString()
     }, null, 2), {
       status: 200,
@@ -93,8 +49,8 @@ export default async (req, context) => {
   if (req.method === "GET") {
     return new Response(JSON.stringify({
       success: true,
-      opportunities: DEMO_JOBS,
-      count: DEMO_JOBS.length,
+      opportunities: OPPORTUNITIES,
+      count: OPPORTUNITIES.length,
       timestamp: new Date().toISOString()
     }, null, 2), {
       status: 200,
@@ -110,7 +66,7 @@ export default async (req, context) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: `📊 *[FrontierPilot 2.0 Cloud]* Executive Career Radar Digest:\n• ${DEMO_JOBS.length} High-leverage opportunities active\n• Top match: *${DEMO_JOBS[0].company}* — ${DEMO_JOBS[0].role} (${DEMO_JOBS[0].matchScore}% match)`
+          text: `📊 *[FrontierPilot 2.0 Cloud]* Executive Career Radar Digest:\n• ${OPPORTUNITIES.length} High-leverage opportunities active\n• Top match: *${OPPORTUNITIES[0].organization}* — ${OPPORTUNITIES[0].title} (${OPPORTUNITIES[0].match_score}% match)`
         })
       });
     }

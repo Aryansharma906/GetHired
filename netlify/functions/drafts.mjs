@@ -8,8 +8,8 @@ const SAMPLE_DRAFTS = [
     topic: "Why small AI teams beat 50-person agencies",
     hookFormula: "Contrarian Truth",
     content: "Most engineering leaders think adding more developers speeds up delivery.\n\nIn reality, coordination overhead grows exponentially while individual agency drops to zero.\n\nAutonomous agent workflows don't just automate repetitive tasks. They collapse the iteration cycle between ideation and production deploy.\n\nThe real moat in 2026 isn't headcount. It's leverage per engineer.",
-    status: "approved",
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
+    status: "published",
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
     characterCount: 412
   },
   {
@@ -20,6 +20,15 @@ const SAMPLE_DRAFTS = [
     status: "pending_approval",
     createdAt: new Date().toISOString(),
     characterCount: 398
+  },
+  {
+    id: "draft_2026_03",
+    topic: "From 1st-year student to evaluating frontier LLMs at scale",
+    hookFormula: "Before vs After",
+    content: "Six months ago, I was reading benchmark papers from the outside.\n\nToday, I run automated red-teaming harnesses and prompt vulnerability checks against production foundation models.\n\nThe difference wasn't academic credentials.\n\nIt was building public proof-of-work, evaluating real failure modes, and shipping code every single week.",
+    status: "scheduled",
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+    characterCount: 425
   }
 ];
 
@@ -40,11 +49,7 @@ export default async (req, context) => {
 
   // 1. List drafts: GET /api/drafts
   if (req.method === "GET") {
-    return new Response(JSON.stringify({
-      success: true,
-      drafts: SAMPLE_DRAFTS,
-      count: SAMPLE_DRAFTS.length
-    }, null, 2), {
+    return new Response(JSON.stringify(SAMPLE_DRAFTS, null, 2), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
@@ -82,20 +87,20 @@ export default async (req, context) => {
     }
 
     if (!generatedText) {
-      generatedText = `Autonomous software engineering isn't about replacing engineers.\n\nIt's about removing the friction between thinking and shipping.\n\nWhen testing, linting, packaging, and edge deployments happen autonomously in the background, engineers spend 100% of their time on architectural clarity and customer problems.\n\nThat is how single-person teams are outbuilding entire product departments today.`;
+      generatedText = `Most teams treat AI agents as fancy autocomplete.\n\nThe real unlock is delegating entire operational loops: automated tests, cloud edge deployments, and real-time approval gateways.\n\nWhen your system runs 24/7 on edge, you stop being a ticket-pusher and become an architect.\n\nThe future belongs to engineers who multiply leverage.`;
     }
 
     const newDraft = {
-      id: "draft_" + Date.now(),
+      id: `draft_${Date.now()}`,
       topic,
-      hookFormula: "Contrarian Insight",
+      hookFormula: "Direct Contrast",
       content: generatedText,
       status: "pending_approval",
       createdAt: new Date().toISOString(),
       characterCount: generatedText.length
     };
 
-    // Dispatch to Slack
+    // Slack Notification
     const slackWebhook = process.env.SLACK_WEBHOOK_URL || (typeof Netlify !== 'undefined' && Netlify.env?.get('SLACK_WEBHOOK_URL'));
     if (slackWebhook) {
       try {
@@ -103,26 +108,13 @@ export default async (req, context) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            text: `📝 *[LinkedIn Creator Studio]* New Draft Ready for Approval: "${topic}"`,
-            blocks: [
-              {
-                type: "header",
-                text: { type: "plain_text", text: "📝 New LinkedIn Draft Generated" }
-              },
-              {
-                type: "section",
-                text: { type: "mrkdwn", text: `*Topic:* ${topic}\n\n>${generatedText.replace(/\n/g, "\n>")}` }
-              }
-            ]
+            text: `📝 *[FrontierPilot 2.0 Cloud]* New Post Draft Generated:\n*Topic:* ${topic}\n\n${generatedText.slice(0, 200)}...`
           })
         });
-      } catch (err) {}
+      } catch (e) {}
     }
 
-    return new Response(JSON.stringify({
-      success: true,
-      draft: newDraft
-    }, null, 2), {
+    return new Response(JSON.stringify({ success: true, draft: newDraft }), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
@@ -130,11 +122,21 @@ export default async (req, context) => {
 
   // 3. Approve draft: POST /api/drafts/:id/approve
   if (req.method === "POST" && pathname.includes("/approve")) {
-    return new Response(JSON.stringify({
-      success: true,
-      status: "approved",
-      message: "Draft approved and scheduled for live publication via Publora / LinkedIn API."
-    }), {
+    const parts = pathname.split("/");
+    const draftId = parts[3] || "draft";
+
+    const slackWebhook = process.env.SLACK_WEBHOOK_URL || (typeof Netlify !== 'undefined' && Netlify.env?.get('SLACK_WEBHOOK_URL'));
+    if (slackWebhook) {
+      await fetch(slackWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: `🎉 *[FrontierPilot 2.0 Cloud]* Post Approved & Scheduled: \`${draftId}\` by Aryan Sharma.`
+        })
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true, message: `Draft ${draftId} approved and scheduled` }), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
@@ -142,17 +144,17 @@ export default async (req, context) => {
 
   // 4. Reject draft: POST /api/drafts/:id/reject
   if (req.method === "POST" && pathname.includes("/reject")) {
-    return new Response(JSON.stringify({
-      success: true,
-      status: "rejected",
-      message: "Draft marked as rejected."
-    }), {
+    const parts = pathname.split("/");
+    const draftId = parts[3] || "draft";
+
+    return new Response(JSON.stringify({ success: true, message: `Draft ${draftId} rejected` }), {
       status: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
   }
 
-  return new Response(JSON.stringify({ success: true, message: "OK" }), {
+  // Fallback
+  return new Response(JSON.stringify({ success: true, drafts: SAMPLE_DRAFTS }), {
     status: 200,
     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
   });
